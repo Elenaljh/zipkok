@@ -234,3 +234,8 @@ npm-debug.log
 yarn-error.log
 
 # End of https://www.toptal.com/developers/gitignore/api/java,vuejs,eclipse,visualstudiocode,intellij
+
+
+# ### start spring boot setting
+# local setting
+application.properties 
