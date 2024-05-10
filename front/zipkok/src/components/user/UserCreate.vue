@@ -1,4 +1,4 @@
-<script></script>
+<script setup></script>
 <template>
   <div class="m-5 w-25">
     <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
@@ -6,35 +6,19 @@
     <form>
       <div class="mb-3">
         <label class="form-label">이름</label>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="이름을 입력하세요."
-        />
+        <input type="text" class="form-control" placeholder="이름을 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          placeholder="이메일을 입력하세요."
-        />
+        <input type="email" class="form-control" placeholder="이메일을 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
-        <input
-          type="password"
-          class="form-control"
-          placeholder="비밀번호를 입력하세요."
-        />
+        <input type="password" class="form-control" placeholder="비밀번호를 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">나이</label>
-        <input
-          type="number"
-          class="form-control"
-          placeholder="나이를 입력하세요."
-        />
+        <input type="number" class="form-control" placeholder="나이를 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
@@ -78,15 +62,11 @@
       >
         회원가입
       </button>
-      <button
-        type="button"
-        class="btn w-100 fw-bold"
-        style="border-color: lightgray"
-      >
-        <img src="/src/assets/google_s.png" />
-        &nbsp;Google로 시작하기
+      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
+        <img src="/src/assets/google_s.png" class="me-2" />
+        Google로 시작하기
       </button>
     </form>
   </div>
 </template>
-<style></style>
+<style scoped></style>
