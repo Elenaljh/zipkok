@@ -17,17 +17,17 @@ const router = createRouter({
       children: [
         {
           path: "create",
-          name: "create-user",
+          name: "createUser",
           component: () => import("@/components/user/UserCreate.vue"),
         },
         {
           path: "modify",
-          name: "modify-user",
+          name: "modifyUser",
           component: () => import("@/components/user/UserModify.vue"),
         },
         {
           path: "detail/:userid",
-          name: "user-detail",
+          name: "userDetail",
           component: () => import("@/components/user/UserDetail.vue"),
         },
         {

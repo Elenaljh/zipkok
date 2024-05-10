@@ -1,24 +1,13 @@
-<script>
+<script setup>
 import { ref } from "vue";
-
-export default {
-  setup() {
-    const user = ref({
-      name: "김싸피",
-      email: "ssafyhouse@gmail.com",
-      password: "password",
-      age: 24,
-      preferedPlace: [
-        "대구광역시 수성구 만촌동",
-        "서울특별시 동작구 사당동",
-        "경상북도 구미시 진평동",
-      ],
-      preferedType: "녹지",
-    });
-
-    return { user };
-  },
-};
+const user = ref({
+  name: "김싸피",
+  email: "ssafyhouse@gmail.com",
+  password: "password",
+  age: 24,
+  preferedPlace: ["대구광역시 수성구 만촌동", "서울특별시 동작구 사당동", "경상북도 구미시 진평동"],
+  preferedType: "녹지",
+});
 </script>
 <template>
   <div class="m-5 w-25">
@@ -31,20 +20,11 @@ export default {
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          :placeholder="user.email"
-          readonly
-        />
+        <input type="email" class="form-control" :placeholder="user.email" readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
-        <input
-          type="password"
-          class="form-control"
-          :placeholder="user.password"
-        />
+        <input type="password" class="form-control" :placeholder="user.password" />
       </div>
       <div class="mb-3">
         <label class="form-label">나이</label>
@@ -53,12 +33,7 @@ export default {
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
         <div v-for="item in user.preferedPlace" :key="item">
-          <input
-            type="text"
-            class="form-control mb-1"
-            :placeholder="item"
-            readonly
-          />
+          <input type="text" class="form-control mb-1" :placeholder="item" readonly />
         </div>
         <div class="d-flex justify-content-between">
           <select class="form-select">
@@ -113,4 +88,4 @@ export default {
   </div>
 </template>
 
-<style></style>
+<style scoped></style>
