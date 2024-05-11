@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainView from "../views/MainView.vue";
 import UserView from "@/views/UserView.vue";
+import HouseView from "@/views/HouseView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,6 +70,16 @@ const router = createRouter({
           component: () => import("@/components/board/BoardUpdate.vue"),
         },
       ],
+    },
+    {
+      path: "/house",
+      name: "house",
+      component: HouseView,
+    },
+    {
+      path: "/det",
+      name: "det",
+      component: () => import("@/components/house/detail/HouseDetail.vue"),
     },
   ],
 });
