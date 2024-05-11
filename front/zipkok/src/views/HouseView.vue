@@ -54,7 +54,7 @@ const changeTab = (val) => {
       class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
     >
       <div class="modal-content">
-        <div class="modal-body">
+        <div class="modal-body" id="modal">
           <div class="mb-2"><img src="/src/assets/houseInfo.png" /></div>
           <div class="ms-2">
             <h5 style="font-weight: bolder">{{ houseInfo.name }}</h5>
@@ -117,5 +117,12 @@ const changeTab = (val) => {
 }
 .nav-link.boardNav.active {
   color: #00b4d8;
+}
+#modal::-webkit-scrollbar {
+  width: 10px;
+}
+#modal::-webkit-scrollbar-thumb {
+  background: #e6e6e6;
+  border-radius: 10px;
 }
 </style>

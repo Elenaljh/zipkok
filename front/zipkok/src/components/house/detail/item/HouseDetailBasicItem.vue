@@ -39,7 +39,6 @@ const rentInfo = ref({
     { day: "24.03.9", area: 13, price: "1000/40", floor: 7 },
     { day: "24.02.20", area: 24, price: "2000/43", floor: 15 },
     { day: "24.01.10", area: 13, price: "1000/40", floor: 10 },
-    { day: "23.12.19", area: 24, price: "5000/28", floor: 13 },
   ],
 });
 const info = computed(() => {
@@ -99,7 +98,7 @@ const close = () => {
       type="button"
       class="btn btn-light"
       @click="showMore"
-      v-if="visibleInfo.length !== info.list.length"
+      v-if="visibleInfo.length !== info.list.length && info.list.length > 5"
     >
       더보기
     </button>
@@ -107,7 +106,7 @@ const close = () => {
       type="button"
       class="btn btn-light"
       @click="close"
-      v-if="visibleInfo.length === info.list.length"
+      v-if="visibleInfo.length === info.list.length && info.list.length > 5"
     >
       접기
     </button>
