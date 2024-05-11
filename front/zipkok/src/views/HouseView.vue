@@ -50,12 +50,14 @@ const changeTab = (val) => {
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+    <div
+      class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+    >
       <div class="modal-content">
         <div class="modal-body">
-          <div><img src="/src/assets/houseInfo.png" /></div>
+          <div class="mb-2"><img src="/src/assets/houseInfo.png" /></div>
           <div class="ms-2">
-            <h4>{{ houseInfo.name }}</h4>
+            <h5 style="font-weight: bolder">{{ houseInfo.name }}</h5>
             <p style="color: dimgray">
               {{ houseInfo.sido }} {{ houseInfo.sigungu }} {{ houseInfo.dong }}
             </p>
@@ -72,17 +74,26 @@ const changeTab = (val) => {
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link boardNav" :class="{ active: num === 1 }" @click="changeTab(1)"
+              <a
+                class="nav-link boardNav"
+                :class="{ active: num === 1 }"
+                @click="changeTab(1)"
                 >환경 정보</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link boardNav" :class="{ active: num === 2 }" @click="changeTab(2)"
+              <a
+                class="nav-link boardNav"
+                :class="{ active: num === 2 }"
+                @click="changeTab(2)"
                 >동네 정보</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link boardNav" :class="{ active: num === 3 }" @click="changeTab(3)"
+              <a
+                class="nav-link boardNav"
+                :class="{ active: num === 3 }"
+                @click="changeTab(3)"
                 >최신 소식</a
               >
             </li>
