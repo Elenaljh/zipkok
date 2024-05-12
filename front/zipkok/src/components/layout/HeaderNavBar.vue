@@ -3,13 +3,19 @@
 <template>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand"
-        ><img src="@/assets/logo.png" alt="Bootstrap" width="80" height="80" /> ZIPKOK</a
+      <a class="navbar-brand">
+        <router-link :to="{ name: 'main' }">
+          <img src="@/assets/logo.png" alt="Bootstrap" width="80" height="80" />
+          ZIPKOK</router-link
+        ></a
       >
+
       <div>
         <img src="@/assets/navNot.png" />
         <img src="@/assets/navBoard.png" />
-        <router-link :to="{ name: 'login' }"><img src="@/assets/navLogin.png" /></router-link>
+        <router-link :to="{ name: 'login' }"
+          ><img src="@/assets/navLogin.png"
+        /></router-link>
         <router-link :to="{ name: 'createUser' }"
           ><img src="@/assets/navRegister.png"
         /></router-link>
@@ -18,4 +24,9 @@
   </nav>
 </template>
 
-<style scoped></style>
+<style scoped>
+a {
+  text-decoration: none;
+  color: black;
+}
+</style>

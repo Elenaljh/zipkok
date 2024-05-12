@@ -1,11 +1,16 @@
 <script setup>
 import { ref } from "vue";
+
 const user = ref({
   name: "김싸피",
   email: "ssafyhouse@gmail.com",
   password: "password",
   age: 24,
-  preferedPlace: ["대구광역시 수성구 만촌동", "서울특별시 동작구 사당동", "경상북도 구미시 진평동"],
+  preferedPlace: [
+    "대구광역시 수성구 만촌동",
+    "서울특별시 동작구 사당동",
+    "경상북도 구미시 진평동",
+  ],
   preferedType: "녹지",
 });
 </script>
@@ -20,11 +25,20 @@ const user = ref({
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input type="email" class="form-control" :placeholder="user.email" readonly />
+        <input
+          type="email"
+          class="form-control"
+          :placeholder="user.email"
+          readonly
+        />
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
-        <input type="password" class="form-control" :placeholder="user.password" />
+        <input
+          type="password"
+          class="form-control"
+          :placeholder="user.password"
+        />
       </div>
       <div class="mb-3">
         <label class="form-label">나이</label>
@@ -33,7 +47,12 @@ const user = ref({
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
         <div v-for="item in user.preferedPlace" :key="item">
-          <input type="text" class="form-control mb-1" :placeholder="item" readonly />
+          <input
+            type="text"
+            class="form-control mb-1"
+            :placeholder="item"
+            readonly
+          />
         </div>
         <div class="d-flex justify-content-between">
           <select class="form-select">
@@ -73,6 +92,7 @@ const user = ref({
           type="button"
           class="btn text-white fw-bold"
           style="background-color: #707070; width: 48%"
+          @click="this.$router.go(-1)"
         >
           취소
         </button>
