@@ -2,6 +2,8 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 
+const emit = defineEmits(["requestDataFromChild"]);
+
 const sido = ref([]);
 const sigungu = ref([]);
 const dong = ref([]);
@@ -20,6 +22,10 @@ const sendRequest = (selid, regcode) => {
       sido.value = dataList;
     } else if (selid === "sigungu") {
       sigungu.value = dataList;
+      sigunguValue.value = ""; // 시/도 변경 시 시/군/구 선택 해제
+      dong.value = [];
+      dongValue.value = "";
+      selectedAddress.value = "";
     } else {
       dong.value = dataList;
     }
@@ -31,8 +37,9 @@ const getSigungu = () => {
     const code = sidoValue.value.substring(0, 2) + "*00000";
     sendRequest("sigungu", code);
   } else {
-    sigungu.value = "";
-    dong.value = "";
+    sigungu.value = [];
+    sigunguValue.value = "";
+    dong.value = [];
   }
 };
 
@@ -41,7 +48,7 @@ const getDong = () => {
     const code = sigunguValue.value.substring(0, 5) + "*";
     sendRequest("dong", code);
   } else {
-    dong.value = "";
+    dong.value = [];
   }
 };
 
@@ -53,6 +60,22 @@ const updateSelectedAddress = () => {
   }
 };
 
+const sendDataToParent = () => {
+  console.log("자식 함수 호출함");
+  emit("requestDataFromChild", {
+    address: selectedAddress.value,
+    dongCode: dongValue.value,
+  });
+  sidoValue.value = "";
+  sigunguValue.value = "";
+  dongValue.value = "";
+  selectedAddress.value = "";
+  sigungu.value = [];
+  dong.value = [];
+};
+
+defineExpose({ sendDataToParent }); //부모가 sendDataToParent를 호출할 수 있게 함
+
 onMounted(() => {
   sendRequest("sido", "*00000000");
 });
@@ -61,13 +84,13 @@ onMounted(() => {
 <template>
   <div class="d-flex justify-content-between">
     <select class="form-select" v-model="sidoValue" @change="getSigungu">
-      <option disabled value="">시/도</option>
+      <option value="">시/도</option>
       <option v-for="item in sido" :key="item.code" :value="item.code">
         {{ item.name }}
       </option>
     </select>
     <select class="form-select ms-1" v-model="sigunguValue" @change="getDong">
-      <option disabled value="">시/군/구</option>
+      <option value="" selected>시/군/구</option>
       <option v-for="item in sigungu" :key="item.code" :value="item.code">
         {{ item.name.split(" ").slice(1).join(" ") }}
       </option>
@@ -77,7 +100,7 @@ onMounted(() => {
       v-model="dongValue"
       @change="updateSelectedAddress"
     >
-      <option disabled value="">동</option>
+      <option value="">동</option>
       <option v-for="item in dong" :key="item.code" :value="item.code">
         {{ item.name.split(" ").slice(2).join(" ") }}
       </option>
