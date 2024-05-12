@@ -1,5 +1,36 @@
 <script setup>
+import { ref } from "vue";
 import AddressSelectBox from "../common/AddressSelectBox.vue";
+const user = ref({
+  name: "",
+  email: "",
+  password: "",
+  age: 0,
+  preferedPlace: [],
+  preferedType: "",
+});
+//셀렉트박스 위한 함수와 변수
+const childCompRef = ref(null);
+
+const callChildFunction = () => {
+  childCompRef.value.sendDataToParent();
+};
+
+const receiveDataFromChild = (data) => {
+  console.log("데이터 수신 완료");
+  if (data.address) {
+    user.value.preferedPlace.push(data.address);
+    console.log(user.value.preferedPlace);
+  }
+};
+
+const deleteAddress = (item) => {
+  user.value.preferedPlace = user.value.preferedPlace.filter((address) => {
+    return address !== item;
+  });
+  console.log(user.value.preferedPlace);
+};
+//셀렉트박스
 </script>
 <template>
   <div class="m-5 w-25">
@@ -40,7 +71,46 @@ import AddressSelectBox from "../common/AddressSelectBox.vue";
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
-        <AddressSelectBox />
+        <!--셀렉트박스-->
+        <div v-if="user.preferedPlace.length > 0">
+          <div
+            class="d-flex align-items-center mb-2"
+            v-for="item in user.preferedPlace"
+            :key="item"
+          >
+            <input
+              type="text"
+              class="form-control"
+              :placeholder="item"
+              readonly
+            />
+            <img
+              class="ms-2"
+              src="/src/assets/delete.png"
+              width="20px"
+              height="20px"
+              @click="deleteAddress(item)"
+            />
+          </div>
+        </div>
+
+        <div
+          class="d-flex align-items-center"
+          v-if="user.preferedPlace.length < 3"
+        >
+          <AddressSelectBox
+            ref="childCompRef"
+            @requestDataFromChild="receiveDataFromChild"
+          />
+          <img
+            class="ms-2"
+            src="/src/assets/add.png"
+            width="20px"
+            height="20px"
+            @click="callChildFunction"
+          />
+        </div>
+        <!--셀렉트박스 끝-->
       </div>
       <div class="mb-3">
         <label class="form-label">거주지 선정 기준</label>

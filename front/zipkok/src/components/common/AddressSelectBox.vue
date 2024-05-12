@@ -2,6 +2,8 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 
+const emit = defineEmits(["requestDataFromChild"]);
+
 const sido = ref([]);
 const sigungu = ref([]);
 const dong = ref([]);
@@ -57,6 +59,22 @@ const updateSelectedAddress = () => {
     console.log(selectedAddress.value);
   }
 };
+
+const sendDataToParent = () => {
+  console.log("자식 함수 호출함");
+  emit("requestDataFromChild", {
+    address: selectedAddress.value,
+    dongCode: dongValue.value,
+  });
+  sidoValue.value = "";
+  sigunguValue.value = "";
+  dongValue.value = "";
+  selectedAddress.value = "";
+  sigungu.value = [];
+  dong.value = [];
+};
+
+defineExpose({ sendDataToParent }); //부모가 sendDataToParent를 호출할 수 있게 함
 
 onMounted(() => {
   sendRequest("sido", "*00000000");
