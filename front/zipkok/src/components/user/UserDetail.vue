@@ -1,23 +1,22 @@
-<script>
+<script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-export default {
-  setup() {
-    const user = ref({
-      name: "김싸피",
-      email: "ssafyhouse@gmail.com",
-      password: "password",
-      age: 24,
-      preferedPlace: [
-        "대구광역시 수성구 만촌동",
-        "서울특별시 동작구 사당동",
-        "경상북도 구미시 진평동",
-      ],
-      preferedType: "녹지",
-    });
-
-    return { user };
-  },
+const user = ref({
+  name: "김싸피",
+  email: "ssafyhouse@gmail.com",
+  password: "password",
+  age: 24,
+  preferedPlace: [
+    "대구광역시 수성구 만촌동",
+    "서울특별시 동작구 사당동",
+    "경상북도 구미시 진평동",
+  ],
+  preferedType: "녹지",
+});
+const router = useRouter();
+const goModify = () => {
+  router.push({ path: "/user/modify" });
 };
 </script>
 <template>
@@ -84,6 +83,7 @@ export default {
           type="button"
           class="btn text-white fw-bold"
           style="background-color: #00b4d8; width: 48%"
+          @click="goModify"
         >
           정보 수정
         </button>
