@@ -82,7 +82,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="d-flex justify-content-between">
+  <div class="w-100 d-flex justify-content-between">
     <select class="form-select" v-model="sidoValue" @change="getSigungu">
       <option value="">시/도</option>
       <option v-for="item in sido" :key="item.code" :value="item.code">
@@ -95,11 +95,7 @@ onMounted(() => {
         {{ item.name.split(" ").slice(1).join(" ") }}
       </option>
     </select>
-    <select
-      class="form-select ms-1"
-      v-model="dongValue"
-      @change="updateSelectedAddress"
-    >
+    <select class="form-select ms-1" v-model="dongValue" @change="updateSelectedAddress">
       <option value="">동</option>
       <option v-for="item in dong" :key="item.code" :value="item.code">
         {{ item.name.split(" ").slice(2).join(" ") }}

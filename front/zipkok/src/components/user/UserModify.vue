@@ -7,11 +7,7 @@ const user = ref({
   email: "ssafyhouse@gmail.com",
   password: "password",
   age: 24,
-  preferedPlace: [
-    "대구광역시 수성구 만촌동",
-    "서울특별시 동작구 사당동",
-    "경상북도 구미시 진평동",
-  ],
+  preferedPlace: ["대구광역시 수성구 만촌동", "서울특별시 동작구 사당동", "경상북도 구미시 진평동"],
   preferedType: "녹지",
 });
 
@@ -49,20 +45,11 @@ const deleteAddress = (item) => {
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          :placeholder="user.email"
-          readonly
-        />
+        <input type="email" class="form-control" :placeholder="user.email" readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
-        <input
-          type="password"
-          class="form-control"
-          :placeholder="user.password"
-        />
+        <input type="password" class="form-control" :placeholder="user.password" />
       </div>
       <div class="mb-3">
         <label class="form-label">나이</label>
@@ -76,12 +63,7 @@ const deleteAddress = (item) => {
             v-for="item in user.preferedPlace"
             :key="item"
           >
-            <input
-              type="text"
-              class="form-control"
-              :placeholder="item"
-              readonly
-            />
+            <input type="text" class="form-control" :placeholder="item" readonly />
             <img
               class="ms-2"
               src="/src/assets/delete.png"
@@ -92,14 +74,8 @@ const deleteAddress = (item) => {
           </div>
         </div>
 
-        <div
-          class="d-flex align-items-center"
-          v-if="user.preferedPlace.length < 3"
-        >
-          <AddressSelectBox
-            ref="childCompRef"
-            @requestDataFromChild="receiveDataFromChild"
-          />
+        <div class="d-flex align-items-center" v-if="user.preferedPlace.length < 3">
+          <AddressSelectBox ref="childCompRef" @requestDataFromChild="receiveDataFromChild" />
           <img
             class="ms-2"
             src="/src/assets/add.png"
