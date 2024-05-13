@@ -1,23 +1,65 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useCookies } from "vue3-cookies";
+
 const loginInfo = ref({
   memberId: "",
   password: "",
 });
 const rememberMe = ref(false);
-
+const { cookies } = useCookies();
 const buttonClick = () => {
-  //유효성 검사
+  // 유효성 검사
   const valid = validation();
 
   if (valid) {
     alert("유효성 검사 통과");
     alert(rememberMe.value);
+
     //axios 요청
+
+    //로그인 성공시 then에서 쿠키 설정
+    setCookie();
   }
 };
 
-//유효성 검사
+const cookieConfig = {
+  expireTimes: "10d",
+  path: "/user/login",
+  domain: "",
+  secure: false, // HTTPS가 아닌 경우 false로 설정하세요.
+  sameSite: "Lax",
+  partitioned: false,
+};
+// 쿠키 설정
+const setCookie = () => {
+  // const cookies = useCookies();
+  if (rememberMe.value) {
+    // const cookies = useCookies();
+    console.log("아이디 기억하기");
+    cookies.set("rememberMe", loginInfo.value.memberId, "10d");
+    console.log(cookies);
+  } else {
+    console.log("쿠키 삭제");
+    cookies.remove("rememberMe");
+  }
+};
+
+// 쿠키 가져오기 및 아이디 창에 설정
+onMounted(() => {
+  try {
+    const { cookies } = useCookies();
+    let cookieValue = cookies.get("rememberMe");
+    console.log("쿠키값: " + cookieValue);
+    if (cookieValue) {
+      loginInfo.value.memberId = cookieValue;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+// 유효성 검사
 const validation = () => {
   let info = loginInfo.value;
   if (!info.memberId && !info.password) {
