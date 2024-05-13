@@ -1,13 +1,13 @@
 <script setup>
-
+import HouseList from "@/components/house/HouseList.vue";
+import MapViewItem from "@/components/house/item/MapViewItem.vue";
 </script>
 
 <template>
-    <div>
-        안녕하세요
-    </div>
+  <div class="row">
+    <HouseList class="col-5" :type="'main'" />
+    <MapViewItem class="col" />
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

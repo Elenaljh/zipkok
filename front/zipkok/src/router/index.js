@@ -72,9 +72,11 @@ const router = createRouter({
       ],
     },
     {
-      path: "/house",
+      path:  "/house/:searchType/:searchValue",
+      alias: "/house",
       name: "house",
       component: HouseView,
+      props: true,
     },
     {
       path: "/det",

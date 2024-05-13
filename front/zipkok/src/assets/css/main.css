@@ -1,0 +1,109 @@
+/* 글자 설정 */
+/* * {
+  font-family: "Inter", sans-serif !important;
+} */
+
+h1,
+h2 {
+  font-weight: 600;
+}
+
+.small-title {
+  font-weight: 600;
+}
+
+/* 버튼 색상 변경 1 - hover 색상 반전 */
+button.reverseButton,
+button.reverseButton:focus {
+  color: #00b4d8;
+
+  border-color: lightgray;
+  /* border-color: #00B4D8; */
+}
+button.reverseButton:hover,
+button.reverseButton:active,
+button.reverseButton:active:focus,
+button.active {
+  background: #00b4d8;
+  color: #fff;
+  box-shadow: none;
+  border-color: #fff;
+}
+/* 버튼 색상 변경 2 - hover 색상 연하게 */
+button.lighterButton,
+button.lighterButton:focus {
+  color: #fff;
+
+  border-color: #00b4d8;
+  background: #00b4d8;
+}
+button.lighterButton:hover,
+button.lighterButton:active,
+button.lighterButton:active:focus,
+button.active {
+  background: #90e0ef;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* nav tab 색상 변경 */
+.nav-link.boardNav {
+  color: gray;
+}
+.nav-link.boardNav.active {
+  color: #00b4d8;
+}
+.nav-link {
+  cursor: pointer;
+}
+
+/* 테이블 색상 변경 */
+div.table-row {
+  border-radius: 10px;
+}
+.boardTable {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+.boardTable thead th {
+  background-color: #eeeeee;
+}
+.boardTable thead th:first-child {
+  border-radius: 20px 0 0 0;
+}
+.boardTable thead th:last-child {
+  border-radius: 0 20px 0 0;
+}
+
+/* 게시글 꾸미기 */
+.board-content {
+  border: 1px solid #90e0ef;
+}
+
+/* input shadow 설정 */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #90e0ef !important;
+  box-shadow: 0 0 8px #00b4d8 !important;
+  outline: 0 none;
+}
+
+select,
+input,
+textarea {
+  border: 1px solid lightgray !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+
+.cardModalButton {
+  cursor: pointer;
+  box-shadow: 4px 4px 2px 1px lightgray;
+  /* border: 1px solid #90e0ef; */
+  border-radius: 10px;
+}
+
+.cardModalButton:hover {
+  box-shadow: 4px 4px 2px 1px #90e0ef;
+}
