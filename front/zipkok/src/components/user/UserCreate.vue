@@ -19,6 +19,10 @@ const callChildFunction = () => {
 const receiveDataFromChild = (data) => {
   console.log("데이터 수신 완료");
   if (data.address) {
+    if (user.value.preferedPlace.includes(data.address)) {
+      alert("중복된 값입니다!");
+      return;
+    }
     user.value.preferedPlace.push(data.address);
     console.log(user.value.preferedPlace);
   }

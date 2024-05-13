@@ -109,7 +109,7 @@ const news = ref([
             <small class="me-0" style="color: #00b3d6; font-weight: bold">
               {{ item.source }}
             </small>
-            <a :href="item.link"
+            <a :href="item.link" target="_blank"
               ><h5 class="card-title">{{ item.title }}</h5></a
             >
             <p class="card-text">

@@ -8,8 +8,19 @@ const user = ref({
   password: "password",
   age: 24,
   preferedPlace: ["대구광역시 수성구 만촌동", "서울특별시 동작구 사당동", "경상북도 구미시 진평동"],
-  preferedType: "녹지",
+  preferedType: "대기오염",
 });
+
+const preferedTypeList = ref([
+  { value: 1, text: "녹지" },
+  { value: 2, text: "대기오염" },
+  { value: 3, text: "행정시설" },
+  { value: 4, text: "학군" },
+  { value: 5, text: "근방 맛집" },
+  { value: 6, text: "CCTV 대수" },
+]);
+
+const computedList = preferedTypeList.value.filter((item) => item.text !== user.value.preferedType);
 
 //셀렉트박스 위한 함수와 변수
 const childCompRef = ref(null);
@@ -21,6 +32,10 @@ const callChildFunction = () => {
 const receiveDataFromChild = (data) => {
   console.log("데이터 수신 완료");
   if (data.address) {
+    if (user.value.preferedPlace.includes(data.address)) {
+      alert("중복된 값입니다!");
+      return;
+    }
     user.value.preferedPlace.push(data.address);
     console.log(user.value.preferedPlace);
   }
@@ -89,12 +104,9 @@ const deleteAddress = (item) => {
         <label class="form-label">거주지 선정 기준</label>
         <select class="form-select">
           <option selected>{{ user.preferedType }}</option>
-          <option value="1">녹지</option>
-          <option value="2">대기오염</option>
-          <option value="3">행정시설</option>
-          <option value="3">학군</option>
-          <option value="3">근방 맛집</option>
-          <option value="3">CCTV 대수</option>
+          <option v-for="item in computedList" :key="item.value" :value="item.value">
+            {{ item.text }}
+          </option>
         </select>
       </div>
       <div class="d-flex justify-content-between">
