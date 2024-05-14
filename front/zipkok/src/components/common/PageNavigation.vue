@@ -36,23 +36,33 @@ function onPageChange(pg) {
 </script>
 
 <template>
-  <div class="row">
-    <ul class="pagination justify-content-center">
-      <li class="page-item">
+  <div class="row m-0 p-0">
+    <ul class="pagination me-0 p-0 justify-content-end">
+      <!-- <li class="page-item">
         <a class="page-link" @click="onPageChange(1)">최신</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" @click="onPageChange(startPage == 1 ? 1 : startPage - 1)">이전</a>
-      </li>
+      </li> -->
+      <span class="page-item">
+        <button
+          class="page-link reverseButton"
+          @click="onPageChange(startPage == 1 ? 1 : startPage - 1)"
+        >
+          이전
+        </button>
+      </span>
       <template v-for="pg in range(startPage, endPage)" :key="pg">
-        <li :class="currentPage === pg ? 'page-item active' : 'page-item'">
-          <a class="page-link" @click="onPageChange(pg)">{{ pg }}</a>
-        </li>
+        <span :class="currentPage === pg ? 'page-item active' : 'page-item'">
+          <button class="page-link reverseButton" @click="onPageChange(pg)">{{ pg }}</button>
+        </span>
       </template>
-      <li class="page-item">
-        <a class="page-link" @click="onPageChange(endRange ? totalPage : endPage + 1)">다음</a>
-      </li>
-      <li class="page-item"><a class="page-link" @click="onPageChange(totalPage)">마지막</a></li>
+      <span class="page-item">
+        <button
+          class="page-link reverseButton"
+          @click="onPageChange(endRange ? totalPage : endPage + 1)"
+        >
+          다음
+        </button>
+      </span>
+      <!-- <li class="page-item"><a class="page-link" @click="onPageChange(totalPage)">마지막</a></li> -->
     </ul>
   </div>
 </template>
@@ -60,5 +70,9 @@ function onPageChange(pg) {
 <style scoped>
 a {
   cursor: pointer;
+}
+.page-link {
+  font-size: small;
+  font-weight: 400;
 }
 </style>

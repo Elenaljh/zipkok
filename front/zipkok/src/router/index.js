@@ -46,37 +46,35 @@ const router = createRouter({
     {
       path: "/board",
       name: "board",
-      component: () => import("@/views/BoardView.vue"),
-      redirect: { name: "article-list" },
+      component: () => import("../views/BoardView.vue"),
+      redirect: { name: "board-list" },
       children: [
         {
           path: "list",
-          name: "article-list",
+          name: "board-list",
           component: () => import("@/components/board/BoardList.vue"),
         },
         {
-          path: "view/:articleno",
-          name: "article-view",
+          path: "view/:boardId",
+          name: "board-view",
           component: () => import("@/components/board/BoardDetail.vue"),
         },
         {
           path: "write",
-          name: "article-write",
+          name: "board-write",
           component: () => import("@/components/board/BoardCreate.vue"),
         },
         {
-          path: "modify/:articleno",
-          name: "article-modify",
+          path: "modify/:boardId",
+          name: "board-modify",
           component: () => import("@/components/board/BoardUpdate.vue"),
         },
       ],
     },
     {
-      path:  "/house/:searchType/:searchValue",
-      alias: "/house",
+      path:  "/house",
       name: "house",
       component: HouseView,
-      props: true,
     },
     {
       path: "/det",

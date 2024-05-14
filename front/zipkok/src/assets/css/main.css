@@ -8,13 +8,17 @@ h2 {
   font-weight: 600;
 }
 
+/* 보통 크기 굵은 글씨 */
 .small-title {
   font-weight: 600;
 }
 
+/* 작은 크기 연회색 글씨 */
 .small-content {
   font-size: 0.8rem;
   color: gray;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* 버튼 색상 변경 1 - hover 색상 반전 */

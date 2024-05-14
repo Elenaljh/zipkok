@@ -7,13 +7,12 @@ import { useRoute, useRouter } from "vue-router";
 import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
 
-const priceTypeList = ["매매", "전/월세"];
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
 const childCompRef = ref(null);
-const searchType = ref(route.params.searchType ? route.params.searchType : 0);
-const searchValue = ref(route.params.searchValue ? route.params.searchValue : "");
+const searchType = ref(route.query.searchType ? route.query.searchType : 0);
+const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
 const searchBuildingValue = ref("");
 const houseId = ref(0);
 const priceType = ref(0);
@@ -81,7 +80,7 @@ watch(searchValue, () => {
   if (type == "main") {
     router.push({
       name: "house",
-      params: { searchType: searchType.value, searchValue: searchValue.value },
+      query: { searchType: searchType.value, searchValue: searchValue.value },
     });
   }
   getList();
@@ -99,7 +98,10 @@ const setHouseId = (id) => {
 </script>
 
 <template>
-  <div class="container me-0 mb-0 ms-3 mt-2" :style="{ 'max-width': '550px' }">
+  <div
+    class="container me-0 mb-0 ms-3 mt-2"
+    :style="{ 'min-width': '450px', 'max-width': '550px' }"
+  >
     <!-- 검색창 시작 -->
     <div class="mb-4 ms-1">
       <ul class="nav nav-underline">

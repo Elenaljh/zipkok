@@ -27,8 +27,15 @@ const NUMBER_FORMAT_REGX = /\B(?=(\d{3})+(?!\d))/g;
 const numberFormat = (value) => {
     return value.toString().replace(NUMBER_FORMAT_REGX, ',');
 }
-
+function dateFormat(target) {
+    let date = new Date(target);
+    let dateFormatString = date.getFullYear() +
+		'.' + ( (date.getMonth()+1) < 9 ? "0" + (date.getMonth()+1) : (date.getMonth()+1) )+
+		'.' + ( (date.getDate()) < 9 ? "0" + (date.getDate()) : (date.getDate()) );
+	return dateFormatString;
+}
 
 export {
-    moneyFormat
+    moneyFormat,
+    dateFormat,
 }
