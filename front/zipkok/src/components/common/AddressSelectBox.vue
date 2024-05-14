@@ -3,6 +3,8 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 
 const emit = defineEmits(["requestDataFromChild"]);
+const props = defineProps({ fullStyle: Object });
+const fullStyle = ref(props.fullStyle);
 
 const sido = ref([]);
 const sigungu = ref([]);
@@ -83,19 +85,24 @@ onMounted(() => {
 
 <template>
   <div class="w-100 d-flex justify-content-between">
-    <select class="form-select" v-model="sidoValue" @change="getSigungu">
+    <select class="form-select" :style="fullStyle" v-model="sidoValue" @change="getSigungu">
       <option value="">시/도</option>
       <option v-for="item in sido" :key="item.code" :value="item.code">
         {{ item.name }}
       </option>
     </select>
-    <select class="form-select ms-1" v-model="sigunguValue" @change="getDong">
+    <select class="form-select ms-1" :style="fullStyle" v-model="sigunguValue" @change="getDong">
       <option value="" selected>시/군/구</option>
       <option v-for="item in sigungu" :key="item.code" :value="item.code">
         {{ item.name.split(" ").slice(1).join(" ") }}
       </option>
     </select>
-    <select class="form-select ms-1" v-model="dongValue" @change="updateSelectedAddress">
+    <select
+      class="form-select ms-1"
+      :style="fullStyle"
+      v-model="dongValue"
+      @change="updateSelectedAddress"
+    >
       <option value="">동</option>
       <option v-for="item in dong" :key="item.code" :value="item.code">
         {{ item.name.split(" ").slice(2).join(" ") }}
