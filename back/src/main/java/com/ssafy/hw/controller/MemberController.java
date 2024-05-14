@@ -123,9 +123,20 @@ public class MemberController {
 		}
 	}
 
+	//회원인증
+	@GetMapping("/authorization")
+	public ResponseEntity<?> authorize(@SessionAttribute(name="loginMember", required = false) String email) {
+		if (email != null) {
+			return new ResponseEntity<String>("권한 있음", HttpStatus.OK);
+		} else {
+			return loginTimeout();
+		}
+	}
+
+
 
 	private ResponseEntity<String> loginTimeout() {
-		return new ResponseEntity<String>("다시 로그인하세요", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("다시 로그인하세요", HttpStatus.UNAUTHORIZED);
 	}
 
 
