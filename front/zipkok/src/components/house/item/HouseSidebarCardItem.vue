@@ -4,7 +4,7 @@ const { houseInfo } = defineProps({ houseInfo: Object });
 </script>
 
 <template>
-  <div class="p-0 me-4 mb-3 cardModalButton" style="width: 45%">
+  <div class="p-0 me-4 mb-3 cardModalButton" style="width: 40%">
     <img
       src="@/assets/houseSample.jpg"
       alt=""

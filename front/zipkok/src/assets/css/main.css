@@ -12,6 +12,11 @@ h2 {
   font-weight: 600;
 }
 
+.small-content {
+  font-size: 0.8rem;
+  color: gray;
+}
+
 /* 버튼 색상 변경 1 - hover 색상 반전 */
 button.reverseButton,
 button.reverseButton:focus {
@@ -97,6 +102,7 @@ textarea {
   border-radius: 10px !important;
 }
 
+/* 집 카드 */
 .cardModalButton {
   cursor: pointer;
   box-shadow: 4px 4px 2px 1px lightgray;
@@ -106,4 +112,23 @@ textarea {
 
 .cardModalButton:hover {
   box-shadow: 4px 4px 2px 1px #90e0ef;
+}
+
+/* 집 리스트 */
+.listModalButton {
+  cursor: pointer;
+  /* box-shadow: 4px 4px 2px 1px lightgray; */
+  box-shadow: 0px 4px 2px 1px lightgray;
+  /* border: 1px solid lightgray; */
+  border-radius: 10px;
+}
+
+.listModalButton:hover {
+  box-shadow: 0px 4px 2px 1px #90e0ef;
+}
+.listModalItem {
+  cursor: pointer;
+}
+.listModalItem:hover {
+  background-color: #caf0f8;
 }

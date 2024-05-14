@@ -5,7 +5,9 @@ import RouterButton from "@/components/common/RouterButton.vue";
 import AddressSelectBox from "@/components/common/AddressSelectBox.vue";
 import { useRoute, useRouter } from "vue-router";
 import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
+import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
 
+const priceTypeList = ["매매", "전/월세"];
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
@@ -14,6 +16,7 @@ const searchType = ref(route.params.searchType ? route.params.searchType : 0);
 const searchValue = ref(route.params.searchValue ? route.params.searchValue : "");
 const searchBuildingValue = ref("");
 const houseId = ref(0);
+const priceType = ref(0);
 const houseList = ref([
   {
     id: 1,
@@ -120,7 +123,11 @@ const setHouseId = (id) => {
         <!-- 지역 검색 -->
         <div v-if="searchType == 0">
           <div class="d-flex align-items-center">
-            <AddressSelectBox ref="childCompRef" @requestDataFromChild="receiveDataFromChild" />
+            <AddressSelectBox
+              ref="childCompRef"
+              @requestDataFromChild="receiveDataFromChild"
+              :fullStyle="{ width: 'fit-content' }"
+            />
           </div>
         </div>
         <!-- 건물명 검색 -->
@@ -134,7 +141,11 @@ const setHouseId = (id) => {
             v-model="searchBuildingValue"
           />
         </div>
-        <RouterButton buttonIcon="/src/assets/buttonSearch.png" :buttonFunc="callChildFunction" />
+        <RouterButton
+          buttonIcon="/src/assets/buttonSearch.png"
+          :buttonFunc="callChildFunction"
+          class="me-3"
+        />
       </div>
     </div>
     <!-- 검색창 끝 -->
@@ -157,19 +168,30 @@ const setHouseId = (id) => {
       </div>
       <!-- 추천 매물 끝 -->
       <!-- 검색 결과 시작 -->
-      <div v-else-if="type == 'house'">검색 결과</div>
+      <p class="small-title" v-if="type == 'house'">검색 결과</p>
+      <div v-if="type == 'house'" class="w-100 mt-2">
+        <HouseSidebarListItem
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          v-for="house in houseList"
+          :key="house"
+          :houseInfo="house"
+          :priceType="priceType"
+          @click="setHouseId(house.id)"
+        />
+      </div>
       <!-- 검색 결과 끝 -->
     </div>
     <!-- 결과 리스트 끝 -->
-    <!-- Button trigger modal -->
-    <button
+    <!-- 세부 정보 버튼(임시) -->
+    <!-- <button
       type="button"
       class="btn btn-primary"
       data-bs-toggle="modal"
       data-bs-target="#exampleModal"
     >
       Launch demo modal
-    </button>
+    </button> -->
     <!-- 세부 정보 모달 -->
     <div
       class="modal fade"
