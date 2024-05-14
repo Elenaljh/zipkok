@@ -1,8 +1,11 @@
 <script setup>
+import BoardFormItem from "./item/BoardFormItem.vue";
 </script>
 
 <template>
-  <div></div>
+  <div class="col-lg-10 text-start">
+    <BoardFormItem type="regist" />
+  </div>
 </template>
 
 <style scoped></style>
