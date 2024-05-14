@@ -39,35 +39,19 @@ const deleteAddress = (item) => {
     <form>
       <div class="mb-3">
         <label class="form-label">이름</label>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="이름을 입력하세요."
-        />
+        <input type="text" class="form-control" placeholder="이름을 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          placeholder="이메일을 입력하세요."
-        />
+        <input type="email" class="form-control" placeholder="이메일을 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
-        <input
-          type="password"
-          class="form-control"
-          placeholder="비밀번호를 입력하세요."
-        />
+        <input type="password" class="form-control" placeholder="비밀번호를 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">나이</label>
-        <input
-          type="number"
-          class="form-control"
-          placeholder="나이를 입력하세요."
-        />
+        <input type="number" class="form-control" placeholder="나이를 입력하세요." />
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
@@ -78,12 +62,7 @@ const deleteAddress = (item) => {
             v-for="item in user.preferedPlace"
             :key="item"
           >
-            <input
-              type="text"
-              class="form-control"
-              :placeholder="item"
-              readonly
-            />
+            <input type="text" class="form-control" :placeholder="item" readonly />
             <img
               class="ms-2"
               src="/src/assets/delete.png"
@@ -95,13 +74,10 @@ const deleteAddress = (item) => {
         </div>
 
         <div
-          class="d-flex align-items-center"
+          class="d-flex align-items-center justify-content-between"
           v-if="user.preferedPlace.length < 3"
         >
-          <AddressSelectBox
-            ref="childCompRef"
-            @requestDataFromChild="receiveDataFromChild"
-          />
+          <AddressSelectBox ref="childCompRef" @requestDataFromChild="receiveDataFromChild" />
           <img
             class="ms-2"
             src="/src/assets/add.png"
@@ -131,11 +107,7 @@ const deleteAddress = (item) => {
       >
         회원가입
       </button>
-      <button
-        type="button"
-        class="btn w-100 fw-bold"
-        style="border-color: lightgray"
-      >
+      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
         <img src="/src/assets/google_s.png" class="me-2" />
         Google로 시작하기
       </button>
