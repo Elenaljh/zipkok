@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- name space는 UserRepo의 fully qualified name으로 설정한다. -->
+<mapper namespace="com.ssafy.hw.model.dao.BoardDao">
+
+	<insert id="insertBoard" parameterType="BoardInsertDto">
+		insert into board(title, content, created_at, member_id, type, writer)
+		values(#{title},#{content},now(),#{memberId},#{type}, #{writer})
+	</insert>
+	
+	<select id="getBoard" parameterType="int" resultType="Board">
+		select * 
+		from board
+		where board_id=#{boardId} 
+	</select>
+
+	<!-- param으로 title, keyword, writer, type이 들어갈 예정 -->
+	<select id="search" parameterType="map" resultType="Board">
+		select board_id, title, content, created_at, member_id, type, writer, hit, boom
+		from board
+		<where>
+			<if test="key != null and key != '' and keyword != null and keyword != ''">
+				<if test="key == 'title'">
+					and title like concat('%',#{keyword},'%')
+				</if>
+				<if test="key =='title and content'">
+					and (title like concat('%',#{keyword},'%') or content like concat('%',#{keyword},'%'))
+				</if>
+				<if test="key == 'writer'">
+					and writer = #{keyword}
+				</if>
+			</if>
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getListByType" parameterType="int" resultType="Board">
+		select *
+		from board where type = #{type}
+	</select>
+	
+	<select id="selectAll" resultType="Board">
+		SELECT * FROM board
+	</select>
+	
+	<update id="updateBoard" parameterType="BoardUpdateDto">
+		update board
+		set title = #{title}, content = #{content}, type = #{type}
+		where board_id = #{boardId}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete from board
+		where board_id = #{boardId}
+	</delete>
+	
+	<update id="updateBoom" parameterType="int">
+		update board
+		set boom = boom + 1
+		where board_id = #{boardId}
+	</update>
+	
+	<update id="updateHit" parameterType="int">
+		update board
+		set hit = hit + 1
+		where board_id = #{boardId}
+	</update>
+
+</mapper>

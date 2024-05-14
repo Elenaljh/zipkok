@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- name space는 UserRepo의 fully qualified name으로 설정한다. -->
+<mapper namespace="com.ssafy.hw.model.dao.CommentDao">
+	<insert id="insertComment" parameterType="Comment">
+		insert into comment(content, board_id, member_id)
+		values (#{content}, #{boardId}, #{memberId})
+	</insert>
+	
+	<select id="getComments" parameterType="int" resultType="Comment">
+		select comment_id, content, board_id, u.member_id, name as writer
+		from comment c join user u using(member_id)
+		where board_id = #{boardId}
+	</select>
+	
+	<update id="updateComment" parameterType="Comment">
+		update comment
+		set content = #{content}
+		where comment_id = #{commentId}
+	</update>
+	
+	<delete id="deleteComment" parameterType="int">
+		delete from comment
+		where comment_id = #{commentId}
+	</delete>
+
+</mapper>
