@@ -68,12 +68,14 @@ const sendDataToParent = () => {
     address: selectedAddress.value,
     dongCode: dongValue.value,
   });
-  sidoValue.value = "";
-  sigunguValue.value = "";
-  dongValue.value = "";
-  selectedAddress.value = "";
-  sigungu.value = [];
-  dong.value = [];
+  if (dongValue.value) {
+    sidoValue.value = "";
+    sigunguValue.value = "";
+    dongValue.value = "";
+    selectedAddress.value = "";
+    sigungu.value = [];
+    dong.value = [];
+  }
 };
 
 defineExpose({ sendDataToParent }); //부모가 sendDataToParent를 호출할 수 있게 함

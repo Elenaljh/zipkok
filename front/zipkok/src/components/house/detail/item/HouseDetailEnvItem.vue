@@ -27,15 +27,11 @@ const air = ref([
     <!--녹지-->
     <div>
       <p style="font-size: large; font-weight: bold">
-        <span class="me-2">이 주변의</span
-        ><span style="color: green">공원</span>
+        <span class="me-2">이 주변의</span><span style="color: green">공원</span>
       </p>
       <div class="d-flex justify-content-between">
         <!--표-->
-        <div
-          class="table-responsive card"
-          style="width: 48%; max-height: 300px; overflow-y: auto"
-        >
+        <div class="table-responsive card" style="width: 48%; max-height: 300px; overflow-y: auto">
           <table class="table mb-0">
             <tbody>
               <tr v-for="item in parks" :key="item.name">
@@ -56,20 +52,14 @@ const air = ref([
     <!--대기배출-->
     <div>
       <p style="font-size: large; font-weight: bold">
-        <span class="me-2">이 지역</span
-        ><span style="color: dimgray">대기배출</span>
+        <span class="me-2">이 지역</span><span style="color: dimgray">대기배출</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in air" :key="item.address">
               <td style="padding-left: 20px">{{ item.address }}</td>
-              <td style="text-align: right; padding-right: 20px">
-                {{ item.amount }} kg/년
-              </td>
+              <td style="text-align: right; padding-right: 20px">{{ item.amount }} kg/년</td>
             </tr>
           </tbody>
         </table>
@@ -84,7 +74,7 @@ const air = ref([
   width: 10px;
 }
 .table-responsive.card::-webkit-scrollbar-thumb {
-  background: #f3f3f3;
+  background: #ade8f4;
   border-radius: 10px;
 }
 </style>
