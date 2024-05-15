@@ -6,6 +6,8 @@ import { useRouter } from "vue-router";
 export const useMemberStore = defineStore("member", () => {
   const router = useRouter();
 
+  const url = ref("http://localhost:8080");
+
   const login = (email, password) => {
     axios
       .post("/login", {
@@ -36,5 +38,6 @@ export const useMemberStore = defineStore("member", () => {
     redirectLogin,
     authorizationRequest,
     logout,
+    url,
   };
 });

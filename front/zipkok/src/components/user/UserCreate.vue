@@ -1,20 +1,54 @@
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import AddressSelectBox from "../common/AddressSelectBox.vue";
+import axios from "axios";
+import { useMemberStore } from "@/stores/member";
+const router = useRouter();
+const store = useMemberStore();
+const url = store.url;
 const user = ref({
   name: "",
   email: "",
   password: "",
   age: 0,
-  preferedPlace: [],
+  preferedPlace1: "",
+  preferedPlace2: "",
+  preferedPlace3: "",
   preferedType: "",
 });
 
-const buttonClick = () => {
+const preferedPlaceArr = ref([]);
+const fillUserForm = async () => {
+  for (let i = 0; i <= preferedPlaceArr.value.length; i++) {
+    if (i == 0) {
+      user.value.preferedPlace1 = preferedPlaceArr.value[i];
+    } else if (i == 1) {
+      user.value.preferedPlace2 = preferedPlaceArr.value[i];
+    } else if (i == 2) {
+      user.value.preferedPlace3 = preferedPlaceArr.value[i];
+    }
+  }
+  console.log("user");
+  console.log(user.value);
+};
+
+const buttonClick = async () => {
   //유효성 검사
   const valid = validation();
-  //axios 요청
-  alert(valid);
+  if (valid) {
+    await fillUserForm();
+    try {
+      const userPayload = JSON.parse(JSON.stringify(user.value)); // 반응형 데이터 복사
+      await axios.post(url + "/member", userPayload);
+      alert("회원가입 성공! 로그인하세요");
+      router.push({ name: "main" });
+    } catch (error) {
+      alert("회원가입 실패");
+    }
+  } else {
+    alert("회원가입폼을 다시 점검해주세요");
+  }
 };
 
 //공백 + 형식 유효성 검사
@@ -24,22 +58,21 @@ const validation = () => {
     userVal.name &&
     userVal.password &&
     userVal.age > 0 &&
-    userVal.preferedPlace.length > 0 &&
+    preferedPlaceArr.value.length > 0 &&
     userVal.preferedType &&
     validEmail.value &&
     validPassword.value
   ) {
-    alert("good");
     return true;
   } else {
-    alert("제대로 입력하시오");
     return false;
   }
 };
 
 //형식 유효성 검사
 const validateEmail = /^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\.[A-Za-z0-9\\-]+/;
-const validatePassword = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+const validatePassword =
+  /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
 const validEmail = computed(() => {
   return validateEmail.test(user.value.email);
 });
@@ -57,20 +90,20 @@ const callChildFunction = () => {
 const receiveDataFromChild = (data) => {
   console.log("데이터 수신 완료");
   if (data.address) {
-    if (user.value.preferedPlace.includes(data.address)) {
+    if (preferedPlaceArr.value.includes(data.address)) {
       alert("중복된 값입니다!");
       return;
     }
-    user.value.preferedPlace.push(data.address);
-    console.log(user.value.preferedPlace);
+    preferedPlaceArr.value.push(data.address);
+    console.log(preferedPlaceArr.value);
   }
 };
 
 const deleteAddress = (item) => {
-  user.value.preferedPlace = user.value.preferedPlace.filter((address) => {
+  preferedPlaceArr.value = preferedPlaceArr.value.filter((address) => {
     return address !== item;
   });
-  console.log(user.value.preferedPlace);
+  console.log(preferedPlaceArr.value);
 };
 
 const preferedTypeList = ref([
@@ -108,7 +141,9 @@ const preferedTypeList = ref([
           placeholder="이메일을 입력하세요."
           v-model="user.email"
         />
-        <div v-show="!user.email"><small style="color: red">이메일을 입력하세요</small></div>
+        <div v-show="!user.email">
+          <small style="color: red">이메일을 입력하세요</small>
+        </div>
         <div v-show="!validEmail && user.email">
           <small style="color: red">이메일을 정확히 입력하세요</small>
         </div>
@@ -121,9 +156,13 @@ const preferedTypeList = ref([
           placeholder="영문, 숫자, 특수문자를 조합하여 입력해주세요 (8-16자)"
           v-model="user.password"
         />
-        <div v-show="!user.password"><small style="color: red">비밀번호를 입력하세요</small></div>
+        <div v-show="!user.password">
+          <small style="color: red">비밀번호를 입력하세요</small>
+        </div>
         <div v-show="!validPassword && user.password">
-          <small style="color: red">영문, 숫자, 특수문자를 조합하여 입력해주세요 (8-16자)</small>
+          <small style="color: red"
+            >영문, 숫자, 특수문자를 조합하여 입력해주세요 (8-16자)</small
+          >
         </div>
       </div>
       <div class="mb-3">
@@ -134,18 +173,25 @@ const preferedTypeList = ref([
           placeholder="나이를 입력하세요."
           v-model.number="user.age"
         />
-        <small v-show="user.age <= 0" style="color: red">나이를 입력하세요</small>
+        <small v-show="user.age <= 0" style="color: red"
+          >나이를 입력하세요</small
+        >
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
         <!--셀렉트박스-->
-        <div v-show="user.preferedPlace.length > 0">
+        <div v-show="preferedPlaceArr.length > 0">
           <div
             class="d-flex align-items-center mb-2"
-            v-for="item in user.preferedPlace"
+            v-for="item in preferedPlaceArr"
             :key="item"
           >
-            <input type="text" class="form-control" :placeholder="item" readonly />
+            <input
+              type="text"
+              class="form-control"
+              :placeholder="item"
+              readonly
+            />
             <img
               class="ms-2"
               src="/src/assets/delete.png"
@@ -158,9 +204,12 @@ const preferedTypeList = ref([
 
         <div
           class="d-flex align-items-center justify-content-between"
-          v-show="user.preferedPlace.length < 3"
+          v-if="preferedPlaceArr.length < 3"
         >
-          <AddressSelectBox ref="childCompRef" @requestDataFromChild="receiveDataFromChild" />
+          <AddressSelectBox
+            ref="childCompRef"
+            @requestDataFromChild="receiveDataFromChild"
+          />
           <img
             class="ms-2"
             src="/src/assets/add.png"
@@ -170,7 +219,7 @@ const preferedTypeList = ref([
           />
         </div>
         <!--셀렉트박스 끝-->
-        <small v-show="user.preferedPlace.length < 1" style="color: red"
+        <small v-show="preferedPlaceArr.length < 1" style="color: red"
           >선호지역을 한 곳 이상 입력하세요</small
         >
       </div>
@@ -178,11 +227,17 @@ const preferedTypeList = ref([
         <label class="form-label">거주지 선정 기준</label>
         <select class="form-select" v-model="user.preferedType">
           <option selected disabled>선정 기준을 고르세요</option>
-          <option v-for="item in preferedTypeList" :key="item.value" :value="item.text">
+          <option
+            v-for="item in preferedTypeList"
+            :key="item.value"
+            :value="item.text"
+          >
             {{ item.text }}
           </option>
         </select>
-        <small v-show="!user.preferedType" style="color: red">선호기준을 선택하세요</small>
+        <small v-show="!user.preferedType" style="color: red"
+          >선호기준을 선택하세요</small
+        >
       </div>
       <button
         type="button"
@@ -192,7 +247,11 @@ const preferedTypeList = ref([
       >
         회원가입
       </button>
-      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
+      <button
+        type="button"
+        class="btn w-100 fw-bold"
+        style="border-color: lightgray"
+      >
         <img src="/src/assets/google_s.png" class="me-2" />
         Google로 시작하기
       </button>

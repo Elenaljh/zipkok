@@ -27,7 +27,7 @@ const router = createRouter({
           component: () => import("@/components/user/UserModify.vue"),
         },
         {
-          path: "detail/:userid",
+          path: "detail",
           name: "userDetail",
           component: () => import("@/components/user/UserDetail.vue"),
         },
@@ -72,7 +72,7 @@ const router = createRouter({
       ],
     },
     {
-      path:  "/house",
+      path: "/house",
       name: "house",
       component: HouseView,
     },

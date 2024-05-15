@@ -1,19 +1,33 @@
 <script setup>
-import { ref } from "vue";
+import axios from "axios";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-
-const user = ref({
-  name: "김싸피",
-  email: "ssafyhouse@gmail.com",
-  password: "password",
-  age: 24,
-  preferedPlace: [
-    "대구광역시 수성구 만촌동",
-    "서울특별시 동작구 사당동",
-    "경상북도 구미시 진평동",
-  ],
-  preferedType: "녹지",
+import { useMemberStore } from "@/stores/member";
+axios.defaults.withCredentials = true;
+onMounted(async () => {
+  try {
+    const response = await axios.get(useMemberStore().url + "/member");
+    user.value = await response.data;
+    await pushList(user.value);
+    console.log(user.value);
+  } catch (error) {
+    alert("조회 실패");
+  }
 });
+const user = ref({});
+const preferedPlaceArr = ref([]);
+const pushList = async (member) => {
+  if (member.preferedPlace1) {
+    preferedPlaceArr.value.push(member.preferedPlace1);
+  }
+  if (member.preferedPlace2) {
+    preferedPlaceArr.value.push(member.preferedPlace2);
+  }
+  if (member.preferedPlace3) {
+    preferedPlaceArr.value.push(member.preferedPlace3);
+  }
+};
+
 const router = useRouter();
 const goModify = () => {
   router.push({ path: "/user/modify" });
@@ -53,7 +67,7 @@ const goModify = () => {
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
-        <div v-for="item in user.preferedPlace" :key="item">
+        <div v-for="item in preferedPlaceArr" :key="item">
           <input
             type="text"
             class="form-control mb-1"
