@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = {"*"} ,allowCredentials = "true")
 public class MemberController {
 	private final MemberService service;
 
