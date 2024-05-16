@@ -1,43 +1,55 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useCookies } from "vue3-cookies";
+import { useMemberStore } from "@/stores/member";
+import axios from "axios";
+import { useRouter } from "vue-router";
+
+const store = useMemberStore();
+const url = store.url;
+const router = useRouter();
 
 const loginInfo = ref({
-  memberId: "",
+  email: "",
   password: "",
 });
 const rememberMe = ref(false);
 const { cookies } = useCookies();
-const buttonClick = () => {
+const buttonClick = async () => {
   // 유효성 검사
   const valid = validation();
 
   if (valid) {
-    alert("유효성 검사 통과");
-    alert(rememberMe.value);
+    // alert("유효성 검사 통과");
+    // alert(rememberMe.value);
 
     //axios 요청
-
-    //로그인 성공시 then에서 쿠키 설정
-    setCookie();
+    try {
+      await axios.post(url + "/login", loginInfo.value, {
+        withCredentials: true,
+      });
+      //로그인 성공시 then에서 쿠키 설정
+      setCookie();
+      store.login();
+      // alert("로그인 성공");
+      try {
+        router.go(-1);
+      } catch (error) {
+        router.push({ name: "home" });
+      }
+    } catch (error) {
+      alert("로그인 실패");
+    }
   }
 };
 
-const cookieConfig = {
-  expireTimes: "10d",
-  path: "/user/login",
-  domain: "",
-  secure: false, // HTTPS가 아닌 경우 false로 설정하세요.
-  sameSite: "Lax",
-  partitioned: false,
-};
 // 쿠키 설정
 const setCookie = () => {
   // const cookies = useCookies();
   if (rememberMe.value) {
     // const cookies = useCookies();
-    console.log("아이디 기억하기");
-    cookies.set("rememberMe", loginInfo.value.memberId, "10d");
+    console.log("이메일 기억하기");
+    cookies.set("rememberMe", loginInfo.value.email, "10d");
     console.log(cookies);
   } else {
     console.log("쿠키 삭제");
@@ -45,14 +57,14 @@ const setCookie = () => {
   }
 };
 
-// 쿠키 가져오기 및 아이디 창에 설정
+// 쿠키 가져오기 및 이메일 창에 설정
 onMounted(() => {
   try {
     const { cookies } = useCookies();
     let cookieValue = cookies.get("rememberMe");
     console.log("쿠키값: " + cookieValue);
     if (cookieValue) {
-      loginInfo.value.memberId = cookieValue;
+      loginInfo.value.email = cookieValue;
     }
   } catch (e) {
     console.log(e);
@@ -62,10 +74,10 @@ onMounted(() => {
 // 유효성 검사
 const validation = () => {
   let info = loginInfo.value;
-  if (!info.memberId && !info.password) {
+  if (!info.email && !info.password) {
     alert("정보를 입력하세요");
-  } else if (!info.memberId) {
-    alert("아이디를 입력하세요");
+  } else if (!info.email) {
+    alert("이메일을 입력하세요");
   } else if (!info.password) {
     alert("비밀번호를 입력하세요");
   } else {
@@ -79,7 +91,9 @@ const validation = () => {
   <div class="m-5 w-25">
     <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">로그인</h3>
-    <p class="text-center" style="color: #707070">HelpHome에 오신 것을 환영합니다!</p>
+    <p class="text-center" style="color: #707070">
+      HelpHome에 오신 것을 환영합니다!
+    </p>
     <form>
       <div class="mb-3">
         <label class="form-label">이메일</label>
@@ -87,7 +101,7 @@ const validation = () => {
           type="email"
           class="form-control"
           placeholder="이메일을 입력하세요."
-          v-model="loginInfo.memberId"
+          v-model="loginInfo.email"
         />
       </div>
       <div class="mb-3">
@@ -108,7 +122,9 @@ const validation = () => {
             id="flexCheckDefault"
             v-model="rememberMe"
           />
-          <label class="form-check-label" for="flexCheckDefault"> 아이디 기억하기 </label>
+          <label class="form-check-label" for="flexCheckDefault">
+            이메일 기억하기
+          </label>
         </div>
         <router-link
           style="color: #00b4d8; font-weight: bold; text-decoration-line: none"
@@ -124,7 +140,11 @@ const validation = () => {
       >
         로그인
       </button>
-      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
+      <button
+        type="button"
+        class="btn w-100 fw-bold"
+        style="border-color: lightgray"
+      >
         <img src="/src/assets/google_s.png" class="me-2" />
         Google로 로그인
       </button>

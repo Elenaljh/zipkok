@@ -3,7 +3,9 @@ package com.ssafy.hw.controller;
 import com.ssafy.hw.model.dto.LoginDto;
 import com.ssafy.hw.model.dto.Member;
 import com.ssafy.hw.model.service.MemberService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = {"*"} ,allowCredentials = "true")
 public class MemberController {
 	private final MemberService service;
 
@@ -76,7 +78,7 @@ public class MemberController {
 
 	//회원 탈퇴
 	@DeleteMapping("/member")
-	public ResponseEntity<?> deleteMember(@SessionAttribute(name="loginMember", required = false) String email, HttpServletRequest request) {
+	public ResponseEntity<?> deleteMember(@SessionAttribute(name="loginMember", required = false) String email, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			if (email == null) return loginTimeout();
 			service.deleteMember(email);
@@ -84,6 +86,11 @@ public class MemberController {
 			if(session != null) {
 				session.invalidate();
 			}
+			// JSESSIONID 쿠키 삭제
+			Cookie cookie = new Cookie("JSESSIONID", null);
+			cookie.setPath("/");
+			cookie.setMaxAge(0);
+			response.addCookie(cookie);
 			return new ResponseEntity<String>("회원탈퇴 완료", HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -111,21 +118,37 @@ public class MemberController {
 
 	//로그아웃
 	@GetMapping("/logout")
-	public ResponseEntity<?> logout(@SessionAttribute(name="loginMember", required = false) String email, HttpServletRequest request) {
+	public ResponseEntity<?> logout(@SessionAttribute(name="loginMember", required = false) String email, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			HttpSession session = request.getSession(false);  // Session이 없으면 null return
 			if(session != null) {
 				session.invalidate();
 			}
+			// JSESSIONID 쿠키 삭제
+			Cookie cookie = new Cookie("JSESSIONID", null);
+			cookie.setPath("/");
+			cookie.setMaxAge(0);
+			response.addCookie(cookie);
 			return new ResponseEntity<String>("로그아웃 완료", HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
 	}
 
+	//회원인증
+	@GetMapping("/authorization")
+	public Boolean authorize(@SessionAttribute(name="loginMember", required = false) String email) {
+		if (email != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
 
 	private ResponseEntity<String> loginTimeout() {
-		return new ResponseEntity<String>("다시 로그인하세요", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("다시 로그인하세요", HttpStatus.UNAUTHORIZED);
 	}
 
 
