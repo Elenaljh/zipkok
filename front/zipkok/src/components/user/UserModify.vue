@@ -5,7 +5,6 @@ import { useMemberStore } from "@/stores/member";
 import axios from "axios";
 
 const url = useMemberStore().url;
-// axios.defaults.withCredentials = true;
 onMounted(async () => {
   try {
     const response = await axios.get(useMemberStore().url + "/member", {

@@ -3,7 +3,6 @@ import { ref, onMounted } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
-axios.defaults.withCredentials = true;
 
 const store = useMemberStore();
 const url = store.url;
@@ -24,7 +23,9 @@ const buttonClick = () => {
 
     //axios 요청
     try {
-      axios.post(url + "/login", loginInfo.value);
+      axios.post(url + "/login", loginInfo.value, {
+        withCredentials: true,
+      });
       //로그인 성공시 then에서 쿠키 설정
       setCookie();
       alert("로그인 성공");

@@ -3,10 +3,11 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/member";
-axios.defaults.withCredentials = true;
 onMounted(async () => {
   try {
-    const response = await axios.get(useMemberStore().url + "/member");
+    const response = await axios.get(useMemberStore().url + "/member", {
+      withCredentials: true,
+    });
     user.value = await response.data;
     await pushList(user.value);
     console.log(user.value);
@@ -25,6 +26,19 @@ const pushList = async (member) => {
   }
   if (member.preferedPlace3) {
     preferedPlaceArr.value.push(member.preferedPlace3);
+  }
+};
+
+const Withdrawal = async () => {
+  if (confirm("정말 탈퇴하시겠습니까?")) {
+    try {
+      await axios.delete(useMemberStore().url + "/member", {
+        withCredentials: true,
+      });
+      alert("회원탈퇴 성공");
+    } catch {
+      alert("회원탈퇴 실패");
+    }
   }
 };
 
@@ -90,6 +104,7 @@ const goModify = () => {
           type="button"
           class="btn text-white fw-bold"
           style="background-color: #707070; width: 48%"
+          @click="Withdrawal"
         >
           회원 탈퇴
         </button>
