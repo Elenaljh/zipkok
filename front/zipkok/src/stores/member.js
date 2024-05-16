@@ -35,6 +35,12 @@ export const useMemberStore = defineStore(
       isAuthorized.value = false;
     };
 
+    const parsedVal = () => {
+      const data = localStorage.getItem("member");
+      const parsedData = JSON.parse(data);
+      return parsedData.isAuthorized;
+    };
+
     return {
       redirectLogin,
       authorizationRequest,
@@ -42,9 +48,10 @@ export const useMemberStore = defineStore(
       isAuthorized,
       login,
       logout,
+      parsedVal,
     };
+  },
+  {
+    persist: true,
   }
-  // {
-  //   persist: true,
-  // }
 );

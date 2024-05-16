@@ -3,9 +3,11 @@ import { ref, onMounted } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 const store = useMemberStore();
 const url = store.url;
+const router = useRouter();
 
 const loginInfo = ref({
   email: "",
@@ -18,8 +20,8 @@ const buttonClick = async () => {
   const valid = validation();
 
   if (valid) {
-    alert("유효성 검사 통과");
-    alert(rememberMe.value);
+    // alert("유효성 검사 통과");
+    // alert(rememberMe.value);
 
     //axios 요청
     try {
@@ -29,8 +31,12 @@ const buttonClick = async () => {
       //로그인 성공시 then에서 쿠키 설정
       setCookie();
       store.login();
-      console.log("isAuthorized: " + store.isAuthorized.valueOf);
-      alert("로그인 성공");
+      // alert("로그인 성공");
+      try {
+        router.go(-1);
+      } catch (error) {
+        router.push({ name: "home" });
+      }
     } catch (error) {
       alert("로그인 실패");
     }
@@ -85,7 +91,9 @@ const validation = () => {
   <div class="m-5 w-25">
     <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">로그인</h3>
-    <p class="text-center" style="color: #707070">HelpHome에 오신 것을 환영합니다!</p>
+    <p class="text-center" style="color: #707070">
+      HelpHome에 오신 것을 환영합니다!
+    </p>
     <form>
       <div class="mb-3">
         <label class="form-label">이메일</label>
@@ -114,7 +122,9 @@ const validation = () => {
             id="flexCheckDefault"
             v-model="rememberMe"
           />
-          <label class="form-check-label" for="flexCheckDefault"> 이메일 기억하기 </label>
+          <label class="form-check-label" for="flexCheckDefault">
+            이메일 기억하기
+          </label>
         </div>
         <router-link
           style="color: #00b4d8; font-weight: bold; text-decoration-line: none"
@@ -130,7 +140,11 @@ const validation = () => {
       >
         로그인
       </button>
-      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
+      <button
+        type="button"
+        class="btn w-100 fw-bold"
+        style="border-color: lightgray"
+      >
         <img src="/src/assets/google_s.png" class="me-2" />
         Google로 로그인
       </button>

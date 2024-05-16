@@ -3,8 +3,10 @@ import { ref, computed, onMounted } from "vue";
 import AddressSelectBox from "../common/AddressSelectBox.vue";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 const url = useMemberStore().url;
+const router = useRouter();
 onMounted(async () => {
   try {
     const response = await axios.get(useMemberStore().url + "/member", {
@@ -43,6 +45,7 @@ const buttonClick = async () => {
         withCredentials: true,
       });
       alert("회원정보 수정 완료");
+      router.push({ name: "userDetail" });
     } catch (error) {
       alert("회원정보 수정 실패");
     }
@@ -76,10 +79,10 @@ const validation = () => {
     userVal.preferedType &&
     validPassword.value
   ) {
-    alert("good");
+    // alert("good");
     return true;
   } else {
-    alert("제대로 입력하시오");
+    alert("수정 폼을 확인해주세요");
     return false;
   }
 };
