@@ -13,7 +13,7 @@ const loginInfo = ref({
 });
 const rememberMe = ref(false);
 const { cookies } = useCookies();
-const buttonClick = () => {
+const buttonClick = async () => {
   // 유효성 검사
   const valid = validation();
 
@@ -23,11 +23,13 @@ const buttonClick = () => {
 
     //axios 요청
     try {
-      axios.post(url + "/login", loginInfo.value, {
+      await axios.post(url + "/login", loginInfo.value, {
         withCredentials: true,
       });
       //로그인 성공시 then에서 쿠키 설정
       setCookie();
+      store.login();
+      console.log("isAuthorized: " + store.isAuthorized.valueOf);
       alert("로그인 성공");
     } catch (error) {
       alert("로그인 실패");
@@ -83,9 +85,7 @@ const validation = () => {
   <div class="m-5 w-25">
     <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">로그인</h3>
-    <p class="text-center" style="color: #707070">
-      HelpHome에 오신 것을 환영합니다!
-    </p>
+    <p class="text-center" style="color: #707070">HelpHome에 오신 것을 환영합니다!</p>
     <form>
       <div class="mb-3">
         <label class="form-label">이메일</label>
@@ -114,9 +114,7 @@ const validation = () => {
             id="flexCheckDefault"
             v-model="rememberMe"
           />
-          <label class="form-check-label" for="flexCheckDefault">
-            이메일 기억하기
-          </label>
+          <label class="form-check-label" for="flexCheckDefault"> 이메일 기억하기 </label>
         </div>
         <router-link
           style="color: #00b4d8; font-weight: bold; text-decoration-line: none"
@@ -132,11 +130,7 @@ const validation = () => {
       >
         로그인
       </button>
-      <button
-        type="button"
-        class="btn w-100 fw-bold"
-        style="border-color: lightgray"
-      >
+      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
         <img src="/src/assets/google_s.png" class="me-2" />
         Google로 로그인
       </button>

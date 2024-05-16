@@ -137,11 +137,11 @@ public class MemberController {
 
 	//회원인증
 	@GetMapping("/authorization")
-	public ResponseEntity<?> authorize(@SessionAttribute(name="loginMember", required = false) String email) {
+	public Boolean authorize(@SessionAttribute(name="loginMember", required = false) String email) {
 		if (email != null) {
-			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			return true;
 		} else {
-			return new ResponseEntity<Boolean>(false, HttpStatus.UNAUTHORIZED);
+			return false;
 		}
 	}
 

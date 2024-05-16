@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainView from "../views/MainView.vue";
 import UserView from "@/views/UserView.vue";
 import HouseView from "@/views/HouseView.vue";
+import { useMemberStore } from "@/stores/member";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,11 +21,22 @@ const router = createRouter({
           path: "create",
           name: "createUser",
           component: () => import("@/components/user/UserCreate.vue"),
+          beforeEnter: (to, from) => {
+            if (localStorage.getItem("member").isAuthorized) {
+              console("인증 여부: " + localStorage.getItem("member").isAuthorized);
+              router.push(from);
+            }
+          },
         },
         {
           path: "modify",
           name: "modifyUser",
           component: () => import("@/components/user/UserModify.vue"),
+          beforeEnter: (from) => {
+            if (!useMemberStore().isAuthorized) {
+              router.push(from);
+            }
+          },
         },
         {
           path: "detail",
@@ -82,6 +94,12 @@ const router = createRouter({
       component: () => import("@/components/house/detail/HouseDetail.vue"),
     },
   ],
+});
+
+router.beforeEach((to, from) => {
+  const store = useMemberStore();
+  store.authorizationRequest();
+  console.log(store.isAuthorized);
 });
 
 export default router;
