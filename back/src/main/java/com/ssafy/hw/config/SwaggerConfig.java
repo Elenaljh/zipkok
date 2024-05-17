@@ -18,8 +18,8 @@ public class SwaggerConfig {
  
     private Info apiInfo() {
         return new Info()
-                .title("SSAFY 사용자 관리 API")
-                .description("<h3>워크샵에서 사용되는 RestApi에 대한 문서를 제공한다.</h3>")
+                .title("ZIPKOK API")
+                .description("<h3>집콕 api 문서</h3>")
                 .version("1.0.0");
     }
 }
