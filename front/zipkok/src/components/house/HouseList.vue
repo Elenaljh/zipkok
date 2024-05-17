@@ -18,7 +18,7 @@ const houseId = ref(0);
 const priceType = ref(0);
 const houseList = ref([
   {
-    id: 1,
+    id: "APT4719033080250018000001",
     name: "남경앳홈비앙채",
     sido: "경상북도",
     sigungu: "구미시",
@@ -26,7 +26,7 @@ const houseList = ref([
     averagePrice: 150000000,
   },
   {
-    id: 2,
+    id: "APT4711123030030147000401",
     name: "Happy Home",
     sido: "경상북도",
     sigungu: "구미시",
@@ -34,7 +34,7 @@ const houseList = ref([
     averagePrice: 150000000,
   },
   {
-    id: 3,
+    id: "APT4711123030030154000001",
     name: "와이드빌",
     sido: "경상북도",
     sigungu: "구미시",
@@ -42,7 +42,7 @@ const houseList = ref([
     averagePrice: 180000000,
   },
   {
-    id: 4,
+    id: "APT4719033080270092000001",
     name: "삼성전자",
     sido: "경상북도",
     sigungu: "구미시",
