@@ -23,9 +23,10 @@ public class NewsController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<?> searchNews(@RequestParam("keyword") String keyword) {
+	public ResponseEntity<?> searchNews(@RequestParam("keyword") String keyword, @RequestParam(value="dong", required=false) String dong) {
 		try {
-			List<NewsDto> list = newsService.searchNews(keyword);
+			System.out.println("keyword="+keyword+", dong="+dong);
+			List<NewsDto> list = newsService.searchNews(keyword, dong);
 			return new ResponseEntity<List<NewsDto>>(list, HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);

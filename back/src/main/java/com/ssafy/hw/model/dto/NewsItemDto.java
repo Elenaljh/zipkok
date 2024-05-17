@@ -20,6 +20,8 @@ public class NewsItemDto {
     private String link;
     @JsonSetter("description")
     private String description;
+    @JsonSetter("pubDate")
+    private String pubDate;
 
     public NewsDto toNewsResponseDto(JsoupCrawling jsoupCrawling) {
         String query = "#contents img";
@@ -30,12 +32,14 @@ public class NewsItemDto {
                 .title(title)
                 .link(link)
                 .detail(description)
+                .pubDate(pubDate)
                 .build();
         }
         return NewsDto.builder()
             .title(title)
             .link(link)
             .detail(description)
+            .pubDate(pubDate)
             .build();
     }
 
