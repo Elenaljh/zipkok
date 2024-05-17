@@ -3,8 +3,9 @@ import HouseDetailBasicItem from "@/components/house/detail/item/HouseDetailBasi
 import HouseDetailEnvItemVue from "@/components/house/detail/item/HouseDetailEnvItem.vue";
 import HouseDetailFacItemVue from "@/components/house/detail/item/HouseDetailFacItem.vue";
 import HouseDetailRecItemVue from "@/components/house/detail/item/HouseDetailRecItem.vue";
-import { ref } from "vue";
-const { houseId } = defineProps({ houseId: Number });
+import { ref, defineProps } from "vue";
+const { houseId } = defineProps({ houseId: String });
+
 const houseInfo = ref({
   id: 1,
   name: "남경앳홈비앙채",
