@@ -23,7 +23,8 @@ export const useMemberStore = defineStore(
         });
         isAuthorized.value = response.data;
       } catch (error) {
-        redirectLogin();
+        // redirectLogin();
+        console.log(error);
       }
     };
 
