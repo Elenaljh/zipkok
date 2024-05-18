@@ -6,7 +6,9 @@ import AddressSelectBox from "@/components/common/AddressSelectBox.vue";
 import { useRoute, useRouter } from "vue-router";
 import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
+import { useHouseStore } from "@/stores/house";
 
+const store = useHouseStore();
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
@@ -14,7 +16,7 @@ const childCompRef = ref(null);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
 const searchBuildingValue = ref("");
-const houseId = ref(0);
+const houseId = ref("0");
 const priceType = ref(0);
 const houseList = ref([
   {
@@ -72,7 +74,9 @@ const receiveDataFromChild = (data) => {
 };
 
 const getList = () => {
-  console.log(searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기");
+  console.log(
+    searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기"
+  );
 };
 
 watch(searchValue, () => {
@@ -93,6 +97,7 @@ onMounted(() => {
 
 const setHouseId = (id) => {
   console.log("setHouseId=" + id);
+  store.changeId(id);
   houseId.value = id;
 };
 </script>
@@ -115,7 +120,10 @@ const setHouseId = (id) => {
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link boardNav" :class="{ active: searchType == 1 }" @click="changeTab(1)"
+          <a
+            class="nav-link boardNav"
+            :class="{ active: searchType == 1 }"
+            @click="changeTab(1)"
             >건물명</a
           >
         </li>
@@ -133,7 +141,10 @@ const setHouseId = (id) => {
           </div>
         </div>
         <!-- 건물명 검색 -->
-        <div class="w-100 d-flex align-items-center me-5" v-if="searchType == 1">
+        <div
+          class="w-100 d-flex align-items-center me-5"
+          v-if="searchType == 1"
+        >
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"
