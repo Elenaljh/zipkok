@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- name space는 UserRepo의 fully qualified name으로 설정한다. -->
+<mapper namespace="com.ssafy.hw.model.dao.AptListDao">
+
+
+	<!--법정동코드로 아파트 검색-->
+	<select id="getAptsByDong" parameterType="string" resultType="AptItemDto">
+		select * from apt_info 
+		where bjd_code = #{dong}
+	</select>
+	<!--아파트 이름으로 아파트 검색-->
+	<select id="getAptsByName" parameterType="hashmap" resultType="AptItemDto">
+		select * from apt_info 
+		<if test="matchOption == null or matchOption == 'exact'">
+			where apt_name = #{name}
+		</if>
+		<if test = "matchOption == 'like'">
+			where apt_name like concat('%', #{name}, '%')
+		</if>
+	</select>
+	<!--위도경도 범위로 아파트 검색-->
+	<select id="getAptsByLatLngs" parameterType="hashmap" resultType="AptItemDto">
+		select * from apt_info
+		<if test="slat != null and slng != null and elat != null and elng != null">
+			where lat between #{slat} and #{elat}
+			and lng between #{slng} and #{elng}
+		</if>
+	</select>
+	<!--추천 매물 검색-->
+	<select id="getRecAptsByPfp" parameterType="hashmap" resultType="AptItemDto">
+	    <!-- UNION으로 결과 결합 -->
+	    <if test="pfp1 != null or pfp2 != null or pfp3 != null">
+	        (
+	        <if test="pfp1 != null">
+	        	(
+	            select * from apt_info where bjd_code=#{pfp1} limit #{pfp1_cnt}
+	            ) 
+	            <if test="pfp2 != null or pfp3 != null">UNION</if>
+	        </if>
+	        <if test="pfp2 != null">
+	            (
+	            select * from apt_info where bjd_code=#{pfp2} limit #{pfp2_cnt} 
+	            )
+	            <if test="pfp3 != null">UNION</if>
+	        </if>
+	        <if test="pfp3 != null">
+	        	(
+	        	select * from apt_info where bjd_code=#{pfp3} limit #{pfp3_cnt}
+	        	)
+	        </if>
+	        )
+	    </if>
+	</select>
+	
+	<select id="getRecAptsByLoc" parameterType="hashmap" resultType="AptItemDto">
+	    <if test="lng != null or lat != null or loc_cnt != null">
+	        SELECT *, ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(lng, lat)) as distance 
+			from apt_info
+			order by distance
+			limit #{loc_cnt};
+	    </if>
+	</select>
+
+</mapper>
