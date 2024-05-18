@@ -1,5 +1,20 @@
 package com.ssafy.hw.model.dto;
 
-public class AptItemDto {
+import lombok.Data;
 
+@Data
+public class AptItemDto {
+	String aptCode;
+	String aptName;
+	String drmAddress;
+	String bjdCode;
+	int houseNum;
+	int buildYear;
+	int dongNum;
+	int carNum;
+	int cctvNum;
+	double lng, lat;
+	String aptType;
+	String facility;
+	String aptAnotherCode;
 }
