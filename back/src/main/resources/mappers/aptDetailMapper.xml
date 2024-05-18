@@ -3,42 +3,21 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- name space는 UserRepo의 fully qualified name으로 설정한다. -->
 <mapper namespace="com.ssafy.hw.model.dao.AptDetailDao">
-
-	<!--회원가입-->
-	<insert id="insertMember" parameterType="Member">
-		insert into member(email, password, name, registered_at, age, prefered_place_1, prefered_place_2, prefered_place_3, prefered_type)
-		values (#{email}, #{password}, #{name}, now(), #{age}, #{preferedPlace1}, #{preferedPlace2}, #{preferedPlace3}, #{preferedType})
-	</insert>
-
-	<!--회원조회-->
-	<select id="selectMember" parameterType="string" resultType="Member">
-		select *
-		from member where email = #{email}
+	<select id="searchDetailByCode" parameterType="string" resultType="AptDetail">
+		select * from apt_info where apt_code = #{aptCode}
 	</select>
 
-	<select id="loginMember" parameterType="string" resultType="Member">
-		select *
-		from member where email = #{email} and password = #{password}
+	<select id="searchTransactionByCode" parameterType="string" resultType="AptTransaction">
+		select * from transaction_real where apt_code = #{aptCode} and type = #{type} order by year desc, month desc, day desc
 	</select>
 
-	<!-- 회원 수정 -->
-	<update id="updateMember" parameterType="Member">
-		update member
-		set
-			password = #{password},
-			name = #{name},
-			age = #{age},
-			prefered_place_1 = #{preferedPlace1},
-			prefered_place_2 = #{preferedPlace2},
-			prefered_place_3 = #{preferedPlace3},
-			prefered_type = #{preferedType}
-		where email = #{email}
-	</update>
-
-	<!-- 회원 탈퇴 -->
-	<delete id="deleteMember" parameterType="string">
-		delete from member
-		where email = #{email}
-	</delete>
-
+	<select id="searchTransactionByName" parameterType="string" resultType="AptTransaction">
+		select * from transaction_real where apt_name = #{aptName} and type = #{type} order by year desc, month desc, day desc
+	</select>
+	
+	<select id="getAverage" parameterType="string" resultType="PriceAvgDto">
+		select avg(amount) amount, avg(deposit) deposit, avg(monthly_rent) monthlyRent
+		from transaction_real
+		where apt_code = #{aptCode} and type = #{type};
+	</select>
 </mapper>

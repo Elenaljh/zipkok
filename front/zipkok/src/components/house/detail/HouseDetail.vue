@@ -2,22 +2,24 @@
 import HouseDetailBasicItem from "@/components/house/detail/item/HouseDetailBasicItem.vue";
 import HouseDetailEnvItemVue from "@/components/house/detail/item/HouseDetailEnvItem.vue";
 import HouseDetailFacItemVue from "@/components/house/detail/item/HouseDetailFacItem.vue";
-import HouseDetailRecItemVue from "@/components/house/detail/item/HouseDetailRecItem.vue";
-import { ref, defineProps } from "vue";
-const { houseId } = defineProps({ houseId: String });
+import { ref, watchEffect } from "vue";
+import { useMemberStore } from "@/stores/member";
+import { useHouseStore } from "@/stores/house";
+import axios from "axios";
 
-const houseInfo = ref({
-  id: 1,
-  name: "남경앳홈비앙채",
-  sido: "경상북도",
-  sigungu: "구미시",
-  dong: "진평동",
-  roadAddress: "경상북도 구미시 삼일로 18",
-  averagePrice: 150000000,
-  numOfDong: 1,
-  numOfHouseHolds: 126,
-  dongCode: 4719012300,
+const store = useMemberStore();
+const houseStore = useHouseStore();
+
+watchEffect(async () => {
+  const response = await axios.get(store.url + "/apt/details", {
+    params: {
+      aptCode: houseStore.houseId,
+    },
+  });
+  houseInfo.value = response.data;
 });
+
+const houseInfo = ref({});
 
 const num = ref(0);
 const changeTab = (val) => {
@@ -26,14 +28,16 @@ const changeTab = (val) => {
 </script>
 
 <template>
-  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+  <div
+    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+  >
     <div class="modal-content">
       <div class="modal-body" id="modal">
         <div class="mb-2"><img src="/src/assets/houseInfo.png" /></div>
         <div class="ms-2">
-          <h5 style="font-weight: bolder">{{ houseInfo.name }}</h5>
+          <h5 style="font-weight: bolder">{{ houseInfo.aptName }}</h5>
           <p style="color: dimgray">
-            {{ houseInfo.sido }} {{ houseInfo.sigungu }} {{ houseInfo.dong }}
+            {{ houseInfo.drmAddress }}
           </p>
         </div>
         <!--탭 파트-->
@@ -48,26 +52,26 @@ const changeTab = (val) => {
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link boardNav" :class="{ active: num === 1 }" @click="changeTab(1)"
-              >환경 정보</a
+            <a
+              class="nav-link boardNav"
+              :class="{ active: num === 1 }"
+              @click="changeTab(1)"
+              >주변 정보</a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link boardNav" :class="{ active: num === 2 }" @click="changeTab(2)"
-              >동네 정보</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link boardNav" :class="{ active: num === 3 }" @click="changeTab(3)"
-              >최신 소식</a
+            <a
+              class="nav-link boardNav"
+              :class="{ active: num === 2 }"
+              @click="changeTab(2)"
+              >동네 소식</a
             >
           </li>
         </ul>
         <div class="ms-2 mt-3">
           <HouseDetailBasicItem v-if="num == 0" />
-          <HouseDetailEnvItemVue v-if="num == 1" />
-          <HouseDetailFacItemVue v-if="num == 2" />
-          <HouseDetailRecItemVue v-if="num == 3" />
+          <HouseDetailEnvItemVue v-if="num == 1" :houseId="houseId" />
+          <HouseDetailFacItemVue v-if="num == 2" :houseId="houseId" />
         </div>
       </div>
     </div>
