@@ -15,7 +15,7 @@ const board = ref({
   boardId: 0,
   title: "",
   content: "",
-  memberId: 1,
+  memberId: 3,
   writer: "김싸피",
   hit: 0,
   type: 1,
@@ -33,18 +33,6 @@ if (props.type === "modify") {
     },
     (error) => {
       console.log(error);
-      // 테스트용 코드
-      board.value = {
-        boardId: 1,
-        title: "공지사항 테스트",
-        writer: "김싸피",
-        hit: 3,
-        boom: 10,
-        type: 0,
-        created_at: "2024.10.23",
-        content:
-          "공무원은 국민전체에 대한 봉사자이며, 국민에 대하여 책임을 진다. 모든 국민은 법률이 정하는 바에 의하여 국방의 의무를 진다. 국회의원은 그 지위를 남용하여 국가·공공단체 또는 기업체와의 계약이나 그 처분에 의하여 재산상의 권리·이익 또는 직위를 취득하거나 타인을 위하여 그 취득을 알선할 수 없다.\n이 헌법시행 당시에 이 헌법에 의하여 새로 설치될 기관의 권한에 속하는 직무를 행하고 있는 기관은 이 헌법에 의하여 새로운 기관이 설치될 때까지 존속하며 그 직무를 행한다.",
-      };
     }
   );
   isUseId.value = true;
@@ -90,7 +78,7 @@ function onSubmit() {
 }
 
 function writeboard() {
-  console.log("글등록하자!!", board.value);
+  console.log("글 등록", board.value);
   registBoard(
     board.value,
     (response) => {

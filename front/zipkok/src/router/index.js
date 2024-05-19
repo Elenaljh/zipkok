@@ -95,10 +95,10 @@ const router = createRouter({
           name: "board-write",
           component: () => import("@/components/board/BoardCreate.vue"),
           beforeEnter: (to, from) => {
-            const store = useMemberStore();
-            if (!store.parsedVal()) {
-              router.push(from);
-            }
+            // const store = useMemberStore();
+            // if (!store.parsedVal()) {
+            //   router.push(from);
+            // }
           },
         },
         {
@@ -106,10 +106,10 @@ const router = createRouter({
           name: "board-modify",
           component: () => import("@/components/board/BoardUpdate.vue"),
           beforeEnter: (to, from) => {
-            const store = useMemberStore();
-            if (!store.parsedVal()) {
-              router.push(from);
-            }
+            // const store = useMemberStore();
+            // if (!store.parsedVal()) {
+            //   router.push(from);
+            // }
           },
         },
       ],
@@ -129,7 +129,7 @@ const router = createRouter({
 
 router.beforeEach(() => {
   const store = useMemberStore();
-  store.authorizationRequest();
+  // store.authorizationRequest();
   // console.log("피니아 값: " + store.isAuthorized);
   // console.log("로컬스토리지 값: " + store.parsedVal());
 });

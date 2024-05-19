@@ -210,8 +210,8 @@ function updateBoardBoom() {
             삭제
           </button>
         </div>
-        <button type="button" class="btn lighterButton mb-3 ms-1" @click="updateBoardBoom">
-          <img src="@/assets/buttonThumb.png" class="me-1" />추천하기
+        <button type="button" class="btn lighterButton mb-3 ms-1 d-flex align-items-center" @click="updateBoardBoom">
+          <img src="@/assets/buttonThumb.png" class="me-1" height="25" width="25"/>추천하기
         </button>
         <button
           type="button"

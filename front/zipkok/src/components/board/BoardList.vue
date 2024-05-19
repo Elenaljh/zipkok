@@ -19,13 +19,12 @@ const selectOption = ref([
 const boards = ref([]);
 const currentPage = ref(1);
 const totalPage = ref(0);
-const tn = ref(route.query.tn ? route.query.tn : 0);
 const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
 const param = ref({
   pgno: currentPage.value,
   spp: VITE_ARTICLE_LIST_SIZE,
-  type: VITE_BOARD_NOTICE,
+  type: route.query.tn ? route.query.tn : 0,
   key: "",
   keyword: "",
   writer: "",
@@ -66,7 +65,7 @@ const onPageChange = (val) => {
 };
 
 const changeTab = (val) => {
-  tn.value = val;
+  param.value.type = val;
   getBoardList();
 };
 
@@ -99,7 +98,7 @@ const moveWrite = () => {
               <a
                 class="nav-link boardNav"
                 aria-current="page"
-                :class="{ active: tn == VITE_BOARD_NOTICE }"
+                :class="{ active: param.type == VITE_BOARD_NOTICE }"
                 @click="changeTab(VITE_BOARD_NOTICE)"
                 href="#"
                 >공지사항</a
@@ -108,7 +107,7 @@ const moveWrite = () => {
             <li class="nav-item">
               <a
                 class="nav-link boardNav"
-                :class="{ active: tn == VITE_BOARD_FREE }"
+                :class="{ active: param.type == VITE_BOARD_FREE }"
                 @click="changeTab(VITE_BOARD_FREE)"
                 href="#"
                 >부동산 정보</a
@@ -117,7 +116,7 @@ const moveWrite = () => {
             <li class="nav-item">
               <a
                 class="nav-link boardNav"
-                :class="{ active: tn == VITE_BOARD_QNA }"
+                :class="{ active: param.type == VITE_BOARD_QNA }"
                 @click="changeTab(VITE_BOARD_QNA)"
                 href="#"
                 >Q&A</a
