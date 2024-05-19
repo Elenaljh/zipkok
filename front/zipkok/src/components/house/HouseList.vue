@@ -98,10 +98,7 @@ const setHouseId = (id) => {
 </script>
 
 <template>
-  <div
-    class="container me-0 mb-0 ms-3 mt-2"
-    :style="{ 'min-width': '450px', 'max-width': '550px' }"
-  >
+  <div class="container me-0 mb-0 ms-3 mt-2">
     <!-- 검색창 시작 -->
     <div class="mb-4 ms-1">
       <ul class="nav nav-underline">
