@@ -128,7 +128,7 @@ const moveWrite = () => {
           <div class="row mb-3">
             <div class="col-md-7">
               <form class="d-flex align-items-start">
-                <VSelect :selectOption="selectOption" @onKeySelect="changeKey" />
+                <VSelect class="ms-0" :selectOption="selectOption" @onKeySelect="changeKey" />
                 <div class="input-group input-group-sm">
                   <input
                     type="text"
@@ -136,7 +136,7 @@ const moveWrite = () => {
                     v-model="param.keyword"
                     placeholder="검색어 입력"
                   />
-                  <button class="btn reverseButton" type="button" @click="getBoardList">
+                  <button class="btn reverseButton ms-2" type="button" @click="getBoardList" style="border-radius: 10px !important;">
                     검색
                   </button>
                 </div>
