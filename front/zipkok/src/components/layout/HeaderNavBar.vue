@@ -42,7 +42,7 @@ const logoutUser = async () => {
             ><img src="@/assets/navNot.png"
           /></router-link>
           <router-link :to="{ name: 'board-list', query: { tn: 1 } }"
-            ><img src="@/assets/navDoc.png" width="25" height="30"
+            ><img src="@/assets/navDoc.png"
           /></router-link>
         </span>
         <span class="me-2" v-if="!memberStore.isAuthorized">
