@@ -7,6 +7,7 @@ public class AptItemDto {
 	String aptCode;
 	String aptName;
 	String drmAddress;
+	String bjdAddress;
 	String bjdCode;
 	int houseNum;
 	int buildYear;

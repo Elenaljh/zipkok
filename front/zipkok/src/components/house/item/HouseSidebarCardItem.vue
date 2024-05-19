@@ -13,10 +13,10 @@ const { houseInfo } = defineProps({ houseInfo: Object });
     />
     <div class="m-2">
       <p class="mb-1" style="font-weight: bold; font-size: 22px">
-        {{ moneyFormat(houseInfo.averagePrice) }}
+        {{ moneyFormat(houseInfo.averagePrice?houseInfo.averagePrice:160000000) }}
       </p>
-      <p class="small-content">{{ houseInfo.sido }} {{ houseInfo.sigungu }} {{ houseInfo.dong }}</p>
-      <p style="font-weight: bold">{{ houseInfo.name }}</p>
+      <p class="small-content">{{ houseInfo.drmAddress }}</p>
+      <p style="font-weight: bold">{{ houseInfo.aptName }}</p>
     </div>
   </div>
 </template>
