@@ -5,7 +5,6 @@ import com.ssafy.hw.model.dto.AptTransaction;
 import com.ssafy.hw.model.dto.PriceAvgDto;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
-import org.locationtech.proj4j.ProjCoordinate;
 
 public interface AptDetailService {
     //아파트 코드로 apt_info 조회
@@ -18,5 +17,4 @@ public interface AptDetailService {
 
     //평균가 조회
     public PriceAvgDto getAverage(String aptCode, String type);
-
 }
