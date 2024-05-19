@@ -5,6 +5,7 @@ import HouseDetailFacItemVue from "@/components/house/detail/item/HouseDetailFac
 import { ref, watchEffect } from "vue";
 import { useMemberStore } from "@/stores/member";
 import { useHouseStore } from "@/stores/house";
+import { getGrade } from "@/util/airConditionUtil";
 import axios from "axios";
 
 const store = useMemberStore();
@@ -17,6 +18,9 @@ watchEffect(async () => {
     },
   });
   houseInfo.value = response.data;
+  houseStore.changeDetail(response.data);
+  getBusStations();
+  getGrade(houseInfo.value.lng, houseInfo.value.lat);
 });
 
 const houseInfo = ref({});
@@ -24,6 +28,29 @@ const houseInfo = ref({});
 const num = ref(0);
 const changeTab = (val) => {
   num.value = val;
+};
+
+const busStation = ref([]);
+const getBusStations = async () => {
+  const { VITE_BUS_API_KEY } = import.meta.env;
+  const response = await axios.get(
+    "http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList",
+    {
+      params: {
+        serviceKey: VITE_BUS_API_KEY,
+        _type: "json",
+        numOfRows: 3,
+        gpsLati: houseInfo.value.lat,
+        gpsLong: houseInfo.value.lng,
+      },
+    }
+  );
+  const tempArr = response.data.response.body.items.item;
+  busStation.value = [];
+  for (let i = 0; i < 3; i++) {
+    busStation.value.push(tempArr[i].nodenm);
+  }
+  console.log(busStation.value);
 };
 </script>
 
@@ -69,7 +96,11 @@ const changeTab = (val) => {
           </li>
         </ul>
         <div class="ms-2 mt-3">
-          <HouseDetailBasicItem v-if="num == 0" />
+          <HouseDetailBasicItem
+            v-if="num == 0"
+            :houseInfo="houseInfo"
+            :busStation="busStation"
+          />
           <HouseDetailEnvItemVue v-if="num == 1" :houseId="houseId" />
           <HouseDetailFacItemVue v-if="num == 2" :houseId="houseId" />
         </div>

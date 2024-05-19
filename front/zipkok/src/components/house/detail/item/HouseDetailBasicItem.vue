@@ -1,15 +1,21 @@
 <script setup>
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, watchEffect, defineProps } from "vue";
 import axios from "axios";
 import { useMemberStore } from "@/stores/member";
 import { adjustedMoneyFormat } from "@/util/util";
 import { useHouseStore } from "@/stores/house";
+import { grade } from "@/util/airConditionUtil";
 
 const store = useMemberStore();
 const houseStore = useHouseStore();
 const type = ref("매매");
 const info = ref([]);
 const priceAverage = ref({});
+const { houseInfo, busStation } = defineProps({
+  houseInfo: String,
+  busStation: Object,
+});
+
 /*
 amount: 0
 aptCode: "APT4719033080250018000001"
@@ -77,6 +83,12 @@ const close = () => {
 </script>
 
 <template>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
+    rel="stylesheet"
+  />
   <div>
     <!--셀렉트박스-->
     <select
@@ -153,6 +165,141 @@ const close = () => {
     >
       접기
     </button>
+  </div>
+  <div class="mb-5" style="font-weight: 500; font-size: large">
+    <h5>아파트 기본정보</h5>
+    <!--
+    { "aptCode": "APT4719033080250018000001", "aptName": "남경앳홈비앙채",
+    "drmAddress": "경상북도 구미시 삼일로 18", "bjdAddress": "", "bjdCode":
+    "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
+    "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
+    "facility": "", "aptAnotherCode": null }-->
+    <div>
+      <span style="color: #00b4d8">{{ houseInfo.buildYear }}</span>
+      <span>년 준공</span>
+    </div>
+    <div>
+      <span>전체 </span
+      ><span style="color: #00b4d8">{{
+        !houseInfo.dongNum ? 1 : houseInfo.dongNum
+      }}</span
+      ><span>개 동</span>
+    </div>
+    <div>
+      <span style="color: #00b4d8">{{ houseInfo.houseNum }}</span
+      ><span>개 세대</span>
+    </div>
+  </div>
+  <div class="mb-5">
+    <h5>아파트 상세정보</h5>
+    <div class="d-flex justify-content-center">
+      <div class="me-3">
+        <img src="/src/assets/detailIcon/cctv.png" width="130px" />
+        <div style="font-weight: bold; text-align: center">CCTV 설치</div>
+        <div style="text-align: center">{{ houseInfo.cctvNum }}대</div>
+      </div>
+      <div class="me-3">
+        <img src="/src/assets/detailIcon/amenity.png" width="130px" />
+        <div style="font-weight: bold; text-align: center">
+          아파트 부대 시설
+        </div>
+        <pre
+          style="
+            text-align: center;
+            font-family: Noto Sans KR, sans-serif;
+            font-size: medium;
+          "
+          >{{
+            houseInfo.facility
+              ? houseInfo.facility.trim().replace(/,\s*/g, "\n")
+              : "없음"
+          }}</pre
+        >
+      </div>
+      <div>
+        <img src="/src/assets/detailIcon/around.png" width="130px" />
+        <div style="font-weight: bold; text-align: center">
+          가까운 버스 정류장
+        </div>
+        <div v-for="item in busStation" :key="item" style="text-align: center">
+          {{ item }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h5>날씨 정보</h5>
+    <div class="d-flex justify-content-center mb-5">
+      <div class="me-3">
+        <div v-if="grade.pm10Grade == 1">
+          <img src="/src/assets/detailIcon/mise_good.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">미세먼지</div>
+          <div style="color: blue; text-align: center">매우 좋음</div>
+        </div>
+        <div v-if="grade.pm10Grade == 2">
+          <img src="/src/assets/detailIcon/mise_soso.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">미세먼지</div>
+          <div style="color: green; text-align: center">좋음</div>
+        </div>
+        <div v-if="grade.pm10Grade == 3">
+          <img src="/src/assets/detailIcon/mise_sick.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">미세먼지</div>
+          <div style="color: yellow; text-align: center">나쁨</div>
+        </div>
+        <div v-if="grade.pm10Grade == 4">
+          <img src="/src/assets/detailIcon/mise_verybad.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">미세먼지</div>
+          <div style="color: red; text-align: center">매우 나쁨</div>
+        </div>
+      </div>
+      <div class="me-3">
+        <div v-if="grade.pm25Grade == 1">
+          <img src="/src/assets/detailIcon/spmise_good.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">초미세먼지</div>
+          <div style="color: blue; text-align: center">매우 좋음</div>
+        </div>
+        <div v-if="grade.pm25Grade == 2">
+          <img src="/src/assets/detailIcon/spmise_soso.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">초미세먼지</div>
+          <div style="color: green; text-align: center">좋음</div>
+        </div>
+        <div v-if="grade.pm25Grade == 3">
+          <img src="/src/assets/detailIcon/spmise_sick.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">초미세먼지</div>
+          <div style="color: yellow; text-align: center">나쁨</div>
+        </div>
+        <div v-if="grade.pm25Grade == 4">
+          <img
+            src="/src/assets/detailIcon/supermise_verybad.png"
+            width="130px"
+          />
+          <div style="text-align: center; font-weight: bold">초미세먼지</div>
+          <div style="color: red; text-align: center">매우 나쁨</div>
+        </div>
+      </div>
+      <div>
+        <div v-if="grade.khaiGrade == 1">
+          <img src="/src/assets/detailIcon/weather_good.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">대기 지수</div>
+          <div style="color: blue; text-align: center">매우 좋음</div>
+        </div>
+        <div v-if="grade.khaiGrade == 2">
+          <img src="/src/assets/detailIcon/weather_soso.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">대기 지수</div>
+          <div style="color: green; text-align: center">좋음</div>
+        </div>
+        <div v-if="grade.khaiGrade == 3">
+          <img src="/src/assets/detailIcon/weather_sick.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">대기 지수</div>
+          <div style="color: yellow; text-align: center">나쁨</div>
+        </div>
+        <div v-if="grade.khaiGrade == 4">
+          <img src="/src/assets/detailIcon/weather_verybad.png" width="130px" />
+          <div style="text-align: center; font-weight: bold">대기 지수</div>
+          <div style="color: red; text-align: center">매우 나쁨</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

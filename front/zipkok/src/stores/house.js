@@ -9,7 +9,12 @@ export const useHouseStore = defineStore(
       houseId.value = newId;
     };
 
-    return { houseId, changeId };
+    const houseDetail = ref({});
+    const changeDetail = (newDetail) => {
+      houseDetail.value = newDetail;
+    };
+
+    return { houseId, changeId, houseDetail, changeDetail };
   },
   {
     persist: true,

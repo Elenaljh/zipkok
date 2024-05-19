@@ -5,11 +5,15 @@ import com.ssafy.hw.model.dto.AptDetail;
 import com.ssafy.hw.model.dto.AptTransaction;
 import com.ssafy.hw.model.dto.PriceAvgDto;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AptDetailServiceImpl implements AptDetailService {
-    public final AptDetailDao dao;
+    @Value("${airstation.api.key}")
+    private String key;
+
+    private final AptDetailDao dao;
     public AptDetailServiceImpl(AptDetailDao dao) {
         this.dao = dao;
     }
@@ -33,4 +37,6 @@ public class AptDetailServiceImpl implements AptDetailService {
     public PriceAvgDto getAverage(String aptCode, String type) {
         return dao.getAverage(aptCode, type);
     }
+
+
 }
