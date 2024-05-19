@@ -14,7 +14,7 @@ const houseMarkerList = ref([
 
 <template>
   <div class="d-flex">
-    <HouseList style="width: fit-content" :type="'main'" :houseMarkerList="houseMarkerList" />
+    <HouseList style="width: fit-content" :type="'house'" :houseMarkerList="houseMarkerList" />
     <MapViewItem :houseMarkerList="houseMarkerList" />
   </div>
 </template>

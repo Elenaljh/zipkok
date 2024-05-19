@@ -17,7 +17,7 @@ const onLoadKakaoMap = (mapRef) => {
   drawCurrent();
   clickMap();
 
-  searchPlace();
+  //searchPlace();
 };
 
 // 전달받은 houseMarkerList로 마커 찍기
@@ -54,9 +54,10 @@ const clickMap = () => {
 };
 
 // 키워드로 장소를 검색합니다
-const keyword = ref("녹지");
+const keyword = ref("맛집");
 const searchPlace = () => {
   // 장소 검색 객체를 생성합니다
+  console.log("검색 시작")
   const ps = new kakao.maps.services.Places();
   // 키워드로 장소를 검색합니다
   console.log(lat.value, lng.value);
@@ -66,6 +67,7 @@ const searchPlace = () => {
 };
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
 const placesSearchCB = (data, status) => {
+  console.log("검색 완료")
   if (status === kakao.maps.services.Status.OK) {
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
     // LatLngBounds 객체에 좌표를 추가합니다
@@ -80,7 +82,6 @@ const placesSearchCB = (data, status) => {
           visible: false,
         },
       };
-      console.log(marker);
       searchMarkerList.value.push(markerItem);
       // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
     }
