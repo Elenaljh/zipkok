@@ -10,11 +10,19 @@ const houseMarkerList = ref([
   { key: 3, lat: 36.10936293837245, lng: 128.4181624879446 },
   { key: 4, lat: 36.10718555335274, lng: 128.41787903199184 },
 ]);
+
+function editHouseList(val){
+  console.log("houseView - editHouseList ", val)
+  houseMarkerList.value=val;
+}
+
 </script>
 
 <template>
   <div class="d-flex">
-    <HouseList style="width: fit-content" :type="'house'" :houseMarkerList="houseMarkerList" />
+    <HouseList style="width: fit-content" :type="'house'" 
+    :houseMarkerList="houseMarkerList" 
+    @updateHouseList="editHouseList"/>
     <MapViewItem :houseMarkerList="houseMarkerList" />
   </div>
 </template>

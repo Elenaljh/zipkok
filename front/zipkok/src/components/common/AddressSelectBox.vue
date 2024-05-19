@@ -35,7 +35,6 @@ const sendRequest = (selid, regcode, callback) => {
       dong.value = dataList;
       dongValue.value = "";
     }
-    console.log(callback);
     if(callback && callback != null) callback();
   });
 };
@@ -94,9 +93,6 @@ onMounted(() => {
     sendRequest("sido", "*00000000", setInitialSidoValues);
   } 
 });
-
-
-
 
 const setInitialSidoValues = () => {
   // 시도 초기값 설정

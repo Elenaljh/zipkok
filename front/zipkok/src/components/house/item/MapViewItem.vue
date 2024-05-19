@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from "vue";
+import { useHouseStore } from "@/stores/houses";
+import { ref, computed, watch } from "vue";
 import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
 
 const props = defineProps({ hlw: Number, houseMarkerList: Array });
@@ -17,12 +18,26 @@ const onLoadKakaoMap = (mapRef) => {
   drawCurrent();
   clickMap();
 
-  //searchPlace();
+  // searchPlace();
 };
 
 // 전달받은 houseMarkerList로 마커 찍기
 const filteredMarkerList = computed(() => houseMarkerList.value);
 const filteredSearchMarkerList = computed(() => searchMarkerList.value);
+
+// marker에 맞게 지도 이동
+watch(() => props.houseMarkerList, () => {
+  console.log("ㅎㅇ");
+  houseMarkerList.value = props.houseMarkerList;
+});
+
+watch(filteredMarkerList, () => {
+  if(filteredMarkerList.value.length > 0){
+    lat.value = filteredMarkerList.value[0].lat;
+    lng.value = filteredMarkerList.value[0].lng;
+    map.value.panTo(new kakao.maps.LatLng(lat.value, lng.value));
+  }
+})
 
 // 현재 위치를 그리는 함수
 const drawCurrent = () => {
@@ -54,7 +69,7 @@ const clickMap = () => {
 };
 
 // 키워드로 장소를 검색합니다
-const keyword = ref("맛집");
+const keyword = ref("카페");
 const searchPlace = () => {
   // 장소 검색 객체를 생성합니다
   console.log("검색 시작")
@@ -82,6 +97,7 @@ const placesSearchCB = (data, status) => {
           visible: false,
         },
       };
+      console.log(marker)
       searchMarkerList.value.push(markerItem);
       // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
     }
@@ -102,9 +118,10 @@ const placesSearchCB = (data, status) => {
       :lng="lng"
       @onLoadKakaoMap="onLoadKakaoMap"
     >
+    <!-- 검색한 집 결과 -->
       <KakaoMapMarker
         v-for="marker in filteredMarkerList"
-        :key="marker.key"
+        :key="marker.aptCode"
         :lat="marker.lat"
         :lng="marker.lng"
         :image="{
@@ -114,7 +131,7 @@ const placesSearchCB = (data, status) => {
           imageOption: {},
         }"
       />
-
+    <!-- 키워드 검색 결과 -->
       <KakaoMapMarker
         v-for="marker in filteredSearchMarkerList"
         :key="marker.key"

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import HouseDetail from "@/components/house/detail/HouseDetail.vue";
 import RouterButton from "@/components/common/RouterButton.vue";
 import AddressSelectBox from "@/components/common/AddressSelectBox.vue";
@@ -8,11 +8,11 @@ import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
 import { getAptsByDong, getAptsByLatLngs, getRecApts, getAptsByName } from "@/api/map";
 
-
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
 const childCompRef = ref(null);
+const emit = defineEmits(['updateHouseList']);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
 const searchDongValue = ref(route.query.searchType == 0? route.query.searchValue:null);
@@ -112,6 +112,7 @@ const getList = () => {
       ({ data }) => {
         console.log("받았다!!", data);
         houseList.value = data;
+        settingHouseList(data);
       },
       (error) => {
         console.log(error);
@@ -124,6 +125,7 @@ const getList = () => {
       ({ data }) => {
         console.log("받았다!!", data);
         houseList.value = data;
+        settingHoustList(data);
       },
       (error) => {
         console.log(error);
@@ -132,6 +134,9 @@ const getList = () => {
   }
 };
 // 검색 결과 받아오기 (범위)
+const getRangeList = () => {
+  getAptsByLatLngs();
+}
 // 추천 매물 받아오기
 function getRecommend(){
   //현재 로그인 상태 확인
@@ -161,6 +166,11 @@ function getRecommend(){
   }
 }
 
+// 집 세팅
+const settingHouseList = (val) => {
+  emit('updateHouseList', val);
+}
+
 
 // ---------------이외 
 // 모달 열릴 때 작동 
@@ -175,7 +185,7 @@ const changeTab = (val) => {
 </script>
 
 <template>
-  <div class="container me-0 mb-0 ms-3 mt-2">
+  <div class="container me-0 mb-0 ms-3 mt-2" style="height: 80vh; overflow: scroll;">
     <!-- 검색창 시작 -->
     <div class="mb-4 ms-1">
       <ul class="nav nav-underline">
