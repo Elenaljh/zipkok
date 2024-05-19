@@ -18,7 +18,7 @@ const restaurant = ref({
   type: "한식",
   address: "경상북도 구미시 어쩌고",
 });
-const cctv = ref("경상북도 구미시 인동34길 22, 이디야커피(진평동)");
+const NumOfcctv = ref(5);
 </script>
 
 <template>
@@ -29,10 +29,7 @@ const cctv = ref("경상북도 구미시 인동34길 22, 이디야커피(진평�
         <span style="color: #00b3d6">{{ dong }}</span
         ><span>의 인구구조</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <thead class="table-light">
             <tr>
@@ -61,10 +58,7 @@ const cctv = ref("경상북도 구미시 인동34길 22, 이디야커피(진평�
         <span style="color: #00b3d6">{{ dong }}</span
         ><span>의 주요시설</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in 10" :key="item">
@@ -84,10 +78,7 @@ const cctv = ref("경상북도 구미시 인동34길 22, 이디야커피(진평�
         <span style="color: #00b3d6">{{ dong }}</span
         ><span>의 학교</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in 10" :key="item">
@@ -107,10 +98,7 @@ const cctv = ref("경상북도 구미시 인동34길 22, 이디야커피(진평�
         <span style="color: #00b3d6">{{ dong }}</span
         ><span>의 맛집</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in 20" :key="item">
@@ -130,17 +118,11 @@ const cctv = ref("경상북도 구미시 인동34길 22, 이디야커피(진평�
         <span style="color: #00b3d6">{{ dong }}</span
         ><span>의 CCTV</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
-        <table class="table mb-0">
-          <tbody>
-            <tr v-for="item in 5" :key="item">
-              <td style="padding-left: 20px">{{ cctv }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <p style="font-size: large; font-weight: bold">
+          <span>총 </span><span style="color: #00b3d6">{{ NumOfcctv }}</span
+          ><span>대 설치되어 있어요</span>
+        </p>
       </div>
     </div>
     <!--CCTV 끝-->
