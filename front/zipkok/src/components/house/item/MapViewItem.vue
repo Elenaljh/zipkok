@@ -1,7 +1,7 @@
 <script setup>
-import { useHouseStore } from "@/stores/houses";
+import { useHouseStore } from "@/stores/house";
 import { ref, computed, watch } from "vue";
-import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
+import { KakaoMap, KakaoMapMarker, KakaoMapInfoWindow } from "vue3-kakao-maps";
 
 const props = defineProps({ hlw: Number, houseMarkerList: Array });
 const mvw = ref(props.hlw ? 100 - props.hlw : 60);
@@ -12,6 +12,18 @@ const searchMarkerList = ref([]);
 const lat = ref(36.10767834691484);
 const lng = ref(128.41277958423132);
 const map = ref();
+const houseMarkerObjectList = ref([]);
+const houseStore = useHouseStore();
+
+watch(
+  () => houseStore.houseId,
+  () => {
+    const index = houseMarkerList.value.findIndex((val) => val.aptCode == houseStore.houseId);
+    lat.value = houseMarkerList.value[index].lat;
+    lng.value = houseMarkerList.value[index].lng;
+    moveMap();
+  }
+);
 
 const onLoadKakaoMap = (mapRef) => {
   map.value = mapRef;
@@ -29,7 +41,6 @@ const filteredSearchMarkerList = computed(() => searchMarkerList.value);
 watch(
   () => props.houseMarkerList,
   () => {
-    console.log("ㅎㅇ");
     houseMarkerList.value = props.houseMarkerList;
   }
 );
@@ -38,9 +49,17 @@ watch(filteredMarkerList, () => {
   if (filteredMarkerList.value.length > 0) {
     lat.value = filteredMarkerList.value[0].lat;
     lng.value = filteredMarkerList.value[0].lng;
-    map.value.panTo(new kakao.maps.LatLng(lat.value, lng.value));
+    moveMap();
   }
 });
+
+// 지정된 좌표로 맵 이동
+function moveMap() {
+  map.value.setCenter(new kakao.maps.LatLng(lat.value, lng.value));
+  map.value.setLevel(4);
+  map.value.setLevel(3, { animate: true });
+  console.log("현재 레벨: ", map.value.getLevel());
+}
 
 // 현재 위치를 그리는 함수
 const drawCurrent = () => {
@@ -109,31 +128,89 @@ const placesSearchCB = (data, status) => {
     // map.value?.setBounds(bounds);
   }
 };
+
+// 마커 인포윈도우
+function onLoadKakaoMapMarker(event) {
+  console.log("마커 ", event);
+  houseMarkerObjectList.value.push(event);
+}
+
+const visibleRef = ref([]);
+
+const mouseOverKakaoMapMarker = (ind) => {
+  console.log(ind + " in");
+  visibleRef.value[ind] = true;
+};
+
+const mouseOutKakaoMapMarker = (ind) => {
+  console.log(ind + " out");
+  visibleRef.value[ind] = false;
+};
+
+function onLoadKakaoMapMarkertt() {
+  console.log("테스트 ");
+}
 </script>
 
 <template>
-  <div class="p-0 m-0" style="width: fit-content">
+  <div class="p-0 m-0" style="width: fit-content; height: fit-content">
     <KakaoMap
       id="map"
       :width="mvw + 'vw'"
-      height="80vh"
+      height="85vh"
       :lat="lat"
       :lng="lng"
       @onLoadKakaoMap="onLoadKakaoMap"
     >
       <!-- 검색한 집 결과 -->
       <KakaoMapMarker
-        v-for="marker in filteredMarkerList"
+        v-for="(marker, index) in filteredMarkerList"
         :key="marker.aptCode"
         :lat="marker.lat"
         :lng="marker.lng"
         :image="{
-          imageSrc: '/src/assets/homeMarker.png',
-          imageWidth: 50,
-          imageHeight: 64,
+          imageSrc: '/src/assets/marker/house.png',
+          imageWidth: 40,
+          imageHeight: 40 * 1.3,
           imageOption: {},
         }"
+        :infoWindow="{
+          content: `<p style='font-size: 20px'>${marker.aptName}</p>`,
+          visible: visibleRef[index] ? visibleRef[index] : false,
+        }"
+        @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+        @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
       />
+      <!-- <KakaoMapInfoWindow
+        v-for="(marker, index) in filteredMarkerList"
+        :key="index"
+        :lat="marker.lat"
+        :lng="marker.lng"
+        :marker="houseMarkerObjectList[index]"
+        :visible="true"
+      >
+        <div>하이염</div>
+      </KakaoMapInfoWindow> -->
+      <!-- <KakaoMapMarker
+        :lat="36.13994808315728"
+        :lng="128.31381567"
+        :image="{
+          imageSrc: '/src/assets/marker/house.png',
+          imageWidth: 40,
+          imageHeight: 40 * 1.3,
+          imageOption: {},
+        }"
+        @onLoadKakaoMapMarker="onLoadKakaoMapMarkert"
+      />
+      <KakaoMapInfoWindow
+        :lat="36.13994808315728"
+        :lng="128.31381567"
+        :marker="tempMarker"
+        :visible="true"
+      >
+        <div>gdgd</div>
+      </KakaoMapInfoWindow> -->
+
       <!-- 키워드 검색 결과 -->
       <KakaoMapMarker
         v-for="marker in filteredSearchMarkerList"
@@ -141,9 +218,9 @@ const placesSearchCB = (data, status) => {
         :lat="marker.lat"
         :lng="marker.lng"
         :image="{
-          imageSrc: '/src/assets/homeMarker.png',
-          imageWidth: 50,
-          imageHeight: 64,
+          imageSrc: '/src/assets/marker/place.png',
+          imageWidth: 40,
+          imageHeight: 54,
           imageOption: {},
         }"
       />
@@ -153,5 +230,6 @@ const placesSearchCB = (data, status) => {
 
 <style scoped>
 #map {
+  z-index: 0;
 }
 </style>

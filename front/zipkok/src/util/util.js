@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 const moneyFormat = (value) => {
   const numbers = [
     numbering(value % 100000000000000000000, 10000000000000000),
@@ -55,4 +57,24 @@ function dateFormat(target) {
   return dateFormatString;
 }
 
-export { moneyFormat, dateFormat, adjustedMoneyFormat, numberFormat };
+
+function callSwal({ title, text, icon }) {
+  // icon
+  // https://sweetalert2.github.io/#icons
+  let msg = {
+    icon: "info",
+    title: "실패",
+    text: "문제가 발생했습니다.",
+    confirmButtonText: "확인",
+    confirmButtonColor: "#00b4d8",
+  };
+
+  if (title) msg.title = title;
+  if (text) msg.text = text;
+  if (icon) msg.icon = icon;
+
+  Swal.fire(msg);
+}
+
+export { moneyFormat, dateFormat, adjustedMoneyFormat, callSwal };
+

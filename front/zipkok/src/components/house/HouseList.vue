@@ -22,40 +22,9 @@ const searchDongValue = ref(route.query.searchType == 0 ? route.query.searchValu
 const searchBuildingValue = ref(route.query.searchType == 1 ? searchValue.value : "");
 const houseId = ref("APT0");
 const priceType = ref(0);
-const houseList = ref([
-  {
-    id: "APT4719033080250018000001",
-    name: "남경앳홈비앙채",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 150000000,
-  },
-  {
-    id: "APT4711123030030147000401",
-    name: "Happy Home",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 150000000,
-  },
-  {
-    id: "APT4711123030030154000001",
-    name: "와이드빌",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 180000000,
-  },
-  {
-    id: "APT4719033080270092000001",
-    name: "삼성전자",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 650000000,
-  },
-]);
+
+const houseList = ref([]);
+
 
 // --------------- 동 검색 탭 설정
 const callChildFunction = () => {
@@ -125,7 +94,7 @@ const getList = () => {
       ({ data }) => {
         console.log("받았다!!", data);
         houseList.value = data;
-        settingHoustList(data);
+        settingHouseList(data);
       },
       (error) => {
         console.log(error);
@@ -159,6 +128,7 @@ function getRecommend() {
         ({ data }) => {
           console.log("받았다!!", data);
           houseList.value = data;
+          settingHouseList(data);
         },
         (error) => {
           console.log(error);
@@ -187,9 +157,14 @@ const changeTab = (val) => {
 </script>
 
 <template>
-  <div class="container me-0 mb-0 ms-3 mt-2" style="height: 80vh; overflow: scroll">
+
+  <div
+    id="searchSidebar"
+    class="container me-0 mb-0 ms-3 mt-0 pb-0"
+    style="height: 85vh; overflow-y: scroll; overflow-x: scroll"
+  >
     <!-- 검색창 시작 -->
-    <div class="mb-4 ms-1">
+    <div class="mb-4 ms-1 mb-0 pb-0">
       <ul class="nav nav-underline">
         <li class="nav-item">
           <a
@@ -207,7 +182,7 @@ const changeTab = (val) => {
         </li>
       </ul>
 
-      <div class="mt-3 d-flex justify-content-between align-items-center">
+      <div class="mt-3 d-flex justify-content-flex-start align-items-center">
         <!-- 지역 검색 -->
         <div v-if="searchType == 0">
           <div class="d-flex align-items-center">
@@ -220,7 +195,9 @@ const changeTab = (val) => {
           </div>
         </div>
         <!-- 건물명 검색 -->
-        <div class="w-100 d-flex align-items-center me-5" v-if="searchType == 1">
+
+        <div class="d-flex align-items-center" v-if="searchType == 1" style="width: 70%">
+
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"
@@ -233,7 +210,7 @@ const changeTab = (val) => {
         <RouterButton
           buttonIcon="/src/assets/buttonSearch.png"
           :buttonFunc="callChildFunction"
-          class="me-3"
+          class="ms-2"
         />
       </div>
     </div>
@@ -265,7 +242,6 @@ const changeTab = (val) => {
           v-for="house in houseList"
           :key="house"
           :houseInfo="house"
-          :priceType="priceType"
           @click="setHouseId(house.aptCode)"
         />
       </div>
@@ -294,4 +270,12 @@ const changeTab = (val) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#searchSidebar::-webkit-scrollbar {
+  width: 10px;
+}
+#searchSidebar::-webkit-scrollbar-thumb {
+  background: #ade8f4;
+  border-radius: 10px;
+}
+</style>

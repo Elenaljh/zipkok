@@ -116,6 +116,7 @@ public class MemberController {
 			request.getSession().invalidate();
 			HttpSession session = request.getSession(true);
 			session.setAttribute("loginMember", member.getEmail());
+			session.setAttribute("memberId", member.getMemberId());
 			session.setMaxInactiveInterval(3600); //1시간동안 로그인 유지
 			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId());
 			return new ResponseEntity<LoginOutputDto>(loginOutputDto, HttpStatus.OK);

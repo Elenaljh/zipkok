@@ -68,5 +68,20 @@
 		set hit = hit + 1
 		where board_id = #{boardId}
 	</update>
+	
+	
+	<select id="checkAdmin" parameterType="map" resultType="int">
+		select level from member 
+		where member_id=#{memberId}
+		limit 1
+	</select>
+	
+	<select id="checkWriter" parameterType="map" resultType="boolean">
+		select exists 
+			(select 1 from board 
+				where member_id = #{memberId}
+					and board_id = #{boardId}
+					limit 1)
+	</select>
 
 </mapper>

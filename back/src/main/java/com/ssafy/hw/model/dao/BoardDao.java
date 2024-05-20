@@ -18,4 +18,9 @@ public interface BoardDao {
 	int deleteBoard(int boardId);
 	int updateBoom(int boardId);
 	int updateHit(int boardId);
+	
+	//유저 권한 확인
+	int checkAdmin(int memberId);
+	//글주인확인
+	boolean checkWriter(Map<String, Object> map);
 }

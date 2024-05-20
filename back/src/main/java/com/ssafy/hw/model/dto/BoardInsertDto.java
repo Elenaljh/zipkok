@@ -15,5 +15,9 @@ public class BoardInsertDto {
 		this.writer = writer;
 	}
 	
+	public int getType() {
+		return type;
+	}
+	
 	
 }

@@ -4,6 +4,15 @@
   font-family: "Noto Sans KR", sans-serif !important;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
 h1,
 h2 {
   font-weight: 600;
