@@ -3,27 +3,30 @@ package com.ssafy.hw.controller;
 import com.ssafy.hw.model.dto.LoginDto;
 import com.ssafy.hw.model.dto.LoginOutputDto;
 import com.ssafy.hw.model.dto.Member;
+import com.ssafy.hw.model.dto.oauth.GoogleAuthResponseDto;
+import com.ssafy.hw.model.dto.oauth.GoogleUserInfoResponseDto;
+import com.ssafy.hw.model.dto.oauth.OauthCodeDto;
 import com.ssafy.hw.model.service.MemberService;
+import com.ssafy.hw.model.service.SocialLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Objects;
-
 @RestController
-@CrossOrigin(originPatterns = {"*"} ,allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true", allowedHeaders = "Access-Control-Allow-Origin")
 public class MemberController {
 	private final MemberService service;
+	private final SocialLoginService socialLoginService;
 
-	public MemberController(MemberService service) {
+	public MemberController(MemberService service, SocialLoginService socialLoginService) {
 		this.service = service;
+		this.socialLoginService = socialLoginService;
 	}
 
 	//회원가입
@@ -153,6 +156,31 @@ public class MemberController {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	@GetMapping("/oauth2/callback")
+	public ResponseEntity<?> googleLogin(@RequestParam OauthCodeDto codeDto, HttpServletRequest request) {
+		try {
+			//소셜로그인 진행
+			GoogleAuthResponseDto googleAuthResponseDto = socialLoginService.getAccessToken(codeDto.getCode()); //accessToken받기
+			GoogleUserInfoResponseDto userInfo = socialLoginService.getUserInfo(googleAuthResponseDto.getAccess_token()); //유저 정보 받기
+
+			//db에 회원 있나 조회
+			Member member = service.selectMember(userInfo.getEmail());
+			if (member == null) {
+				service.insertSocialMember(userInfo.getEmail(), userInfo.getName());
+				member = service.selectMember(userInfo.getEmail());
+			}
+			request.getSession().invalidate();
+			HttpSession session = request.getSession(true);
+			session.setAttribute("loginMember", userInfo.getEmail());
+			session.setAttribute("memberId", member.getMemberId());
+			session.setMaxInactiveInterval(3600); //1시간동안 로그인 유지
+			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId());
+			return new ResponseEntity<LoginOutputDto>(loginOutputDto, HttpStatus.OK);
+		} catch (Exception e) {
+			return exceptionHandling(e);
 		}
 	}
 

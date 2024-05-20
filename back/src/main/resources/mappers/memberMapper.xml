@@ -10,6 +10,10 @@
 		values (#{email}, #{password}, #{name}, now(), #{age}, #{preferedPlace1}, #{preferedPlace2}, #{preferedPlace3}, #{preferedType})
 	</insert>
 
+	<insert id="insertSocialMember" parameterType="string">
+		insert into member (email, registered_at, name) value (#{email}, now(), #{name});
+	</insert>
+
 	<!--회원조회-->
 	<select id="selectMember" parameterType="string" resultType="Member">
 		select *
