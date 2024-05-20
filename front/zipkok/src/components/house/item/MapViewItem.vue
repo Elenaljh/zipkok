@@ -128,9 +128,9 @@ const placesSearchCB = (data, status) => {
         :lat="marker.lat"
         :lng="marker.lng"
         :image="{
-          imageSrc: '/src/assets/homeMarker.png',
-          imageWidth: 50,
-          imageHeight: 64,
+          imageSrc: '/src/assets/marker/house.png',
+          imageWidth: 40,
+          imageHeight: 54,
           imageOption: {},
         }"
       />
@@ -141,7 +141,7 @@ const placesSearchCB = (data, status) => {
         :lat="marker.lat"
         :lng="marker.lng"
         :image="{
-          imageSrc: '/src/assets/homeMarker.png',
+          imageSrc: '/src/assets/marker/place.png',
           imageWidth: 50,
           imageHeight: 64,
           imageOption: {},
