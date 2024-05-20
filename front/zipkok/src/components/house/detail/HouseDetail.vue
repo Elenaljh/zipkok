@@ -6,6 +6,7 @@ import { ref, watchEffect } from "vue";
 import { useMemberStore } from "@/stores/member";
 import { useHouseStore } from "@/stores/house";
 import { getGrade } from "@/util/airConditionUtil";
+import { getSchools, getOffices } from "@/util/houseDetail";
 import axios from "axios";
 
 const store = useMemberStore();
@@ -21,6 +22,8 @@ watchEffect(async () => {
   houseStore.changeDetail(response.data);
   getBusStations();
   getGrade(houseInfo.value.lng, houseInfo.value.lat);
+  getSchools(houseInfo.value.lng, houseInfo.value.lat);
+  getOffices(houseInfo.value.lng, houseInfo.value.lat);
 });
 
 const houseInfo = ref({});
@@ -55,6 +58,12 @@ const getBusStations = async () => {
 </script>
 
 <template>
+  <!--
+    { "aptCode": "APT4719033080250018000001", "aptName": "남경앳홈비앙채",
+    "drmAddress": "경상북도 구미시 삼일로 18", "bjdAddress": "", "bjdCode":
+    "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
+    "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
+    "facility": "", "aptAnotherCode": null }-->
   <div
     class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
   >
@@ -101,7 +110,7 @@ const getBusStations = async () => {
             :houseInfo="houseInfo"
             :busStation="busStation"
           />
-          <HouseDetailEnvItemVue v-if="num == 1" :houseId="houseId" />
+          <HouseDetailEnvItemVue v-if="num == 1" :houseInfo="houseInfo" />
           <HouseDetailFacItemVue v-if="num == 2" :houseId="houseId" />
         </div>
       </div>

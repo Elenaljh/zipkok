@@ -217,7 +217,7 @@ const close = () => {
         >
       </div>
       <div>
-        <img src="/src/assets/detailIcon/around.png" width="130px" />
+        <img src="/src/assets/detailIcon/bus.png" width="130px" />
         <div style="font-weight: bold; text-align: center">
           가까운 버스 정류장
         </div>

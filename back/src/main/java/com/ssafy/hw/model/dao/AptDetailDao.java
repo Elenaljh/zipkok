@@ -2,8 +2,11 @@ package com.ssafy.hw.model.dao;
 
 import com.ssafy.hw.model.dto.AptDetail;
 import com.ssafy.hw.model.dto.AptTransaction;
+import com.ssafy.hw.model.dto.OfficeDto;
 import com.ssafy.hw.model.dto.PriceAvgDto;
+import com.ssafy.hw.model.dto.SchoolDto;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 public interface AptDetailDao {
@@ -18,14 +21,10 @@ public interface AptDetailDao {
     //아파트 가격 평균
     public PriceAvgDto getAverage(@Param("aptCode") String aptCode, @Param("type") String type);
 
-    //주소 기반으로 대기정보 가져오기
-
-    //공원
-
     //관공서
-
+    public List<OfficeDto> getOffice(Map<String, Double> param);
     //학교
-
+    public List<SchoolDto> getSchool(Map<String, Double> param);
     //인구 구조
 
     //맛집..?????

@@ -2,7 +2,9 @@ package com.ssafy.hw.controller;
 
 import com.ssafy.hw.model.dto.AptDetail;
 import com.ssafy.hw.model.dto.AptTransaction;
+import com.ssafy.hw.model.dto.OfficeDto;
 import com.ssafy.hw.model.dto.PriceAvgDto;
+import com.ssafy.hw.model.dto.SchoolDto;
 import com.ssafy.hw.model.service.AptDetailService;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,26 @@ public class AptDetailController {
         try {
             PriceAvgDto average = service.getAverage(aptCode, type);
             return new ResponseEntity<PriceAvgDto>(average, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/office")
+    public ResponseEntity<?> getOffice(@RequestParam double lat, @RequestParam double lng) {
+        try {
+            List<OfficeDto> office = service.getOffice(lat, lng);
+            return new ResponseEntity<List<OfficeDto>>(office, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/school")
+    public ResponseEntity<?> getSchool(@RequestParam double lat, @RequestParam double lng) {
+        try {
+            List<SchoolDto> school = service.getSchool(lat, lng);
+            return new ResponseEntity<List<SchoolDto>>(school, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
         }
