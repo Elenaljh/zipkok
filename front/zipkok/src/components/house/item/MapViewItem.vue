@@ -18,7 +18,7 @@ const onLoadKakaoMap = (mapRef) => {
   drawCurrent();
   clickMap();
 
-  // searchPlace();
+  searchPlace();
 };
 
 // 전달받은 houseMarkerList로 마커 찍기
@@ -26,18 +26,21 @@ const filteredMarkerList = computed(() => houseMarkerList.value);
 const filteredSearchMarkerList = computed(() => searchMarkerList.value);
 
 // marker에 맞게 지도 이동
-watch(() => props.houseMarkerList, () => {
-  console.log("ㅎㅇ");
-  houseMarkerList.value = props.houseMarkerList;
-});
+watch(
+  () => props.houseMarkerList,
+  () => {
+    console.log("ㅎㅇ");
+    houseMarkerList.value = props.houseMarkerList;
+  }
+);
 
 watch(filteredMarkerList, () => {
-  if(filteredMarkerList.value.length > 0){
+  if (filteredMarkerList.value.length > 0) {
     lat.value = filteredMarkerList.value[0].lat;
     lng.value = filteredMarkerList.value[0].lng;
     map.value.panTo(new kakao.maps.LatLng(lat.value, lng.value));
   }
-})
+});
 
 // 현재 위치를 그리는 함수
 const drawCurrent = () => {
@@ -69,10 +72,10 @@ const clickMap = () => {
 };
 
 // 키워드로 장소를 검색합니다
-const keyword = ref("카페");
+const keyword = ref("공원");
 const searchPlace = () => {
   // 장소 검색 객체를 생성합니다
-  console.log("검색 시작")
+  console.log("검색 시작");
   const ps = new kakao.maps.services.Places();
   // 키워드로 장소를 검색합니다
   console.log(lat.value, lng.value);
@@ -82,7 +85,7 @@ const searchPlace = () => {
 };
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
 const placesSearchCB = (data, status) => {
-  console.log("검색 완료")
+  console.log("검색 완료");
   if (status === kakao.maps.services.Status.OK) {
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
     // LatLngBounds 객체에 좌표를 추가합니다
@@ -97,7 +100,7 @@ const placesSearchCB = (data, status) => {
           visible: false,
         },
       };
-      console.log(marker)
+      console.log(marker);
       searchMarkerList.value.push(markerItem);
       // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
     }
@@ -118,7 +121,7 @@ const placesSearchCB = (data, status) => {
       :lng="lng"
       @onLoadKakaoMap="onLoadKakaoMap"
     >
-    <!-- 검색한 집 결과 -->
+      <!-- 검색한 집 결과 -->
       <KakaoMapMarker
         v-for="marker in filteredMarkerList"
         :key="marker.aptCode"
@@ -131,7 +134,7 @@ const placesSearchCB = (data, status) => {
           imageOption: {},
         }"
       />
-    <!-- 키워드 검색 결과 -->
+      <!-- 키워드 검색 결과 -->
       <KakaoMapMarker
         v-for="marker in filteredSearchMarkerList"
         :key="marker.key"
