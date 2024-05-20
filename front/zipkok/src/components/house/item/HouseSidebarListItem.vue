@@ -6,7 +6,6 @@ const { houseInfo } = defineProps({ houseInfo: Object });
 const priceTypeList = ["매매", "전/월세", ""];
 
 const innerPType = computed(() => {
-  console.log("check ", houseInfo);
   if (houseInfo.avgAmount) {
     return 0;
   } else if (houseInfo.avgDeposit) {
@@ -36,7 +35,7 @@ const showPrice = computed(() => {
           {{ priceTypeList[innerPType] }} {{ moneyFormat(showPrice * 10000) }}
         </div>
         <div class="col-4 small-content">
-          {{ houseInfo.bjdAddress }}
+          {{ houseInfo.bjdAddress ? houseInfo.bjdAddress : houseInfo.drmAddress }}
         </div>
       </div>
     </div>
