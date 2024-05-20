@@ -9,6 +9,6 @@ public interface AptListService {
 	List<AptItemDto> getAptsByDong(String dong);
 	List<AptItemDto> getAptsByName(Map<String, String> map);
 	List<AptItemDto> getAptsByLatLngs(Map<String, Double> map);
-	List<AptItemDto> getRecAptsLogin(String[] pfps);
+	List<AptItemDto> getRecAptsLogin(int memberId, double lng, double lat);
 	List<AptItemDto> getRecAptsDefault(double lng, double lat);
 }
