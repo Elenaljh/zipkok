@@ -19,40 +19,7 @@ const searchDongValue = ref(route.query.searchType == 0 ? route.query.searchValu
 const searchBuildingValue = ref(route.query.searchType == 1 ? searchValue.value : "");
 const houseId = ref("APT0");
 const priceType = ref(0);
-const houseList = ref([
-  {
-    id: 1,
-    name: "남경앳홈비앙채",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 150000000,
-  },
-  {
-    id: 2,
-    name: "Happy Home",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 150000000,
-  },
-  {
-    id: 3,
-    name: "와이드빌",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 180000000,
-  },
-  {
-    id: 4,
-    name: "삼성전자",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 650000000,
-  },
-]);
+const houseList = ref([]);
 
 // --------------- 동 검색 탭 설정
 const callChildFunction = () => {
@@ -185,8 +152,8 @@ const changeTab = (val) => {
 <template>
   <div
     id="searchSidebar"
-    class="container me-0 mb-0 ms-3 mt-2"
-    style="height: 84vh; overflow-y: scroll; overflow-x: scroll"
+    class="container me-0 mb-0 ms-3 mt-0 pb-0"
+    style="height: 85vh; overflow-y: scroll; overflow-x: scroll"
   >
     <!-- 검색창 시작 -->
     <div class="mb-4 ms-1 mb-0 pb-0">
@@ -265,7 +232,6 @@ const changeTab = (val) => {
           v-for="house in houseList"
           :key="house"
           :houseInfo="house"
-          :priceType="priceType"
           @click="setHouseId(house.aptCode)"
         />
       </div>

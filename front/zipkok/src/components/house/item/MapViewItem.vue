@@ -132,7 +132,7 @@ const placesSearchCB = (data, status) => {
         :image="{
           imageSrc: '/src/assets/marker/house.png',
           imageWidth: 40,
-          imageHeight: 54,
+          imageHeight: 40 * 1.3,
           imageOption: {},
         }"
       />
