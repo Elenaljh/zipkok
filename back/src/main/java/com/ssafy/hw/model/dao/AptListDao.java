@@ -11,4 +11,5 @@ public interface AptListDao {
 	List<AptItemDto> getAptsByLatLngs(Map<String, Double> map);
 	List<AptItemDto> getRecAptsByPfp(Map<String, Object> map);
 	List<AptItemDto> getRecAptsByLoc(Map<String, Object> map);
+	List<String> getPfps(int memberId);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.ssafy.hw.model.dto.AptItemDto;
 import com.ssafy.hw.model.service.AptListService;
@@ -58,12 +59,13 @@ public class AptListController {
 		}
 	}
 	@GetMapping("/rec")
-	public ResponseEntity<?> getRecApts(@RequestParam("type") String type, @RequestParam(value="pfps", required=false) String[] pfps, @RequestParam(value="lng", required=false) Double lng, @RequestParam(value="lat", required=false) Double lat ) {
+	public ResponseEntity<?> getRecApts(@SessionAttribute(name="memberId", required = false) String memberId, @RequestParam("type") String type, @RequestParam(value="lng", required=false) Double lng, @RequestParam(value="lat", required=false) Double lat) {
 		try {
 			List<AptItemDto> list = new ArrayList<>();
-			if(type.equals("login") && pfps != null && pfps.length > 0) {
-				System.out.println(Arrays.toString(pfps));
-				list = aptListService.getRecAptsLogin(pfps);
+			if(type.equals("login") && memberId != null) {
+				System.out.println(memberId);
+				list = aptListService.getRecAptsLogin(Integer.parseInt(memberId), lng, lat);
+				System.out.println(list.size());
 			} else {
 				list = aptListService.getRecAptsDefault(lng, lat);
 			}
