@@ -9,6 +9,7 @@ function localAxios() {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
     },
+    withCredentials: true,
   });
   return instance;
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { listBoard } from "@/api/board.js";
 
 import VSelect from "@/components/common/VSelect.vue";
@@ -25,7 +25,7 @@ const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
 const param = ref({
   pgno: currentPage.value,
   spp: VITE_ARTICLE_LIST_SIZE,
-  type: VITE_BOARD_NOTICE,
+  type: tn.value,
   key: "",
   keyword: "",
   writer: "",
@@ -35,6 +35,14 @@ onMounted(() => {
   getBoardList();
 });
 
+watch(
+  () => route.query.tn,
+  () => {
+    tn.value = route.query.tn;
+    getBoardList();
+  }
+);
+
 const changeKey = (val) => {
   console.log("BoarList에서 선택한 조건 : " + val);
   param.value.key = val;
@@ -43,6 +51,7 @@ const changeKey = (val) => {
 const getBoardList = () => {
   console.log("서버에서 글 얻어오기", param.value, param.value.type, VITE_BOARD_FREE);
   console.log("타입은 이거=", param.value.type, param.value.spp);
+  param.value.type = tn.value;
   listBoard(
     param.value,
     ({ data }) => {

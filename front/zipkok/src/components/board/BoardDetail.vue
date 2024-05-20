@@ -3,8 +3,9 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { detailBoard, deleteBoard, registComment, listComment, updateBoom } from "@/api/board";
 import RouterButton from "../common/RouterButton.vue";
-import { dateFormat } from "@/util/util";
+import { callSwal, dateFormat } from "@/util/util";
 import BoardQnAAnswer from "./BoardQnAAnswer.vue";
+import { useMemberStore } from "@/stores/member";
 
 const route = useRoute();
 const router = useRouter();
@@ -12,7 +13,7 @@ const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
 
 // const boardId = ref(route.params.boardId);
 const { boardId } = route.params;
-
+const memberStore = useMemberStore();
 const board = ref({});
 const comments = ref([]);
 onMounted(() => {
@@ -69,6 +70,11 @@ function onDeleteBoard() {
       },
       (error) => {
         console.log(error);
+        callSwal({
+          icon: "error",
+          title: "삭제 실패",
+          text: error.response.data,
+        });
       }
     );
   }
@@ -77,8 +83,8 @@ function onDeleteBoard() {
 // QNA 답변 관리
 const commType = ref("read");
 const newComment = ref({
-  memberId: 1,
-  writer: "김싸피",
+  memberId: memberStore.memberId,
+  writer: memberStore.name,
   content: "",
   boardId: boardId,
 });
