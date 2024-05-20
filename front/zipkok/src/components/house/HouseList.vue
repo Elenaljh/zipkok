@@ -91,7 +91,7 @@ const getList = () => {
       ({ data }) => {
         console.log("받았다!!", data);
         houseList.value = data;
-        settingHoustList(data);
+        settingHouseList(data);
       },
       (error) => {
         console.log(error);
