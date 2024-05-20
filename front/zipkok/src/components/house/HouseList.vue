@@ -125,6 +125,7 @@ function getRecommend() {
         ({ data }) => {
           console.log("받았다!!", data);
           houseList.value = data;
+          settingHouseList(data);
         },
         (error) => {
           console.log(error);
