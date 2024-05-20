@@ -76,5 +76,5 @@ function callSwal({ title, text, icon }) {
   Swal.fire(msg);
 }
 
-export { moneyFormat, dateFormat, adjustedMoneyFormat, callSwal };
+export { moneyFormat, dateFormat, numberFormat, adjustedMoneyFormat, callSwal };
 

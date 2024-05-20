@@ -1,5 +1,6 @@
 <script setup>
 import { moneyFormat } from "@/util/util.js";
+import RoadViewItem from '@/components/house/item/RoadViewItem.vue';
 const { houseInfo } = defineProps({ houseInfo: Object });
 </script>
 
@@ -11,6 +12,7 @@ const { houseInfo } = defineProps({ houseInfo: Object });
       class="w-100 mx-0"
       style="border-radius: 9px 9px 0 0"
     />
+    <RoadViewItem :latitude="houseInfo.lat" :longitude="houseInfo.lng" />
     <div class="m-2">
       <p class="mb-1" style="font-weight: bold; font-size: 22px">
         {{ moneyFormat(houseInfo.averagePrice ? houseInfo.averagePrice : 160000000) }}
