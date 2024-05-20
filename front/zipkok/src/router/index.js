@@ -3,6 +3,7 @@ import MainView from "../views/MainView.vue";
 import UserView from "@/views/UserView.vue";
 import HouseView from "@/views/HouseView.vue";
 import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,7 +24,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserCreate.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (isAuthorized.value) {
               router.push(from);
             }
           },
@@ -34,7 +36,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserModify.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (!isAuthorized.value) {
               router.push(from);
             }
           },
@@ -45,7 +48,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserDetail.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (!isAuthorized.value) {
               router.push(from);
             }
           },
@@ -56,7 +60,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserLogin.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (isAuthorized.value) {
               router.push(from);
             }
           },
@@ -67,7 +72,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserPwFind.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (isAuthorized.value) {
               router.push(from);
             }
           },
@@ -96,7 +102,7 @@ const router = createRouter({
           component: () => import("@/components/board/BoardCreate.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.parsedVal()) {
+            if (!store.isAuthorized()) {
               router.push(from);
             }
           },
@@ -107,7 +113,7 @@ const router = createRouter({
           component: () => import("@/components/board/BoardUpdate.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.parsedVal()) {
+            if (!store.isAuthorized()) {
               router.push(from);
             }
           },
@@ -131,7 +137,7 @@ router.beforeEach(() => {
   const store = useMemberStore();
   store.authorizationRequest();
   // console.log("피니아 값: " + store.isAuthorized);
-  // console.log("로컬스토리지 값: " + store.parsedVal());
+  // console.log("로컬스토리지 값: " + store.isAuthorized());
 });
 
 export default router;
