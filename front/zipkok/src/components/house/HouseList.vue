@@ -14,51 +14,16 @@ const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
 const childCompRef = ref(null);
-const emit = defineEmits(['updateHouseList']);
+const emit = defineEmits(["updateHouseList"]);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
-
-const searchDongValue = ref(route.query.searchType == 0? route.query.searchValue:null);
-const searchBuildingValue = ref(route.query.searchType == 1?searchValue.value:"");
-const houseId = ref('APT0');
+const searchDongValue = ref(route.query.searchType == 0 ? route.query.searchValue : null);
+const searchBuildingValue = ref(route.query.searchType == 1 ? searchValue.value : "");
+const houseId = ref("APT0");
 const priceType = ref(0);
-const houseList = ref([
-  {
-    id: "APT4719033080250018000001",
-    name: "남경앳홈비앙채",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 150000000,
-  },
-  {
-    id: "APT4711123030030147000401",
-    name: "Happy Home",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 150000000,
-  },
-  {
-    id: "APT4711123030030154000001",
-    name: "와이드빌",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 180000000,
-  },
-  {
-    id: "APT4719033080270092000001",
-    name: "삼성전자",
-    sido: "경상북도",
-    sigungu: "구미시",
-    dong: "진평동",
-    averagePrice: 650000000,
-  },
-]);
+const houseList = ref([]);
 
-
-// --------------- 동 검색 탭 설정 
+// --------------- 동 검색 탭 설정
 const callChildFunction = () => {
   if (searchType.value == 0) {
     childCompRef.value.sendDataToParent();
@@ -77,7 +42,6 @@ const receiveDataFromChild = (data) => {
   }
 };
 
-
 // --------------- 검색 작업
 function search() {
   if (type == "main") {
@@ -88,31 +52,28 @@ function search() {
   } else {
     getList();
   }
-  
 }
-
-
 
 onMounted(() => {
   console.log("mount됨");
   console.log("query ", route.query);
-  if(type == 'main'){
+  if (type == "main") {
     getRecommend();
   } else {
-    // 검색창 세팅 
+    // 검색창 세팅
     getList();
   }
-  
 });
 
 // ----------------- 검색 api
 // 검색 결과 받아오기 (동, 이름)
 const getList = () => {
   console.log(searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기");
-  if(searchType.value == 0){
-    getAptsByDong({
-      dong: searchValue.value
-      }, 
+  if (searchType.value == 0) {
+    getAptsByDong(
+      {
+        dong: searchValue.value,
+      },
       ({ data }) => {
         console.log("받았다!!", data);
         houseList.value = data;
@@ -121,78 +82,84 @@ const getList = () => {
       (error) => {
         console.log(error);
       }
-    )
-  } else if (searchType.value == 1){
-    getAptsByName({
-      name: searchValue.value
-      }, 
+    );
+  } else if (searchType.value == 1) {
+    getAptsByName(
+      {
+        name: searchValue.value,
+      },
       ({ data }) => {
         console.log("받았다!!", data);
         houseList.value = data;
-        settingHoustList(data);
+        settingHouseList(data);
       },
       (error) => {
         console.log(error);
       }
-    )
+    );
   }
 };
 // 검색 결과 받아오기 (범위)
 const getRangeList = () => {
   getAptsByLatLngs();
-}
+};
 // 추천 매물 받아오기
-function getRecommend(){
+function getRecommend() {
   //현재 로그인 상태 확인
   console.log("로그인 확인");
   const flag = "logout";
-  if(flag != 'login'){ //로그아웃 상태면 
+  if (flag != "login") {
+    //로그아웃 상태면
     if (!("geolocation" in navigator)) {
       return;
     }
 
     // get position
     navigator.geolocation.getCurrentPosition((pos) => {
-      getRecApts({
-        type: "logout",
-        lng:pos.coords.longitude,
-        lat: pos.coords.latitude
-      }, 
-      ({ data }) => {
+      getRecApts(
+        {
+          type: "logout",
+          lng: pos.coords.longitude,
+          lat: pos.coords.latitude,
+        },
+        ({ data }) => {
           console.log("받았다!!", data);
           houseList.value = data;
         },
         (error) => {
           console.log(error);
         }
-      )
+      );
     });
   }
 }
 
 // 집 세팅
 const settingHouseList = (val) => {
-  emit('updateHouseList', val);
-}
+  emit("updateHouseList", val);
+};
 
-
-// ---------------이외 
-// 모달 열릴 때 작동 
+// ---------------이외
+// 모달 열릴 때 작동
 const setHouseId = (id) => {
   console.log("setHouseId=" + id);
   store.changeId(id);
   houseId.value = id;
 };
-// 탭 바꾸기 
+// 탭 바꾸기
 const changeTab = (val) => {
   searchType.value = val;
 };
 </script>
 
 <template>
-  <div class="container me-0 mb-0 ms-3 mt-2" style="height: 80vh; overflow: scroll;">
+  <div
+    id="searchSidebar"
+    class="container me-0 mb-0 ms-3 mt-0 pb-0"
+    style="height: 85vh; overflow-y: scroll; overflow-x: scroll"
+  >
     <!-- 검색창 시작 -->
-    <div class="mb-4 ms-1">
+    <div class="mb-4 ms-1 mb-0 pb-0">
       <ul class="nav nav-underline">
         <li class="nav-item">
           <a
@@ -204,10 +171,7 @@ const changeTab = (val) => {
           >
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link boardNav"
-            :class="{ active: searchType == 1 }"
-            @click="changeTab(1)"
+          <a class="nav-link boardNav" :class="{ active: searchType == 1 }" @click="changeTab(1)"
             >건물명</a
           >
         </li>
@@ -226,10 +190,7 @@ const changeTab = (val) => {
           </div>
         </div>
         <!-- 건물명 검색 -->
-        <div
-          class="w-100 d-flex align-items-center me-5"
-          v-if="searchType == 1"
-        >
+        <div class="w-100 d-flex align-items-center me-5" v-if="searchType == 1">
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"
@@ -274,7 +235,6 @@ const changeTab = (val) => {
           v-for="house in houseList"
           :key="house"
           :houseInfo="house"
-          :priceType="priceType"
           @click="setHouseId(house.aptCode)"
         />
       </div>
@@ -303,4 +263,12 @@ const changeTab = (val) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#searchSidebar::-webkit-scrollbar {
+  width: 10px;
+}
+#searchSidebar::-webkit-scrollbar-thumb {
+  background: #ade8f4;
+  border-radius: 10px;
+}
+</style>
