@@ -49,55 +49,30 @@ const goModify = () => {
 </script>
 <template>
   <div class="m-5 w-25">
-    <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
+    <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">회원 정보 조회</h3>
     <form>
       <div class="mb-3">
         <label class="form-label">이름</label>
-        <input
-          type="text"
-          class="form-control"
-          :placeholder="user.name"
-          readonly
-        />
+        <input type="text" class="form-control" :placeholder="user.name" readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          :placeholder="user.email"
-          readonly
-        />
+        <input type="email" class="form-control" :placeholder="user.email" readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">나이</label>
-        <input
-          type="number"
-          class="form-control"
-          :placeholder="user.age"
-          readonly
-        />
+        <input type="number" class="form-control" :placeholder="user.age" readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
         <div v-for="item in preferedPlaceArr" :key="item">
-          <input
-            type="text"
-            class="form-control mb-1"
-            :placeholder="item"
-            readonly
-          />
+          <input type="text" class="form-control mb-1" :placeholder="item" readonly />
         </div>
       </div>
       <div class="mb-3">
         <label class="form-label">거주지 선정 기준</label>
-        <input
-          type="text"
-          class="form-control"
-          :placeholder="user.preferedType"
-          readonly
-        />
+        <input type="text" class="form-control" :placeholder="user.preferedType" readonly />
       </div>
       <div class="d-flex justify-content-between">
         <button

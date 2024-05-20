@@ -25,17 +25,12 @@ const current = ref("");
 <template>
   <div class="me-2">
     <select class="form-select w-25 mb-2" v-model="current">
-      <option value="" selected>선택하세요</option>
+      <option value="" selected disabled>선택하세요</option>
       <option value="park">공원</option>
       <option value="office">관공서</option>
       <option value="school">학교</option>
     </select>
-    <KakaoMap
-      :lat="houseInfo.lat"
-      :lng="houseInfo.lng"
-      width="65rem"
-      class="mb-4"
-    >
+    <KakaoMap :lat="houseInfo.lat" :lng="houseInfo.lng" width="65rem" class="mb-4">
       <!--아파트 위치 마커 (고정)-->
       <KakaoMapMarker :lat="houseInfo.lat" :lng="houseInfo.lng" />
 
@@ -48,25 +43,16 @@ const current = ref("");
         />
       </div>
       <div v-if="current === 'school'">
-        <KakaoMapMarker
-          v-for="item in schools"
-          :key="item"
-          :lat="item.lat"
-          :lng="item.lng"
-        />
+        <KakaoMapMarker v-for="item in schools" :key="item" :lat="item.lat" :lng="item.lng" />
       </div>
     </KakaoMap>
     <!--녹지-->
     <div v-if="current == 'park'">
       <p style="font-size: large; font-weight: bold">
-        <span class="me-2">이 주변의</span
-        ><span style="color: green">공원</span>
+        <span class="me-2">이 주변의</span><span style="color: green">공원</span>
       </p>
       <!--표-->
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in parks" :key="item.name">
@@ -85,10 +71,7 @@ const current = ref("");
         <span>주변 </span>
         <span style="color: #00b3d6">관공서</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in offices" :key="item">
@@ -107,10 +90,7 @@ const current = ref("");
         <span>주변 </span>
         <span style="color: #00b3d6">학교</span>
       </p>
-      <div
-        class="table-responsive card"
-        style="max-height: 300px; overflow-y: auto"
-      >
+      <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
             <tr v-for="item in schools" :key="item">

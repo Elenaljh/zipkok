@@ -35,6 +35,7 @@ const changeTab = (val) => {
 
 const busStation = ref([]);
 const getBusStations = async () => {
+  console.log("버스station 진입");
   const { VITE_BUS_API_KEY } = import.meta.env;
   const response = await axios.get(
     "http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList",
@@ -64,9 +65,7 @@ const getBusStations = async () => {
     "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
     "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
     "facility": "", "aptAnotherCode": null }-->
-  <div
-    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
-  >
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-body" id="modal">
         <div class="mb-2"><img src="/src/assets/houseInfo.png" /></div>
@@ -88,28 +87,18 @@ const getBusStations = async () => {
             >
           </li>
           <li class="nav-item">
-            <a
-              class="nav-link boardNav"
-              :class="{ active: num === 1 }"
-              @click="changeTab(1)"
+            <a class="nav-link boardNav" :class="{ active: num === 1 }" @click="changeTab(1)"
               >주변 정보</a
             >
           </li>
           <li class="nav-item">
-            <a
-              class="nav-link boardNav"
-              :class="{ active: num === 2 }"
-              @click="changeTab(2)"
+            <a class="nav-link boardNav" :class="{ active: num === 2 }" @click="changeTab(2)"
               >동네 소식</a
             >
           </li>
         </ul>
         <div class="ms-2 mt-3">
-          <HouseDetailBasicItem
-            v-if="num == 0"
-            :houseInfo="houseInfo"
-            :busStation="busStation"
-          />
+          <HouseDetailBasicItem v-if="num == 0" :houseInfo="houseInfo" :busStation="busStation" />
           <HouseDetailEnvItemVue v-if="num == 1" :houseInfo="houseInfo" />
           <HouseDetailFacItemVue v-if="num == 2" :houseId="houseId" />
         </div>

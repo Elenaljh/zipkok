@@ -5,8 +5,10 @@ const accessToken = ref("");
 const tm = ref({});
 const stationName = ref("");
 const grade = ref({});
+const { VITE_STATION_KEY, VITE_AIRGRADE_KEY } = import.meta.env;
 
 const convertCoordinate = async (lng, lat) => {
+  console.log("좌표 변환", lng, lat);
   await getauth();
   const response = await axios.get(
     "https://sgisapi.kostat.go.kr/OpenAPI3/transformation/transcoord.json",
@@ -20,11 +22,12 @@ const convertCoordinate = async (lng, lat) => {
       },
     }
   );
-  //   console.log(response.data.result);
+  console.log("좌표 변환 결과 ", response.data.result);
   tm.value = response.data.result;
 };
 
 const getauth = async () => {
+  console.log("auth키");
   const response = await axios.get(
     "https://sgisapi.kostat.go.kr/OpenAPI3/auth/authentication.json",
     {
@@ -34,18 +37,18 @@ const getauth = async () => {
       },
     }
   );
-  //   console.log(response.data.result.accessToken);
+  console.log(response.data.result.accessToken);
   accessToken.value = response.data.result.accessToken;
 };
 
 const getStation = async (lng, lat) => {
   await convertCoordinate(lng, lat);
+  console.log("측정소 가져오기2", tm.value.posX, tm.value.posY);
   const response = await axios.get(
     "https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getNearbyMsrstnList",
     {
       params: {
-        serviceKey:
-          "rWX2AaCdqb0YfCEqN5ZJaRLDvuUPIZJ5laUGeLjFrU0E2PRhcxdN2KDeJO52pr8ZrqoMzheTU8jZnZFd14g2PA%3D%3D",
+        serviceKey: VITE_STATION_KEY,
         returnType: "json",
         tmX: tm.value.posX,
         tmY: tm.value.posY,
@@ -53,18 +56,18 @@ const getStation = async (lng, lat) => {
       },
     }
   );
-  //   console.log(response.data.response.body.items[0].stationName);
+  console.log(response.data.response.body.items[0].stationName);
   stationName.value = response.data.response.body.items[0].stationName;
 };
 
 const getGrade = async (lng, lat) => {
+  console.log("등급 가져오기");
   await getStation(lng, lat);
   const response = await axios.get(
     "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty",
     {
       params: {
-        serviceKey:
-          "rWX2AaCdqb0YfCEqN5ZJaRLDvuUPIZJ5laUGeLjFrU0E2PRhcxdN2KDeJO52pr8ZrqoMzheTU8jZnZFd14g2PA%3D%3D",
+        serviceKey: VITE_AIRGRADE_KEY,
         returnType: "json",
         numOfRows: 1,
         stationName: stationName.value,
