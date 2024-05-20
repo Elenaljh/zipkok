@@ -66,9 +66,12 @@
 	    <if test="lng != null or lat != null or loc_cnt != null">
 	        SELECT *, ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(lng, lat)) as distance 
 			from apt_info
+			<where>
+				<include refid="andExclude"/>
+			</where>
 			order by distance
-			limit #{loc_cnt};
-			<include refid="andExclude"/>
+			limit #{loc_cnt}
+			
 	    </if>
 	</select>
 

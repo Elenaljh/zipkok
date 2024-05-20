@@ -177,7 +177,7 @@ const changeTab = (val) => {
         </li>
       </ul>
 
-      <div class="mt-3 d-flex justify-content-between align-items-center">
+      <div class="mt-3 d-flex justify-content-flex-start align-items-center">
         <!-- 지역 검색 -->
         <div v-if="searchType == 0">
           <div class="d-flex align-items-center">
@@ -190,7 +190,7 @@ const changeTab = (val) => {
           </div>
         </div>
         <!-- 건물명 검색 -->
-        <div class="w-100 d-flex align-items-center me-5" v-if="searchType == 1">
+        <div class="d-flex align-items-center" v-if="searchType == 1" style="width: 70%">
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"
@@ -203,7 +203,7 @@ const changeTab = (val) => {
         <RouterButton
           buttonIcon="/src/assets/buttonSearch.png"
           :buttonFunc="callChildFunction"
-          class="me-3"
+          class="ms-2"
         />
       </div>
     </div>
