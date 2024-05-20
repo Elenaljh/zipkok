@@ -6,8 +6,10 @@ import AddressSelectBox from "@/components/common/AddressSelectBox.vue";
 import { useRoute, useRouter } from "vue-router";
 import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
+import { useHouseStore } from "@/stores/house";
 import { getAptsByDong, getAptsByLatLngs, getRecApts, getAptsByName } from "@/api/map";
 
+const store = useHouseStore();
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
@@ -15,13 +17,14 @@ const childCompRef = ref(null);
 const emit = defineEmits(['updateHouseList']);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
+
 const searchDongValue = ref(route.query.searchType == 0? route.query.searchValue:null);
 const searchBuildingValue = ref(route.query.searchType == 1?searchValue.value:"");
 const houseId = ref('APT0');
 const priceType = ref(0);
 const houseList = ref([
   {
-    id: 1,
+    id: "APT4719033080250018000001",
     name: "남경앳홈비앙채",
     sido: "경상북도",
     sigungu: "구미시",
@@ -29,7 +32,7 @@ const houseList = ref([
     averagePrice: 150000000,
   },
   {
-    id: 2,
+    id: "APT4711123030030147000401",
     name: "Happy Home",
     sido: "경상북도",
     sigungu: "구미시",
@@ -37,7 +40,7 @@ const houseList = ref([
     averagePrice: 150000000,
   },
   {
-    id: 3,
+    id: "APT4711123030030154000001",
     name: "와이드빌",
     sido: "경상북도",
     sigungu: "구미시",
@@ -45,7 +48,7 @@ const houseList = ref([
     averagePrice: 180000000,
   },
   {
-    id: 4,
+    id: "APT4719033080270092000001",
     name: "삼성전자",
     sido: "경상북도",
     sigungu: "구미시",
@@ -73,6 +76,7 @@ const receiveDataFromChild = (data) => {
     console.log("데이터 받음 " + data.dongCode);
   }
 };
+
 
 // --------------- 검색 작업
 function search() {
@@ -176,6 +180,7 @@ const settingHouseList = (val) => {
 // 모달 열릴 때 작동 
 const setHouseId = (id) => {
   console.log("setHouseId=" + id);
+  store.changeId(id);
   houseId.value = id;
 };
 // 탭 바꾸기 
@@ -199,7 +204,10 @@ const changeTab = (val) => {
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link boardNav" :class="{ active: searchType == 1 }" @click="changeTab(1)"
+          <a
+            class="nav-link boardNav"
+            :class="{ active: searchType == 1 }"
+            @click="changeTab(1)"
             >건물명</a
           >
         </li>
@@ -218,7 +226,10 @@ const changeTab = (val) => {
           </div>
         </div>
         <!-- 건물명 검색 -->
-        <div class="w-100 d-flex align-items-center me-5" v-if="searchType == 1">
+        <div
+          class="w-100 d-flex align-items-center me-5"
+          v-if="searchType == 1"
+        >
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"

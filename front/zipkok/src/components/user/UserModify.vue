@@ -88,8 +88,7 @@ const validation = () => {
 };
 
 //형식 유효성 검사
-const validatePassword =
-  /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+const validatePassword = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
 const validPassword = computed(() => {
   return validatePassword.test(user.value.password);
 });
@@ -105,9 +104,7 @@ const preferedTypeList = ref([
 ]);
 
 const computedList = computed(() => {
-  return preferedTypeList.value.filter(
-    (item) => item.text !== user.value.preferedType
-  );
+  return preferedTypeList.value.filter((item) => item.text !== user.value.preferedType);
 });
 
 //셀렉트박스 위한 함수와 변수
@@ -139,27 +136,17 @@ const deleteAddress = (item) => {
 </script>
 <template>
   <div class="m-5 w-25">
-    <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
+    <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">회원 정보 수정</h3>
     <form>
       <div class="mb-3">
         <label class="form-label">이름</label>
-        <input
-          type="text"
-          class="form-control"
-          :placeholder="user.name"
-          v-model="user.name"
-        />
+        <input type="text" class="form-control" :placeholder="user.name" v-model="user.name" />
         <small v-show="!user.name" style="color: red">이름을 입력하세요</small>
       </div>
       <div class="mb-3">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          :placeholder="user.email"
-          readonly
-        />
+        <input type="email" class="form-control" :placeholder="user.email" readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
@@ -173,9 +160,7 @@ const deleteAddress = (item) => {
           <small style="color: red">비밀번호를 입력하세요</small>
         </div>
         <div v-show="!validPassword && user.password">
-          <small style="color: red"
-            >영문, 숫자, 특수문자를 조합하여 입력해주세요 (8-16자)</small
-          >
+          <small style="color: red">영문, 숫자, 특수문자를 조합하여 입력해주세요 (8-16자)</small>
         </div>
       </div>
       <div class="mb-3">
@@ -186,24 +171,13 @@ const deleteAddress = (item) => {
           :placeholder="user.age"
           v-model.number="user.age"
         />
-        <small v-show="user.age <= 0" style="color: red"
-          >나이를 입력하세요</small
-        >
+        <small v-show="user.age <= 0" style="color: red">나이를 입력하세요</small>
       </div>
       <div class="mb-3">
         <label class="form-label">선호지역 선택</label>
         <div v-if="preferedPlaceArr.length > 0">
-          <div
-            class="d-flex align-items-center mb-2"
-            v-for="item in preferedPlaceArr"
-            :key="item"
-          >
-            <input
-              type="text"
-              class="form-control"
-              :placeholder="item"
-              readonly
-            />
+          <div class="d-flex align-items-center mb-2" v-for="item in preferedPlaceArr" :key="item">
+            <input type="text" class="form-control" :placeholder="item" readonly />
             <img
               class="ms-2"
               src="/src/assets/delete.png"
@@ -214,14 +188,8 @@ const deleteAddress = (item) => {
           </div>
         </div>
 
-        <div
-          class="d-flex align-items-center"
-          v-if="preferedPlaceArr.length < 3"
-        >
-          <AddressSelectBox
-            ref="childCompRef"
-            @requestDataFromChild="receiveDataFromChild"
-          />
+        <div class="d-flex align-items-center" v-if="preferedPlaceArr.length < 3">
+          <AddressSelectBox ref="childCompRef" @requestDataFromChild="receiveDataFromChild" />
           <img
             class="ms-2"
             src="/src/assets/add.png"
@@ -238,17 +206,11 @@ const deleteAddress = (item) => {
         <label class="form-label">거주지 선정 기준</label>
         <select class="form-select" v-model="user.preferedType">
           <option selected>{{ user.preferedType }}</option>
-          <option
-            v-for="item in computedList"
-            :key="item.value"
-            :value="item.text"
-          >
+          <option v-for="item in computedList" :key="item.value" :value="item.text">
             {{ item.text }}
           </option>
         </select>
-        <small v-show="!user.preferedType" style="color: red"
-          >선호기준을 선택하세요</small
-        >
+        <small v-show="!user.preferedType" style="color: red">선호기준을 선택하세요</small>
       </div>
       <div class="d-flex justify-content-between">
         <button

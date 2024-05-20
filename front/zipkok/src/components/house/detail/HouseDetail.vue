@@ -2,37 +2,78 @@
 import HouseDetailBasicItem from "@/components/house/detail/item/HouseDetailBasicItem.vue";
 import HouseDetailEnvItemVue from "@/components/house/detail/item/HouseDetailEnvItem.vue";
 import HouseDetailFacItemVue from "@/components/house/detail/item/HouseDetailFacItem.vue";
-import HouseDetailRecItemVue from "@/components/house/detail/item/HouseDetailRecItem.vue";
-import { ref } from "vue";
-const { houseId } = defineProps({ houseId: String });
-const houseInfo = ref({
-  id: 1,
-  name: "남경앳홈비앙채",
-  sido: "경상북도",
-  sigungu: "구미시",
-  dong: "진평동",
-  roadAddress: "경상북도 구미시 삼일로 18",
-  averagePrice: 150000000,
-  numOfDong: 1,
-  numOfHouseHolds: 126,
-  dongCode: 4719012300,
+import { ref, watchEffect } from "vue";
+import { useMemberStore } from "@/stores/member";
+import { useHouseStore } from "@/stores/house";
+import { getGrade } from "@/util/airConditionUtil";
+import { getSchools, getOffices } from "@/util/houseDetail";
+import axios from "axios";
+
+const store = useMemberStore();
+const houseStore = useHouseStore();
+
+watchEffect(async () => {
+  const response = await axios.get(store.url + "/apt/details", {
+    params: {
+      aptCode: houseStore.houseId,
+    },
+  });
+  houseInfo.value = response.data;
+  houseStore.changeDetail(response.data);
+  getBusStations();
+  getGrade(houseInfo.value.lng, houseInfo.value.lat);
+  getSchools(houseInfo.value.lng, houseInfo.value.lat);
+  getOffices(houseInfo.value.lng, houseInfo.value.lat);
+
 });
+
+const houseInfo = ref({});
 
 const num = ref(0);
 const changeTab = (val) => {
   num.value = val;
 };
+
+const busStation = ref([]);
+const getBusStations = async () => {
+  console.log("버스station 진입");
+  const { VITE_BUS_API_KEY } = import.meta.env;
+  const response = await axios.get(
+    "http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList",
+    {
+      params: {
+        serviceKey: VITE_BUS_API_KEY,
+        _type: "json",
+        numOfRows: 3,
+        gpsLati: houseInfo.value.lat,
+        gpsLong: houseInfo.value.lng,
+      },
+    }
+  );
+  const tempArr = response.data.response.body.items.item;
+  busStation.value = [];
+  for (let i = 0; i < 3; i++) {
+    busStation.value.push(tempArr[i].nodenm);
+  }
+  console.log(busStation.value);
+};
 </script>
 
 <template>
+  <!--
+    { "aptCode": "APT4719033080250018000001", "aptName": "남경앳홈비앙채",
+    "drmAddress": "경상북도 구미시 삼일로 18", "bjdAddress": "", "bjdCode":
+    "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
+    "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
+    "facility": "", "aptAnotherCode": null }-->
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-body" id="modal">
         <div class="mb-2"><img src="/src/assets/houseInfo.png" /></div>
         <div class="ms-2">
-          <h5 style="font-weight: bolder">{{ houseInfo.name }}</h5>
+          <h5 style="font-weight: bolder">{{ houseInfo.aptName }}</h5>
           <p style="color: dimgray">
-            {{ houseInfo.sido }} {{ houseInfo.sigungu }} {{ houseInfo.dong }}
+            {{ houseInfo.drmAddress }}
           </p>
         </div>
         <!--탭 파트-->
@@ -48,25 +89,19 @@ const changeTab = (val) => {
           </li>
           <li class="nav-item">
             <a class="nav-link boardNav" :class="{ active: num === 1 }" @click="changeTab(1)"
-              >환경 정보</a
+              >주변 정보</a
             >
           </li>
           <li class="nav-item">
             <a class="nav-link boardNav" :class="{ active: num === 2 }" @click="changeTab(2)"
-              >동네 정보</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link boardNav" :class="{ active: num === 3 }" @click="changeTab(3)"
-              >최신 소식</a
+              >동네 소식</a
             >
           </li>
         </ul>
         <div class="ms-2 mt-3">
-          <HouseDetailBasicItem v-if="num == 0" />
-          <HouseDetailEnvItemVue v-if="num == 1" />
-          <HouseDetailFacItemVue v-if="num == 2" />
-          <HouseDetailRecItemVue v-if="num == 3" />
+          <HouseDetailBasicItem v-if="num == 0" :houseInfo="houseInfo" :busStation="busStation" />
+          <HouseDetailEnvItemVue v-if="num == 1" :houseInfo="houseInfo" />
+          <HouseDetailFacItemVue v-if="num == 2" :houseId="houseId" />
         </div>
       </div>
     </div>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- name space는 UserRepo의 fully qualified name으로 설정한다. -->
+<mapper namespace="com.ssafy.hw.model.dao.AptDetailDao">
+	<select id="searchDetailByCode" parameterType="string" resultType="AptDetail">
+		select * from apt_info where apt_code = #{aptCode}
+	</select>
+
+	<select id="searchTransactionByCode" parameterType="string" resultType="AptTransaction">
+		select * from transaction_real where apt_code = #{aptCode} and type = #{type} order by year desc, month desc, day desc
+	</select>
+
+	<select id="searchTransactionByName" parameterType="string" resultType="AptTransaction">
+		select * from transaction_real where apt_name = #{aptName} and type = #{type} order by year desc, month desc, day desc
+	</select>
+	
+	<select id="getAverage" parameterType="string" resultType="PriceAvgDto">
+		select avg(amount) amount, avg(deposit) deposit, avg(monthly_rent) monthlyRent
+		from transaction_real
+		where apt_code = #{aptCode} and type = #{type};
+	</select>
+
+	<select id="getOffice" parameterType="map" resultType="OfficeDto">
+		<![CDATA[
+		select * from public_office where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(longitude, latitude)) <= 2000
+        ]]>
+	</select>
+
+	<select id="getSchool" parameterType="map" resultType="SchoolDto">
+		<![CDATA[
+		select * from school
+		where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(lng, lat)) <= 2000
+        ]]>
+	</select>
+</mapper>
