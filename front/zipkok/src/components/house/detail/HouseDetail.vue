@@ -6,7 +6,7 @@ import { ref, watchEffect } from "vue";
 import { useMemberStore } from "@/stores/member";
 import { useHouseStore } from "@/stores/house";
 import { getGrade } from "@/util/airConditionUtil";
-import { getSchools, getOffices } from "@/util/houseDetail";
+import { getDong, getPopulation, getNews, dong } from "@/util/houseDetail";
 import axios from "axios";
 
 const store = useMemberStore();
@@ -22,9 +22,9 @@ watchEffect(async () => {
   houseStore.changeDetail(response.data);
   getBusStations();
   getGrade(houseInfo.value.lng, houseInfo.value.lat);
-  getSchools(houseInfo.value.lng, houseInfo.value.lat);
-  getOffices(houseInfo.value.lng, houseInfo.value.lat);
-
+  getDong(houseInfo.value.bjdCode);
+  getPopulation(houseInfo.value.bjdCode);
+  getNews(houseInfo.value.aptName, dong.value);
 });
 
 const houseInfo = ref({});
@@ -101,7 +101,7 @@ const getBusStations = async () => {
         <div class="ms-2 mt-3">
           <HouseDetailBasicItem v-if="num == 0" :houseInfo="houseInfo" :busStation="busStation" />
           <HouseDetailEnvItemVue v-if="num == 1" :houseInfo="houseInfo" />
-          <HouseDetailFacItemVue v-if="num == 2" :houseId="houseId" />
+          <HouseDetailFacItemVue v-if="num == 2" :houseInfo="houseInfo" />
         </div>
       </div>
     </div>

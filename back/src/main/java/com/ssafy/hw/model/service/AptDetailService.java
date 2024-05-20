@@ -1,10 +1,7 @@
 package com.ssafy.hw.model.service;
 
-import com.ssafy.hw.model.dto.AptDetail;
-import com.ssafy.hw.model.dto.AptTransaction;
-import com.ssafy.hw.model.dto.OfficeDto;
-import com.ssafy.hw.model.dto.PriceAvgDto;
-import com.ssafy.hw.model.dto.SchoolDto;
+import com.ssafy.hw.model.dto.*;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +21,10 @@ public interface AptDetailService {
     public List<OfficeDto> getOffice(double lat, double lng);
     //학교
     public List<SchoolDto> getSchool(double lat, double lng);
+
+    //인구
+    public PopulationDto getPopulation(String bjdCode);
+
+    //동이름
+    public String getDongbyCode(String bjdCode);
 }

@@ -1,10 +1,7 @@
 package com.ssafy.hw.model.dao;
 
-import com.ssafy.hw.model.dto.AptDetail;
-import com.ssafy.hw.model.dto.AptTransaction;
-import com.ssafy.hw.model.dto.OfficeDto;
-import com.ssafy.hw.model.dto.PriceAvgDto;
-import com.ssafy.hw.model.dto.SchoolDto;
+import com.ssafy.hw.model.dto.*;
+
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +23,8 @@ public interface AptDetailDao {
     //학교
     public List<SchoolDto> getSchool(Map<String, Double> param);
     //인구 구조
+    public PopulationDto getPopulation(String bjdCode);
 
-    //맛집..?????
+    //동 이름
+    public String getDongbyCode(String bjdCode);
 }

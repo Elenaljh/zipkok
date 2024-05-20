@@ -1,11 +1,8 @@
 package com.ssafy.hw.model.service;
 
 import com.ssafy.hw.model.dao.AptDetailDao;
-import com.ssafy.hw.model.dto.AptDetail;
-import com.ssafy.hw.model.dto.AptTransaction;
-import com.ssafy.hw.model.dto.OfficeDto;
-import com.ssafy.hw.model.dto.PriceAvgDto;
-import com.ssafy.hw.model.dto.SchoolDto;
+import com.ssafy.hw.model.dto.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +49,16 @@ public class AptDetailServiceImpl implements AptDetailService {
         param.put("lat", lat);
         param.put("lng", lng);
         return dao.getSchool(param);
+    }
+
+    @Override
+    public PopulationDto getPopulation(String bjdCode) {
+        return dao.getPopulation(bjdCode);
+    }
+
+    @Override
+    public String getDongbyCode(String bjdCode) {
+        return dao.getDongbyCode(bjdCode);
     }
 
 }

@@ -33,4 +33,17 @@
 		where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(lng, lat)) <= 2000
         ]]>
 	</select>
+
+	<select id="getPopulation" parameterType="string" resultType="PopulationDto">
+		<![CDATA[
+		select total, male, female, zero_male+zero_female as zero, ten_male+ten_female as ten,
+		twenty_male+twenty_female as twenty, thirty_male+thirty_female as thirty,
+		forty_male+forty_female as forty, fifty_male+fifty_female as fifty, old_male+old_female as old
+		from population where bjd_code=#{bjdCode};
+		]]>
+	</select>
+
+	<select id="getDongbyCode" parameterType="string" resultType="string">
+		select dongName from dongcode where dongCode=#{bjdCode}
+	</select>
 </mapper>
