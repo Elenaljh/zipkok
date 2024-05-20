@@ -6,8 +6,10 @@ import AddressSelectBox from "@/components/common/AddressSelectBox.vue";
 import { useRoute, useRouter } from "vue-router";
 import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
+import { useHouseStore } from "@/stores/house";
 import { getAptsByDong, getAptsByLatLngs, getRecApts, getAptsByName } from "@/api/map";
 
+const store = useHouseStore();
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
@@ -141,6 +143,7 @@ const settingHouseList = (val) => {
 // 모달 열릴 때 작동
 const setHouseId = (id) => {
   console.log("setHouseId=" + id);
+  store.changeId(id);
   houseId.value = id;
 };
 // 탭 바꾸기

@@ -8,6 +8,9 @@ export const useMemberStore = defineStore(
   () => {
     const router = useRouter();
     const isAuthorized = ref(false);
+    const name = ref("");
+    const email = ref("");
+    const memberId = ref(0);
 
     const url = ref("http://localhost:8080");
 
@@ -50,6 +53,9 @@ export const useMemberStore = defineStore(
       login,
       logout,
       parsedVal,
+      name,
+      email,
+      memberId,
     };
   },
   {

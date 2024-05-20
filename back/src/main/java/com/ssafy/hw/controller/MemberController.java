@@ -1,6 +1,7 @@
 package com.ssafy.hw.controller;
 
 import com.ssafy.hw.model.dto.LoginDto;
+import com.ssafy.hw.model.dto.LoginOutputDto;
 import com.ssafy.hw.model.dto.Member;
 import com.ssafy.hw.model.service.MemberService;
 import jakarta.servlet.http.Cookie;
@@ -110,7 +111,8 @@ public class MemberController {
 			HttpSession session = request.getSession(true);
 			session.setAttribute("loginMember", member.getEmail());
 			session.setMaxInactiveInterval(3600); //1시간동안 로그인 유지
-			return new ResponseEntity<String>("로그인 완료", HttpStatus.OK);
+			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId());
+			return new ResponseEntity<LoginOutputDto>(loginOutputDto, HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
