@@ -14,10 +14,10 @@ pinia.use(piniaPluginPersistedstate);
 
 const { VITE_KAKAO_MAP_API_KEY } = import.meta.env;
 
-useKakao(VITE_KAKAO_MAP_API_KEY);
+useKakao(VITE_KAKAO_MAP_API_KEY, ['clusterer', 'services', 'drawing']);
 console.log(VITE_KAKAO_MAP_API_KEY);
 const app = createApp(App);
 
-app.use(router);
 app.use(pinia);
+app.use(router);
 app.mount("#app");

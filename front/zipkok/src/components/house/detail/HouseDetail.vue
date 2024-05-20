@@ -24,6 +24,7 @@ watchEffect(async () => {
   getGrade(houseInfo.value.lng, houseInfo.value.lat);
   getSchools(houseInfo.value.lng, houseInfo.value.lat);
   getOffices(houseInfo.value.lng, houseInfo.value.lat);
+
 });
 
 const houseInfo = ref({});

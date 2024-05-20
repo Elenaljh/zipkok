@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import HouseDetail from "@/components/house/detail/HouseDetail.vue";
 import RouterButton from "@/components/common/RouterButton.vue";
 import AddressSelectBox from "@/components/common/AddressSelectBox.vue";
@@ -7,16 +7,20 @@ import { useRoute, useRouter } from "vue-router";
 import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
 import { useHouseStore } from "@/stores/house";
+import { getAptsByDong, getAptsByLatLngs, getRecApts, getAptsByName } from "@/api/map";
 
 const store = useHouseStore();
 const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
 const childCompRef = ref(null);
+const emit = defineEmits(['updateHouseList']);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
-const searchBuildingValue = ref("");
-const houseId = ref("0");
+
+const searchDongValue = ref(route.query.searchType == 0? route.query.searchValue:null);
+const searchBuildingValue = ref(route.query.searchType == 1?searchValue.value:"");
+const houseId = ref('APT0');
 const priceType = ref(0);
 const houseList = ref([
   {
@@ -53,16 +57,16 @@ const houseList = ref([
   },
 ]);
 
-const changeTab = (val) => {
-  searchType.value = val;
-};
 
+// --------------- 동 검색 탭 설정 
 const callChildFunction = () => {
   if (searchType.value == 0) {
     childCompRef.value.sendDataToParent();
   } else if (searchType.value == 1) {
     searchValue.value = searchBuildingValue.value;
   }
+  console.log("검색 값은 이거입니다: ", searchType.value, " ", searchValue.value);
+  search();
 };
 
 const receiveDataFromChild = (data) => {
@@ -73,40 +77,120 @@ const receiveDataFromChild = (data) => {
   }
 };
 
-const getList = () => {
-  console.log(
-    searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기"
-  );
-};
 
-watch(searchValue, () => {
-  console.log("watch");
+// --------------- 검색 작업
+function search() {
   if (type == "main") {
     router.push({
       name: "house",
       query: { searchType: searchType.value, searchValue: searchValue.value },
     });
+  } else {
+    getList();
   }
-  getList();
-});
+  
+}
+
+
 
 onMounted(() => {
   console.log("mount됨");
-  getList();
+  console.log("query ", route.query);
+  if(type == 'main'){
+    getRecommend();
+  } else {
+    // 검색창 세팅 
+    getList();
+  }
+  
 });
 
+// ----------------- 검색 api
+// 검색 결과 받아오기 (동, 이름)
+const getList = () => {
+  console.log(searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기");
+  if(searchType.value == 0){
+    getAptsByDong({
+      dong: searchValue.value
+      }, 
+      ({ data }) => {
+        console.log("받았다!!", data);
+        houseList.value = data;
+        settingHouseList(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  } else if (searchType.value == 1){
+    getAptsByName({
+      name: searchValue.value
+      }, 
+      ({ data }) => {
+        console.log("받았다!!", data);
+        houseList.value = data;
+        settingHoustList(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
+};
+// 검색 결과 받아오기 (범위)
+const getRangeList = () => {
+  getAptsByLatLngs();
+}
+// 추천 매물 받아오기
+function getRecommend(){
+  //현재 로그인 상태 확인
+  console.log("로그인 확인");
+  const flag = "logout";
+  if(flag != 'login'){ //로그아웃 상태면 
+    if (!("geolocation" in navigator)) {
+      return;
+    }
+
+    // get position
+    navigator.geolocation.getCurrentPosition((pos) => {
+      getRecApts({
+        type: "logout",
+        lng:pos.coords.longitude,
+        lat: pos.coords.latitude
+      }, 
+      ({ data }) => {
+          console.log("받았다!!", data);
+          houseList.value = data;
+        },
+        (error) => {
+          console.log(error);
+        }
+      )
+    });
+  }
+}
+
+// 집 세팅
+const settingHouseList = (val) => {
+  emit('updateHouseList', val);
+}
+
+
+// ---------------이외 
+// 모달 열릴 때 작동 
 const setHouseId = (id) => {
   console.log("setHouseId=" + id);
   store.changeId(id);
   houseId.value = id;
 };
+// 탭 바꾸기 
+const changeTab = (val) => {
+  searchType.value = val;
+};
 </script>
 
 <template>
-  <div
-    class="container me-0 mb-0 ms-3 mt-2"
-    :style="{ 'min-width': '450px', 'max-width': '550px' }"
-  >
+  <div class="container me-0 mb-0 ms-3 mt-2" style="height: 80vh; overflow: scroll;">
     <!-- 검색창 시작 -->
     <div class="mb-4 ms-1">
       <ul class="nav nav-underline">
@@ -136,7 +220,8 @@ const setHouseId = (id) => {
             <AddressSelectBox
               ref="childCompRef"
               @requestDataFromChild="receiveDataFromChild"
-              :fullStyle="{ width: 'fit-content' }"
+              :initAddress="searchDongValue"
+              :doRefresh="false"
             />
           </div>
         </div>
@@ -176,7 +261,7 @@ const setHouseId = (id) => {
           v-for="house in houseList"
           :key="house"
           :houseInfo="house"
-          @click="setHouseId(house.id)"
+          @click="setHouseId(house.aptCode)"
         />
       </div>
       <!-- 추천 매물 끝 -->
@@ -190,7 +275,7 @@ const setHouseId = (id) => {
           :key="house"
           :houseInfo="house"
           :priceType="priceType"
-          @click="setHouseId(house.id)"
+          @click="setHouseId(house.aptCode)"
         />
       </div>
       <!-- 검색 결과 끝 -->
