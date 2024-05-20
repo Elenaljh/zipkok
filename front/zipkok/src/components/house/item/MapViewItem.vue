@@ -29,7 +29,6 @@ const filteredSearchMarkerList = computed(() => searchMarkerList.value);
 watch(
   () => props.houseMarkerList,
   () => {
-    console.log("ㅎㅇ");
     houseMarkerList.value = props.houseMarkerList;
   }
 );
@@ -38,7 +37,10 @@ watch(filteredMarkerList, () => {
   if (filteredMarkerList.value.length > 0) {
     lat.value = filteredMarkerList.value[0].lat;
     lng.value = filteredMarkerList.value[0].lng;
-    map.value.panTo(new kakao.maps.LatLng(lat.value, lng.value));
+    map.value.setCenter(new kakao.maps.LatLng(lat.value, lng.value));
+    map.value.setLevel(4);
+    map.value.setLevel(3, { animate: true });
+    console.log("현재 레벨: ", map.value.getLevel());
   }
 });
 
@@ -112,11 +114,11 @@ const placesSearchCB = (data, status) => {
 </script>
 
 <template>
-  <div class="p-0 m-0" style="width: fit-content">
+  <div class="p-0 m-0" style="width: fit-content; height: fit-content">
     <KakaoMap
       id="map"
       :width="mvw + 'vw'"
-      height="80vh"
+      height="85vh"
       :lat="lat"
       :lng="lng"
       @onLoadKakaoMap="onLoadKakaoMap"
@@ -142,8 +144,8 @@ const placesSearchCB = (data, status) => {
         :lng="marker.lng"
         :image="{
           imageSrc: '/src/assets/marker/place.png',
-          imageWidth: 50,
-          imageHeight: 64,
+          imageWidth: 40,
+          imageHeight: 54,
           imageOption: {},
         }"
       />
@@ -153,5 +155,6 @@ const placesSearchCB = (data, status) => {
 
 <style scoped>
 #map {
+  z-index: 0;
 }
 </style>
