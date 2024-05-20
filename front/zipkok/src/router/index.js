@@ -102,7 +102,8 @@ const router = createRouter({
           component: () => import("@/components/board/BoardCreate.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.isAuthorized()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (!isAuthorized.value) {
               router.push(from);
             }
           },
@@ -113,7 +114,8 @@ const router = createRouter({
           component: () => import("@/components/board/BoardUpdate.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.isAuthorized()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (!isAuthorized.value) {
               router.push(from);
             }
           },
@@ -139,5 +141,13 @@ router.beforeEach(() => {
   // console.log("피니아 값: " + store.isAuthorized);
   // console.log("로컬스토리지 값: " + store.isAuthorized());
 });
+
+function checkUser(to, from)  {
+  const store = useMemberStore();
+  const { isAuthorized } = storeToRefs(store);
+  if (isAuthorized.value) {
+    router.push(from);
+  }
+}
 
 export default router;
