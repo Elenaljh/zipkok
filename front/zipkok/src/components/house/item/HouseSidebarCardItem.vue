@@ -13,12 +13,20 @@ const { houseInfo } = defineProps({ houseInfo: Object });
     />
     <div class="m-2">
       <p class="mb-1" style="font-weight: bold; font-size: 22px">
-        {{ moneyFormat(houseInfo.averagePrice) }}
+        {{ moneyFormat(houseInfo.averagePrice ? houseInfo.averagePrice : 160000000) }}
       </p>
-      <p class="small-content">{{ houseInfo.sido }} {{ houseInfo.sigungu }} {{ houseInfo.dong }}</p>
-      <p style="font-weight: bold">{{ houseInfo.name }}</p>
+      <p class="small-content">{{ houseInfo.drmAddress }}</p>
+      <p style="font-weight: bold">{{ houseInfo.aptName }}</p>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.small-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* 최대 줄 수를 2로 설정 */
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 넘치는 부분에 "..." 표시 */
+}
+</style>

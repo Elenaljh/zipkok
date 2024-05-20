@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
 	private final NewsApiDao newsApiDao;
+	
+	public NewsServiceImpl(NewsApiDao newsApiDao) {
+		this.newsApiDao = newsApiDao;
+	}
 
 	@Override
 	public List<NewsDto> searchNews(String keyword, String dong)  throws Exception {
