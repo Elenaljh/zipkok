@@ -17,11 +17,14 @@ const childCompRef = ref(null);
 const emit = defineEmits(["updateHouseList"]);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
+
 const searchDongValue = ref(route.query.searchType == 0 ? route.query.searchValue : null);
 const searchBuildingValue = ref(route.query.searchType == 1 ? searchValue.value : "");
 const houseId = ref("APT0");
 const priceType = ref(0);
+
 const houseList = ref([]);
+
 
 // --------------- 동 검색 탭 설정
 const callChildFunction = () => {
@@ -154,6 +157,7 @@ const changeTab = (val) => {
 </script>
 
 <template>
+
   <div
     id="searchSidebar"
     class="container me-0 mb-0 ms-3 mt-0 pb-0"
@@ -191,7 +195,9 @@ const changeTab = (val) => {
           </div>
         </div>
         <!-- 건물명 검색 -->
+
         <div class="d-flex align-items-center" v-if="searchType == 1" style="width: 70%">
+
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"
@@ -259,7 +265,7 @@ const changeTab = (val) => {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <HouseDetail :houseId="houseId" />
+      <HouseDetail />
     </div>
   </div>
 </template>

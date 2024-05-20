@@ -1,10 +1,6 @@
 package com.ssafy.hw.controller;
 
-import com.ssafy.hw.model.dto.AptDetail;
-import com.ssafy.hw.model.dto.AptTransaction;
-import com.ssafy.hw.model.dto.OfficeDto;
-import com.ssafy.hw.model.dto.PriceAvgDto;
-import com.ssafy.hw.model.dto.SchoolDto;
+import com.ssafy.hw.model.dto.*;
 import com.ssafy.hw.model.service.AptDetailService;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +68,26 @@ public class AptDetailController {
         try {
             List<SchoolDto> school = service.getSchool(lat, lng);
             return new ResponseEntity<List<SchoolDto>>(school, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/population")
+    public ResponseEntity<?> getPopulation(@RequestParam String bjdCode) {
+        try {
+            PopulationDto population = service.getPopulation(bjdCode);
+            return new ResponseEntity<PopulationDto>(population, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/dong")
+    public ResponseEntity<?> getDong(@RequestParam String bjdCode) {
+        try {
+            String dong = service.getDongbyCode(bjdCode);
+            return new ResponseEntity<String>(dong, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
         }

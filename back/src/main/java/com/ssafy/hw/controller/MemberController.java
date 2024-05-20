@@ -4,6 +4,7 @@ import com.ssafy.hw.model.dto.LoginDto;
 import com.ssafy.hw.model.dto.LoginOutputDto;
 import com.ssafy.hw.model.dto.Member;
 import com.ssafy.hw.model.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ public class MemberController {
 	}
 
 	//회원가입
+	@Operation(summary="회원가입", description="회원가입")
 	@PostMapping("/member")
 	public ResponseEntity<?> join(@RequestBody Member member, HttpServletRequest request) {
 		try {
@@ -39,6 +41,7 @@ public class MemberController {
 
 	//회원정보조회 - 아이디 중복 확인용 api도 겸업
 	//아이디 중복 확인 -> 쿼리 파라미터로 userEmail이 붙어야 함
+	@Operation(summary="회원정보조회, 아이디 중복 확인", description="userEmail을 쿼리파라미터로 보내면 아이디 중복 여부를 확인한다")
 	@GetMapping("/member")
 	public ResponseEntity<?> searchMemberById(
 			@RequestParam(required = false) String userEmail,
@@ -65,6 +68,7 @@ public class MemberController {
 
 
 	//회원 정보 수정
+	@Operation(summary="회원정보 수정", description="회원 정보를 수정한다")
 	@PutMapping("/member")
 	public ResponseEntity<?> updateMember(@RequestBody Member member, @SessionAttribute(name="loginMember", required = false) String email) {
 		try {
@@ -78,6 +82,7 @@ public class MemberController {
 
 
 	//회원 탈퇴
+	@Operation(summary="회원탈퇴", description="계정을 삭제한다")
 	@DeleteMapping("/member")
 	public ResponseEntity<?> deleteMember(@SessionAttribute(name="loginMember", required = false) String email, HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -100,6 +105,7 @@ public class MemberController {
 
 
 	//로그인
+	@Operation(summary="로그인", description="로그인한 후, 세션에 이메일을 저장한다.")
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginDto dto, HttpServletRequest request) {
 		try {
@@ -120,6 +126,7 @@ public class MemberController {
 	}
 
 	//로그아웃
+	@Operation(summary="로그아웃", description="로그아웃 후 세션과 쿠키를 삭제한다.")
 	@GetMapping("/logout")
 	public ResponseEntity<?> logout(@SessionAttribute(name="loginMember", required = false) String email, HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -139,6 +146,7 @@ public class MemberController {
 	}
 
 	//회원인증
+	@Operation(summary="회원인증", description="로그인한 상태인지 확인한다.")
 	@GetMapping("/authorization")
 	public Boolean authorize(@SessionAttribute(name="loginMember", required = false) String email) {
 		if (email != null) {
