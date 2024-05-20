@@ -18,4 +18,7 @@ public interface BoardService {
 	int deleteBoard(int boardId);
 	int updateBoom(int boardId);
 	int updateHit(int boardId);
+	// 유저 권한 확인
+    public boolean checkInsertNotice(int memberId, int type);
+    public boolean checkModDel(int memberId, int boardId);
 }

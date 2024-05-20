@@ -55,15 +55,9 @@ const logoutUser = async () => {
         </span>
         <span class="me-2" v-else>
           <Suspense>
-            <img
-              src="@/assets/navLogout.png"
-              @click="logoutUser"
-              style="cursor: pointer"
-            />
+            <img src="@/assets/navLogout.png" @click="logoutUser" style="cursor: pointer" />
           </Suspense>
-          <router-link :to="{ name: 'userDetail' }"
-            ><img src="@/assets/navUser.png"
-          /></router-link>
+          <router-link :to="{ name: 'userDetail' }"><img src="@/assets/navUser.png" /></router-link>
         </span>
       </div>
     </div>

@@ -2,10 +2,12 @@
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { registBoard, getModifyBoard, modifyBoard } from "@/api/board";
+import { useMemberStore } from "@/stores/member";
+import { callSwal } from "@/util/util";
 
 const router = useRouter();
 const route = useRoute();
-
+const memberStore = useMemberStore();
 const props = defineProps({ type: String });
 const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
 
@@ -15,8 +17,8 @@ const board = ref({
   boardId: 0,
   title: "",
   content: "",
-  memberId: 1,
-  writer: "김싸피",
+  memberId: memberStore.memberId,
+  writer: memberStore.name,
   hit: 0,
   type: 1,
   created_at: "",
@@ -94,12 +96,28 @@ function writeboard() {
   registBoard(
     board.value,
     (response) => {
-      let msg = "문제가 발생했습니다.";
-      if (response.status == 201) msg = "등록이 완료되었습니다.";
-      alert(msg);
+      if (response.status == 201) {
+        callSwal({
+          icon: "success",
+          title: "등록 성공",
+          text: "등록이 완료되었습니다.",
+        });
+      } else {
+        callSwal({
+          title: "등록 실패",
+          text: response,
+        });
+      }
       moveList();
     },
-    (error) => console.log(error)
+    (error) => {
+      console.log(error);
+      callSwal({
+        icon: "error",
+        title: "등록 실패",
+        text: error.response.data,
+      });
+    }
   );
 }
 
@@ -108,14 +126,30 @@ function updateboard() {
   modifyBoard(
     board.value,
     (response) => {
-      let msg = "문제가 발생했습니다.";
-      if (response.status == 200) msg = "수정이 완료되었습니다.";
-      alert(msg);
+      if (response.status == 200) {
+        callSwal({
+          icon: "success",
+          title: "수정 성공",
+          text: "수정이 완료되었습니다.",
+        });
+      } else {
+        callSwal({
+          title: "수정 실패",
+          text: response,
+        });
+      }
       moveList();
       // router.push({ name: "board-view" });
       // router.push(`/board/view/${board.value.boardId}`);
     },
-    (error) => console.log(error)
+    (error) => {
+      console.log(error);
+      callSwal({
+        icon: "error",
+        title: "수정 실패",
+        text: error.response.data,
+      });
+    }
   );
 }
 

@@ -10,7 +10,7 @@
 	
 	<select id="getComments" parameterType="int" resultType="Comment">
 		select comment_id, content, board_id, u.member_id, name as writer
-		from comment c join user u using(member_id)
+		from comment c join member u using(member_id)
 		where board_id = #{boardId}
 	</select>
 	
