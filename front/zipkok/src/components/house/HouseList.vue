@@ -131,7 +131,7 @@ function getRecommend() {
           settingHouseList(data);
         },
         (error) => {
-          console.log(error);
+          console.log("getRecommend", error);
         }
       );
     });

@@ -119,7 +119,7 @@ const placesSearchCB = (data, status) => {
           visible: false,
         },
       };
-      console.log(marker);
+      // console.log(marker);
       searchMarkerList.value.push(markerItem);
       // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
     }
