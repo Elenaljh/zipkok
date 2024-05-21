@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { sweetAlert } from "@/util/util";
 
 const sendNumber = ref(false);
 const notMember = ref(false);
@@ -11,7 +12,7 @@ const sendNumberFunction = () => {
   //회원여부 검사
   console.log("회원여부 검사");
   if (notMember.value) {
-    alert("일치하는 회원정보가 없습니다.");
+    sweetAlert("일치하는 회원정보가 없습니다.", "", "error");
     return;
   }
   //이메일 보내기
@@ -22,7 +23,7 @@ const sendNumberFunction = () => {
 const numberTest = () => {
   //inputNumber이 정확한지 테스트
   if (wrongNumber.value) {
-    alert("인증번호가 일치하지 않습니다.");
+    sweetAlert("인증번호가 일치하지 않습니다", "", "error");
     return;
   }
   authenticate.value = true;

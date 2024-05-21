@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useWindowFocus } from "@vueuse/core";
+import Swal from "sweetalert2";
 
 const focused = useWindowFocus();
 watch(
@@ -48,6 +49,7 @@ const buttonClick = async () => {
       const response = await axios.post(url + "/login", loginInfo.value, {
         withCredentials: true,
       });
+      console.log(response);
       //로그인 성공시 then에서 쿠키 설정
       setCookie();
       store.login();
@@ -62,7 +64,7 @@ const buttonClick = async () => {
         router.push({ name: "home" });
       }
     } catch (error) {
-      alert("로그인 실패");
+      sweetAlert("로그인 실패", "없는 회원입니다.", "error");
     }
   }
 };
@@ -99,15 +101,26 @@ onMounted(() => {
 const validation = () => {
   let info = loginInfo.value;
   if (!info.email && !info.password) {
-    alert("정보를 입력하세요");
+    sweetAlert("이메일과 비밀번호를 입력하세요", "", "warning");
   } else if (!info.email) {
-    alert("이메일을 입력하세요");
+    sweetAlert("이메일을 입력하세요", "", "warning");
   } else if (!info.password) {
-    alert("비밀번호를 입력하세요");
+    sweetAlert("비밀번호를 입력하세요", "", "warning");
   } else {
     return true;
   }
   return false;
+};
+
+//sweetAlert
+const sweetAlert = (title, text, icon) => {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonText: "확인",
+    confirmButtonColor: "#00b4d8",
+  });
 };
 </script>
 

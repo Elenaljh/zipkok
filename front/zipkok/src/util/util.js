@@ -51,9 +51,7 @@ function dateFormat(target) {
   let dateFormatString =
     date.getFullYear() +
     "." +
-    (date.getMonth() + 1 < 9
-      ? "0" + (date.getMonth() + 1)
-      : date.getMonth() + 1) +
+    (date.getMonth() + 1 < 9 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1) +
     "." +
     (date.getDate() < 9 ? "0" + date.getDate() : date.getDate());
   return dateFormatString;
@@ -77,7 +75,15 @@ function callSwal({ title, text, icon }) {
   Swal.fire(msg);
 }
 
+//sweetAlert
+const sweetAlert = (title, text, icon) => {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonText: "확인",
+    confirmButtonColor: "#00b4d8",
+  });
+};
 
-export { moneyFormat, dateFormat, numberFormat, adjustedMoneyFormat, callSwal };
-
-
+export { moneyFormat, dateFormat, numberFormat, adjustedMoneyFormat, callSwal, sweetAlert };

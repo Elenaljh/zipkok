@@ -268,7 +268,7 @@ const close = () => {
             </div>
           </div>
         </div>
-        <div class="me-3 d-flex">
+        <div class="me-3 d-flex align-items-center">
           <img src="/src/assets/detailIcon/amenity.png" width="70px" height="80px" class="me-4" />
           <div style="width: 100%; height: 100%">
             <div style="font-weight: bold; text-align: center">아파트 부대 시설</div>
