@@ -120,7 +120,7 @@ const preferedTypeList = ref([
 </script>
 <template>
   <div class="m-5 w-25">
-    <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
+    <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">회원가입</h3>
     <form>
       <div class="mb-3">
@@ -246,14 +246,6 @@ const preferedTypeList = ref([
         @click="buttonClick"
       >
         회원가입
-      </button>
-      <button
-        type="button"
-        class="btn w-100 fw-bold"
-        style="border-color: lightgray"
-      >
-        <img src="/src/assets/google_s.png" class="me-2" />
-        Google로 시작하기
       </button>
     </form>
   </div>

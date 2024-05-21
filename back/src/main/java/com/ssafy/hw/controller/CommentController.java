@@ -20,7 +20,7 @@ import com.ssafy.hw.model.service.CommentService;
 
 @RestController
 @RequestMapping("/comment")
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = {"*"} ,allowCredentials = "true")
 public class CommentController {
 	
 	private final CommentService commentService;

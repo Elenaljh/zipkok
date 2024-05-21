@@ -18,4 +18,8 @@ public class AptItemDto {
 	String aptType;
 	String facility;
 	String aptAnotherCode;
+	int avgAmount;
+	int avgDeposit;
+	int avgMonthlyRent;
+	int pan;
 }

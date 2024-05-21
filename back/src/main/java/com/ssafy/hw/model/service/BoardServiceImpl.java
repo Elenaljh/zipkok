@@ -1,8 +1,9 @@
 package com.ssafy.hw.model.service;
 
+import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +69,20 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<Board> getListByType(int type) {
 		return boardDao.getListByType(type);
+	}
+
+	@Override
+	public boolean checkInsertNotice(int memberId, int type) {
+		if(type == 1 || type == 2) return true;
+		return boardDao.checkAdmin(memberId) == 1;
+	}
+
+	@Override
+	public boolean checkModDel(int memberId, int boardId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberId", memberId);
+		map.put("boardId", boardId);
+		return boardDao.checkWriter(map);
 	}
 
 }

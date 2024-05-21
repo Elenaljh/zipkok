@@ -3,6 +3,10 @@ import MainView from "../views/MainView.vue";
 import UserView from "@/views/UserView.vue";
 import HouseView from "@/views/HouseView.vue";
 import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
+import Swal from "sweetalert2";
+import { checkAuth } from "@/api/board";
+import { callSwal } from "@/util/util";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,7 +27,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserCreate.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (isAuthorized.value) {
               router.push(from);
             }
           },
@@ -34,7 +39,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserModify.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (!isAuthorized.value) {
               router.push(from);
             }
           },
@@ -45,7 +51,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserDetail.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (!store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (!isAuthorized.value) {
               router.push(from);
             }
           },
@@ -56,7 +63,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserLogin.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (isAuthorized.value) {
               router.push(from);
             }
           },
@@ -67,7 +75,8 @@ const router = createRouter({
           component: () => import("@/components/user/UserPwFind.vue"),
           beforeEnter: (to, from) => {
             const store = useMemberStore();
-            if (store.parsedVal()) {
+            const { isAuthorized } = storeToRefs(store);
+            if (isAuthorized.value) {
               router.push(from);
             }
           },
@@ -78,7 +87,7 @@ const router = createRouter({
       path: "/board",
       name: "board",
       component: () => import("../views/BoardView.vue"),
-      redirect: { name: "board-list" },
+      redirect: { name: "board-list", query: { tn: 0 } },
       children: [
         {
           path: "list",
@@ -95,10 +104,10 @@ const router = createRouter({
           name: "board-write",
           component: () => import("@/components/board/BoardCreate.vue"),
           beforeEnter: (to, from) => {
-            // const store = useMemberStore();
-            // if (!store.parsedVal()) {
-            //   router.push(from);
-            // }
+            const store = useMemberStore();
+            if (!store.parsedVal()) {
+              router.push(from);
+            }
           },
         },
         {
@@ -106,10 +115,10 @@ const router = createRouter({
           name: "board-modify",
           component: () => import("@/components/board/BoardUpdate.vue"),
           beforeEnter: (to, from) => {
-            // const store = useMemberStore();
-            // if (!store.parsedVal()) {
-            //   router.push(from);
-            // }
+            const store = useMemberStore();
+            if (!store.parsedVal()) {
+              router.push(from);
+            }
           },
         },
       ],
@@ -131,7 +140,26 @@ router.beforeEach(() => {
   const store = useMemberStore();
   // store.authorizationRequest();
   // console.log("피니아 값: " + store.isAuthorized);
-  // console.log("로컬스토리지 값: " + store.parsedVal());
+  // console.log("로컬스토리지 값: " + store.isAuthorized());
 });
+
+function checkUserBoard(boardId) {
+  checkAuth(
+    boardId,
+    (response) => {
+      if (response.status == 200) return true;
+      return false;
+    },
+    (error) => {
+      console.log(error);
+      callSwal({
+        icon: "error",
+        title: "권한 없음",
+        text: error.response.data,
+      });
+      return false;
+    }
+  );
+}
 
 export default router;

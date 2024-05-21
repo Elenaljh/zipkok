@@ -1,7 +1,17 @@
 /* 글자 설정 */
-/* * {
-  font-family: "Inter", sans-serif !important;
-} */
+
+* {
+  font-family: "Noto Sans KR", sans-serif !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
 
 h1,
 h2 {

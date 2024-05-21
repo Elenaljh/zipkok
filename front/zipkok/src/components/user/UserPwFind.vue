@@ -17,9 +17,7 @@ const sendNumberFunction = () => {
   //이메일 보내기
   console.log("이메일 보내기");
   sendNumber.value = true;
-  console.log(
-    "sendNumber: " + sendNumber.value + ", authenticate: " + authenticate.value
-  );
+  console.log("sendNumber: " + sendNumber.value + ", authenticate: " + authenticate.value);
 };
 const numberTest = () => {
   //inputNumber이 정확한지 테스트
@@ -32,16 +30,12 @@ const numberTest = () => {
 </script>
 <template>
   <div class="m-5 w-25">
-    <img src="/src/assets/house.png" class="mx-auto d-block mb-3" />
+    <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold mb-4">비밀번호 찾기</h3>
     <form>
       <div class="mb-3" v-if="!sendNumber">
         <label class="form-label">이메일</label>
-        <input
-          type="email"
-          class="form-control"
-          placeholder="이메일을 입력하세요."
-        />
+        <input type="email" class="form-control" placeholder="이메일을 입력하세요." />
       </div>
       <div class="mb-3" v-if="sendNumber && !authenticate">
         <label class="form-label">인증번호 입력</label>
@@ -54,11 +48,7 @@ const numberTest = () => {
       </div>
       <div class="mb-3" v-if="authenticate">
         <label class="form-label">비밀번호 변경</label>
-        <input
-          type="password"
-          class="form-control"
-          placeholder="새로운 비밀번호를 입력하세요."
-        />
+        <input type="password" class="form-control" placeholder="새로운 비밀번호를 입력하세요." />
       </div>
       <button
         type="button"

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- name space는 UserRepo의 fully qualified name으로 설정한다. -->
+<mapper namespace="com.ssafy.hw.model.dao.AptDetailDao">
+	<select id="searchDetailByCode" parameterType="string" resultType="AptDetail">
+		select * from apt_info where apt_code = #{aptCode}
+	</select>
+
+	<select id="searchTransactionByCode" parameterType="string" resultType="AptTransaction">
+		select * from transaction_real where apt_code = #{aptCode} and type = #{type} order by year desc, month desc, day desc
+	</select>
+
+	<select id="searchTransactionByName" parameterType="string" resultType="AptTransaction">
+		select * from transaction_real where apt_name = #{aptName} and type = #{type} order by year desc, month desc, day desc
+	</select>
+	
+	<select id="getAverage" parameterType="string" resultType="PriceAvgDto">
+		select avg(amount) amount, avg(deposit) deposit, avg(monthly_rent) monthlyRent
+		from transaction_real
+		where apt_code = #{aptCode} and type = #{type};
+	</select>
+
+	<select id="getOffice" parameterType="map" resultType="OfficeDto">
+		<![CDATA[
+		select * from public_office where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(longitude, latitude)) <= 2000
+        ]]>
+	</select>
+
+	<select id="getSchool" parameterType="map" resultType="SchoolDto">
+		<![CDATA[
+		select * from school
+		where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(lng, lat)) <= 2000
+        ]]>
+	</select>
+
+	<select id="getPopulation" parameterType="string" resultType="PopulationDto">
+		<![CDATA[
+		select total, male, female, zero_male+zero_female as zero, ten_male+ten_female as ten,
+		twenty_male+twenty_female as twenty, thirty_male+thirty_female as thirty,
+		forty_male+forty_female as forty, fifty_male+fifty_female as fifty, old_male+old_female as old
+		from population where bjd_code=#{bjdCode};
+		]]>
+	</select>
+
+	<select id="getDongbyCode" parameterType="string" resultType="string">
+		select dongName from dongcode where dongCode=#{bjdCode}
+	</select>
+
+	<select id="getFemalePopulation" parameterType="string" resultType="PopulationBySexDto">
+		select zero_female zero, ten_female ten, twenty_female twenty, thirty_female thirty, forty_female forty, fifty_female fifty, old_female old from population where bjd_code=#{bjdCode}
+	</select>
+
+	<select id="getMalePopulation" parameterType="string" resultType="PopulationBySexDto">
+		select zero_male zero, ten_male ten, twenty_male twenty, thirty_male thirty, forty_male forty, fifty_male fifty, old_male old from population where bjd_code=#{bjdCode}
+	</select>
+
+	<select id="getPopRatio" parameterType="string" resultType="PopulationSexRatioDto">
+		select male/total*100 as male, female/total*100 as female from population where bjd_code=#{bjdCode}
+	</select>
+
+
+</mapper>

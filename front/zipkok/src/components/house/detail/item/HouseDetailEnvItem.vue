@@ -1,71 +1,158 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
-const parks = ref([
-  { name: "칼국수 공원", address: "구미 인동" },
-  { name: "멜론 공원", address: "구미 진평동" },
-  { name: "사과 공원", address: "구미 인동" },
-  { name: "딸기 공원", address: "구미 인동" },
-  { name: "바나나 공원", address: "구미 진평동" },
-  { name: "수박 공원", address: "구미 인동" },
-  { name: "오렌지 공원", address: "구미 진평동" },
-  { name: "참외 공원", address: "구미 인동" },
-  { name: "블루베리 공원", address: "구미 인동" },
-  { name: "망고 공원", address: "구미 진평동" },
-  { name: "키위 공원", address: "구미 인동" },
-]);
+import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
+const { houseInfo } = defineProps({
+  houseInfo: Object,
+});
+import { searchPlaceByKeyword, dataList, filteredSearchMarkerList } from "@/util/houseDetail";
 
-const air = ref([
-  { address: "경상북도 구미시 1공단로6길 54", amount: 699359 },
-  { address: "경상북도 구미시 산동읍 첨단기업로 178", amount: 97194 },
-  { address: "경상북도 구미시 3공단3로 46-79(시미동)", amount: 44671 },
-  { address: "경상북도 구미시 1공단로4길 40", amount: 38229 },
-]);
+const current = ref("");
+
+const visibleRef = ref([]);
+const mouseOverKakaoMapMarker = (ind) => {
+  console.log(ind + " in");
+  visibleRef.value[ind] = true;
+};
+
+const mouseOutKakaoMapMarker = (ind) => {
+  console.log(ind + " out");
+  visibleRef.value[ind] = false;
+};
 </script>
 
 <template>
   <div class="me-2">
+    <select
+      class="form-select w-25 mb-2"
+      v-model="current"
+      @change="searchPlaceByKeyword(current, houseInfo.lat, houseInfo.lng)"
+    >
+      <option value="" selected disabled>선택하세요</option>
+      <option value="공원">공원</option>
+      <option value="행정">관공서</option>
+      <option value="학교">학교</option>
+      <option value="맛집">맛집</option>
+    </select>
+    <KakaoMap :lat="houseInfo.lat" :lng="houseInfo.lng" width="65rem" class="mb-4">
+      <!--아파트 위치 마커 (고정)-->
+      <KakaoMapMarker
+        :lat="houseInfo.lat"
+        :lng="houseInfo.lng"
+        :image="{
+          imageSrc: '/src/assets/marker/houseRed.png',
+          imageWidth: 29,
+          imageHeight: 29 * 1.3,
+        }"
+      />
+      <div v-if="current === '학교'">
+        <KakaoMapMarker
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :image="{
+            imageSrc: '/src/assets/marker/school.png',
+            imageWidth: 29,
+            imageHeight: 29 * 1.3,
+          }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px;'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+      </div>
+      <div v-if="current === '행정'">
+        <KakaoMapMarker
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :image="{
+            imageSrc: '/src/assets/marker/office.png',
+            imageWidth: 29,
+            imageHeight: 29 * 1.3,
+          }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+      </div>
+      <div v-if="current === '공원'">
+        <KakaoMapMarker
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :image="{
+            imageSrc: '/src/assets/marker/park.png',
+            imageWidth: 29,
+            imageHeight: 29 * 1.3,
+          }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+      </div>
+      <div v-if="current === '맛집'">
+        <KakaoMapMarker
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :image="{
+            imageSrc: '/src/assets/marker/place.png',
+            imageWidth: 29,
+            imageHeight: 29 * 1.3,
+          }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+      </div>
+    </KakaoMap>
     <!--녹지-->
-    <div>
-      <p style="font-size: large; font-weight: bold">
+    <div v-if="current">
+      <p style="font-size: large; font-weight: bold" v-if="current == '공원'">
         <span class="me-2">이 주변의</span><span style="color: green">공원</span>
       </p>
-      <div class="d-flex justify-content-between">
-        <!--표-->
-        <div class="table-responsive card" style="width: 48%; max-height: 300px; overflow-y: auto">
-          <table class="table mb-0">
-            <tbody>
-              <tr v-for="item in parks" :key="item.name">
-                <td style="padding-left: 20px">{{ item.name }}</td>
-                <td>{{ item.address }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!--표 끝-->
-        <!--카카오 지도-->
-        <img src="/src/assets/map.png" width="48%" alt="" />
-        <!--카카오 지도 끝-->
-      </div>
-    </div>
-    <!--녹지 끝-->
-    <hr style="background: #00b3d6; border: 0; height: 1.5px" />
-    <!--대기배출-->
-    <div>
-      <p style="font-size: large; font-weight: bold">
-        <span class="me-2">이 지역</span><span style="color: dimgray">대기배출</span>
+      <p style="font-size: large; font-weight: bold" v-if="current == '행정'">
+        <span>주변 </span>
+        <span style="color: #00b3d6">행정</span>
       </p>
+      <p style="font-size: large; font-weight: bold" v-if="current == '학교'">
+        <span>주변 </span>
+        <span style="color: #00b3d6">학교</span>
+      </p>
+      <p style="font-size: large; font-weight: bold" v-if="current == '맛집'">
+        <span>주변 </span>
+        <span style="color: #00b3d6">맛집</span>
+      </p>
+      <!--표-->
       <div class="table-responsive card" style="max-height: 300px; overflow-y: auto">
         <table class="table mb-0">
           <tbody>
-            <tr v-for="item in air" :key="item.address">
-              <td style="padding-left: 20px">{{ item.address }}</td>
-              <td style="text-align: right; padding-right: 20px">{{ item.amount }} kg/년</td>
+            <tr v-for="item in dataList" :key="item.name">
+              <td style="padding-left: 20px">{{ item.name }}</td>
+              <td>{{ item.type }}</td>
+              <td>{{ item.address }}</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <!--표 끝-->
     </div>
-    <!--대기배출 끝-->
+    <!--녹지 끝-->
   </div>
 </template>
 
@@ -74,7 +161,7 @@ const air = ref([
   width: 10px;
 }
 .table-responsive.card::-webkit-scrollbar-thumb {
-  background: #ade8f4;
+  background: #e8e8e8;
   border-radius: 10px;
 }
 </style>

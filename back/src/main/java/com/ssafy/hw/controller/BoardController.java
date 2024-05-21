@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.ssafy.hw.model.dto.Board;
 import com.ssafy.hw.model.dto.BoardInsertDto;
@@ -24,7 +25,7 @@ import com.ssafy.hw.model.service.BoardService;
 
 @RestController
 @RequestMapping("/board")
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = {"*"} ,allowCredentials = "true")
 public class BoardController {
 	
 	private final BoardService boardService;
@@ -34,10 +35,14 @@ public class BoardController {
 	
 	//insertBoard(Board board)
 	@PostMapping
-	public ResponseEntity<?> insert(@RequestBody BoardInsertDto board) {
+	public ResponseEntity<?> insert(@SessionAttribute(name="memberId", required = false) String memberId, @RequestBody BoardInsertDto board) {
 		try {
-			int result = boardService.insertBoard(board);
-			return new ResponseEntity<Integer>(result, HttpStatus.CREATED);
+			System.out.println("memberID="+memberId);
+			if(boardService.checkInsertNotice(Integer.parseInt(memberId), board.getType())) {
+				int result = boardService.insertBoard(board);
+				return new ResponseEntity<Integer>(result, HttpStatus.CREATED);
+			}
+			return new ResponseEntity<String>("공지는 관리자만 작성할 수 있습니다.", HttpStatus.UNAUTHORIZED);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
@@ -129,10 +134,13 @@ public class BoardController {
 	
 	//int deleteBoard(int boardId);
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteBoard(@PathVariable("id") int boardId) {
+	public ResponseEntity<?> deleteBoard(@SessionAttribute(name="memberId", required = false) String memberId, @PathVariable("id") int boardId) {
 		try {
-			int result = boardService.deleteBoard(boardId);
-			return new ResponseEntity<Integer>(result, HttpStatus.OK);
+			if(boardService.checkModDel(Integer.parseInt(memberId), boardId)) {
+				int result = boardService.deleteBoard(boardId);
+				return new ResponseEntity<Integer>(result, HttpStatus.OK);
+			}
+			return new ResponseEntity<String>("권한이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
@@ -149,6 +157,21 @@ public class BoardController {
 			return exceptionHandling(e);
 		}
 	}
+	
+	@GetMapping("/checkAuth")
+	public ResponseEntity<?> checkAuth(@SessionAttribute(name="memberId", required = false) String memberId, @RequestParam("boardId") String boardId) {
+		try {
+			if(boardService.checkModDel(Integer.parseInt(memberId), Integer.parseInt(boardId))) {
+				System.out.println("ㅇㅇ");
+				return new ResponseEntity<String>("작성 가능", HttpStatus.OK);
+			}
+			System.out.println("no");
+			return new ResponseEntity<String>("권한이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+
 	
 	
 	private ResponseEntity<String> exceptionHandling(Exception e) {

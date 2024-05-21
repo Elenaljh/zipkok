@@ -2,6 +2,8 @@ import { localAxios } from "@/util/http-commons";
 
 const local = localAxios();
 
+
+
 function listBoard(param, success, fail) {
   local.get(`/board/list`, { params: param }).then(success).catch(fail);
 }
@@ -40,6 +42,10 @@ function updateBoom(boardId, success, fail) {
   local.get(`/board/updateBoom/${boardId}`).then(success).catch(fail);
 }
 
+function checkAuth(boardId, success, fail) {
+  // 수정, 삭제 권한 확인하는 함수
+  local.get(`/board/checkAuth`, { params: {boardId:boardId} }).then(success).catch(fail);
+}
 export {
   listBoard,
   detailBoard,
@@ -50,4 +56,5 @@ export {
   registComment,
   listComment,
   updateBoom,
+  checkAuth,
 };
