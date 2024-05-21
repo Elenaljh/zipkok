@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
+import { KakaoMap, KakaoMapMarker, KakaoMapCustomOverlay } from "vue3-kakao-maps";
 const { houseInfo } = defineProps({
   houseInfo: Object,
 });
@@ -10,13 +10,17 @@ const current = ref("");
 
 const visibleRef = ref([]);
 const mouseOverKakaoMapMarker = (ind) => {
-  console.log(ind + " in");
+  // console.log(ind + " in");
   visibleRef.value[ind] = true;
 };
 
 const mouseOutKakaoMapMarker = (ind) => {
-  console.log(ind + " out");
+  // console.log(ind + " out");
   visibleRef.value[ind] = false;
+};
+
+const customOverlay = (info) => {
+  return `<button type="button" class="btn btn-secondary btn-sm">${info}</button>`;
 };
 </script>
 
@@ -55,12 +59,17 @@ const mouseOutKakaoMapMarker = (ind) => {
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
-          :infoWindow="{
-            content: `<p style='font-size: 15px;'>${marker.infoWindow.content}</p>`,
-            visible: visibleRef[index] ? visibleRef[index] : false,
-          }"
           @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
           @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+        <KakaoMapCustomOverlay
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :yAnchor="2"
+          :visible="visibleRef[index] ? visibleRef[index] : false"
+          :content="customOverlay(marker.infoWindow.content)"
         />
       </div>
       <div v-if="current === '행정'">
@@ -74,12 +83,17 @@ const mouseOutKakaoMapMarker = (ind) => {
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
-          :infoWindow="{
-            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
-            visible: visibleRef[index] ? visibleRef[index] : false,
-          }"
           @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
           @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+        <KakaoMapCustomOverlay
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :yAnchor="2"
+          :visible="visibleRef[index] ? visibleRef[index] : false"
+          :content="customOverlay(marker.infoWindow.content)"
         />
       </div>
       <div v-if="current === '공원'">
@@ -93,12 +107,17 @@ const mouseOutKakaoMapMarker = (ind) => {
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
-          :infoWindow="{
-            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
-            visible: visibleRef[index] ? visibleRef[index] : false,
-          }"
           @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
           @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+        <KakaoMapCustomOverlay
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :yAnchor="2"
+          :visible="visibleRef[index] ? visibleRef[index] : false"
+          :content="customOverlay(marker.infoWindow.content)"
         />
       </div>
       <div v-if="current === '맛집'">
@@ -112,12 +131,17 @@ const mouseOutKakaoMapMarker = (ind) => {
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
-          :infoWindow="{
-            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
-            visible: visibleRef[index] ? visibleRef[index] : false,
-          }"
           @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
           @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+        />
+        <KakaoMapCustomOverlay
+          v-for="(marker, index) in filteredSearchMarkerList"
+          :key="marker.key"
+          :lat="marker.lat"
+          :lng="marker.lng"
+          :yAnchor="2"
+          :visible="visibleRef[index] ? visibleRef[index] : false"
+          :content="customOverlay(marker.infoWindow.content)"
         />
       </div>
     </KakaoMap>
