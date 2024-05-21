@@ -15,7 +15,7 @@ const selectOption = ref([
   { text: "제목, 내용", value: "title and content" },
   { text: "작성자", value: "writer" },
 ]);
-
+const tn = ref(route.query.tn ? route.query.tn : 0);
 const boards = ref([]);
 const currentPage = ref(1);
 const totalPage = ref(0);
@@ -74,7 +74,7 @@ const onPageChange = (val) => {
 };
 
 const changeTab = (val) => {
-  param.value.type = val;
+  tn.value = val;
   getBoardList();
 };
 
