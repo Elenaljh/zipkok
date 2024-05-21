@@ -19,9 +19,14 @@ public interface AptDetailDao {
     public PriceAvgDto getAverage(@Param("aptCode") String aptCode, @Param("type") String type);
 
     //관공서
-    public List<OfficeDto> getOffice(Map<String, Double> param);
+    public int getOffice(Map<String, Double> param);
     //학교
-    public List<SchoolDto> getSchool(Map<String, Double> param);
+    public int getSchool(Map<String, Double> param);
+    //cctv
+    public int getCCTV(String aptCode);
+    //모범음식점
+    public int getRestaurant(String dongCode);
+
     //인구 구조
     public PopulationDto getPopulation(String bjdCode);
     //여성인구, 남성인구, 성별 인구

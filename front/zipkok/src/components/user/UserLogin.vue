@@ -26,7 +26,7 @@ watch(
 );
 
 const store = useMemberStore();
-const { name, email, memberId, googleCode } = storeToRefs(store);
+const { name, email, memberId, googleCode, preference } = storeToRefs(store);
 const url = store.url;
 const router = useRouter();
 
@@ -58,6 +58,7 @@ const buttonClick = async () => {
       name.value = response.data.name;
       email.value = response.data.email;
       memberId.value = response.data.memberId;
+      preference.value = response.data.preference;
       try {
         router.go(-1);
       } catch (error) {
@@ -128,7 +129,9 @@ const sweetAlert = (title, text, icon) => {
   <div class="m-5 w-25">
     <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">로그인</h3>
-    <p class="text-center" style="color: #707070">Zipkok에 오신 것을 환영합니다!</p>
+    <p class="text-center" style="color: #707070">
+      Zipkok에 오신 것을 환영합니다!
+    </p>
     <form>
       <div class="mb-3">
         <label class="form-label">이메일</label>
@@ -157,7 +160,9 @@ const sweetAlert = (title, text, icon) => {
             id="flexCheckDefault"
             v-model="rememberMe"
           />
-          <label class="form-check-label" for="flexCheckDefault"> 이메일 기억하기 </label>
+          <label class="form-check-label" for="flexCheckDefault">
+            이메일 기억하기
+          </label>
         </div>
         <router-link
           style="color: #00b4d8; font-weight: bold; text-decoration-line: none"

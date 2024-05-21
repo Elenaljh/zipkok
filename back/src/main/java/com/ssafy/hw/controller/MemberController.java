@@ -121,7 +121,7 @@ public class MemberController {
 			session.setAttribute("loginMember", member.getEmail());
 			session.setAttribute("memberId", member.getMemberId());
 			session.setMaxInactiveInterval(3600); //1시간동안 로그인 유지
-			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId());
+			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId(), member.getPreferedType());
 			return new ResponseEntity<LoginOutputDto>(loginOutputDto, HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -177,7 +177,7 @@ public class MemberController {
 			session.setAttribute("loginMember", userInfo.getEmail());
 			session.setAttribute("memberId", member.getMemberId());
 			session.setMaxInactiveInterval(3600); //1시간동안 로그인 유지
-			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId());
+			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId(), member.getPreferedType());
 			return new ResponseEntity<LoginOutputDto>(loginOutputDto, HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);

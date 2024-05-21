@@ -36,7 +36,7 @@ public class AptDetailServiceImpl implements AptDetailService {
     }
 
     @Override
-    public List<OfficeDto> getOffice(double lat, double lng) {
+    public int getOffice(double lat, double lng) {
         Map<String, Double> param = new HashMap<>();
         param.put("lat", lat);
         param.put("lng", lng);
@@ -44,11 +44,21 @@ public class AptDetailServiceImpl implements AptDetailService {
     }
 
     @Override
-    public List<SchoolDto> getSchool(double lat, double lng) {
+    public int getSchool(double lat, double lng) {
         Map<String, Double> param = new HashMap<>();
         param.put("lat", lat);
         param.put("lng", lng);
         return dao.getSchool(param);
+    }
+
+    @Override
+    public int getCCTV(String aptCode) {
+        return dao.getCCTV(aptCode);
+    }
+
+    @Override
+    public int getRestaurant(String dongCode) {
+        return dao.getRestaurant(dongCode);
     }
 
     @Override

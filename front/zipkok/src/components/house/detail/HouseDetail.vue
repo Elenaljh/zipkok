@@ -2,15 +2,23 @@
 import HouseDetailBasicItem from "@/components/house/detail/item/HouseDetailBasicItem.vue";
 import HouseDetailEnvItemVue from "@/components/house/detail/item/HouseDetailEnvItem.vue";
 import HouseDetailFacItemVue from "@/components/house/detail/item/HouseDetailFacItem.vue";
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, computed } from "vue";
 import { useMemberStore } from "@/stores/member";
 import { useHouseStore } from "@/stores/house";
 import { getGrade } from "@/util/airConditionUtil";
-import { getDong, getNews, dong, getMalePopulation, getFemalePopulation } from "@/util/houseDetail";
+import {
+  getDong,
+  getNews,
+  dong,
+  getMalePopulation,
+  getFemalePopulation,
+} from "@/util/houseDetail";
 import axios from "axios";
+import { storeToRefs } from "pinia";
 
 const store = useMemberStore();
 const houseStore = useHouseStore();
+const { isAuthorized, preference } = storeToRefs(store);
 
 watchEffect(async () => {
   const response = await axios.get(store.url + "/apt/details", {
@@ -26,6 +34,26 @@ watchEffect(async () => {
   getMalePopulation(houseInfo.value.bjdCode);
   getFemalePopulation(houseInfo.value.bjdCode);
   getNews(houseInfo.value.aptName, dong.value);
+});
+
+const userPreference = computed(() => {
+  if (isAuthorized.value) {
+    if (preference.value === "행정시설") {
+      return store.getOfficeNum(houseInfo.value.lng, houseInfo.value.lat);
+    } else if (preference.value === "학군") {
+      return store.getSchoolNum(houseInfo.value.lng, houseInfo.value.lat);
+    } else if (preference.value === "근방 맛집") {
+      return store.getRestaurantNum(houseInfo.value.bjdCode);
+    } else if (preference.value === "CCTV 대수") {
+      let cctv = store.getCCTVNum(houseStore.houseId);
+      console.log("cctv: " + cctv);
+      return cctv;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 });
 
 const houseInfo = ref({});
@@ -67,7 +95,9 @@ const getBusStations = async () => {
     "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
     "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
     "facility": "", "aptAnotherCode": null }-->
-  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+  <div
+    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl"
+  >
     <div class="modal-content">
       <div class="modal-body" id="modal">
         <div class="mb-2"><img src="/src/assets/house.png" /></div>
@@ -76,6 +106,10 @@ const getBusStations = async () => {
           <p style="color: dimgray">
             {{ houseInfo.drmAddress }}
           </p>
+        </div>
+        <!--preference-->
+        <div class="alert alert-info" role="alert" v-if="preference !== null">
+          {{ userPreference }}
         </div>
         <!--탭 파트-->
         <ul class="nav nav-underline ms-2">
@@ -89,18 +123,28 @@ const getBusStations = async () => {
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link boardNav" :class="{ active: num === 1 }" @click="changeTab(1)"
+            <a
+              class="nav-link boardNav"
+              :class="{ active: num === 1 }"
+              @click="changeTab(1)"
               >주변 정보</a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link boardNav" :class="{ active: num === 2 }" @click="changeTab(2)"
+            <a
+              class="nav-link boardNav"
+              :class="{ active: num === 2 }"
+              @click="changeTab(2)"
               >동네 소식</a
             >
           </li>
         </ul>
         <div class="ms-2 mt-3">
-          <HouseDetailBasicItem v-if="num == 0" :houseInfo="houseInfo" :busStation="busStation" />
+          <HouseDetailBasicItem
+            v-if="num == 0"
+            :houseInfo="houseInfo"
+            :busStation="busStation"
+          />
           <HouseDetailEnvItemVue v-if="num == 1" :houseInfo="houseInfo" />
           <HouseDetailFacItemVue v-if="num == 2" :houseInfo="houseInfo" />
         </div>

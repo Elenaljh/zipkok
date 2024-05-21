@@ -23,15 +23,23 @@
 
 	<select id="getOffice" parameterType="map" resultType="OfficeDto">
 		<![CDATA[
-		select * from public_office where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(longitude, latitude)) <= 2000
+		select count(*) from public_office where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(longitude, latitude)) <= 2000
         ]]>
 	</select>
 
 	<select id="getSchool" parameterType="map" resultType="SchoolDto">
 		<![CDATA[
-		select * from school
+		select count(*) from school
 		where ST_Distance_Sphere(POINT(#{lng}, #{lat}), POINT(lng, lat)) <= 2000
         ]]>
+	</select>
+
+	<select id="getCCTV" parameterType="string" resultType="int">
+		select cctv_num from apt_info where apt_code=#{aptCode}
+	</select>
+
+	<select id="getRestaurant" parameterType="string" resultType="int">
+		select count(*) from restaurant where dongCode = #{dongCode}
 	</select>
 
 	<select id="getPopulation" parameterType="string" resultType="PopulationDto">
