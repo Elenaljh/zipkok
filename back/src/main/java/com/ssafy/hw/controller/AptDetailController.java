@@ -74,10 +74,21 @@ public class AptDetailController {
     }
 
     @GetMapping("/population")
-    public ResponseEntity<?> getPopulation(@RequestParam String bjdCode) {
+    public ResponseEntity<?> getPopulation(@RequestParam String bjdCode, @RequestParam(required = false) String type) {
         try {
-            PopulationDto population = service.getPopulation(bjdCode);
-            return new ResponseEntity<PopulationDto>(population, HttpStatus.OK);
+            if (type==null) {
+                PopulationDto population = service.getPopulation(bjdCode);
+                return new ResponseEntity<PopulationDto>(population, HttpStatus.OK);
+            } else if (type.equals("male")) {
+                Integer[] malePopulation = service.getMalePopulation(bjdCode);
+                return new ResponseEntity<Integer[]>(malePopulation, HttpStatus.OK);
+            } else if (type.equals("female")) {
+                Integer[] femalePopulation = service.getFemalePopulation(bjdCode);
+                return new ResponseEntity<Integer[]>(femalePopulation, HttpStatus.OK);
+            } else {
+                Double[] popRatio = service.getPopRatio(bjdCode);
+                return new ResponseEntity<Double[]>(popRatio, HttpStatus.OK);
+            }
         } catch (Exception e) {
             return exceptionHandling(e);
         }

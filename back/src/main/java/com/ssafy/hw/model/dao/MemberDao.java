@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface MemberDao {
     public int insertMember(Member member); //회원가입
+    public int insertSocialMember(@Param("email") String email, @Param("name") String name); //소셜로그인 회원가입
     public Member selectMember(String email); //회원조회
     public Member loginMember(@Param("email") String email, @Param("password") String password); //회원가입
     public int updateMember(Member member); //회원정보 수정

@@ -1,13 +1,31 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { useWindowFocus } from "@vueuse/core";
+
+const focused = useWindowFocus();
+watch(
+  () => focused.value,
+  (val) => {
+    console.log("windowFocused", val);
+    if (googleCode.value) {
+      try {
+        console.log(googleCode.value);
+        store.goGoogleLoginPost();
+        googleCode.value = "";
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+);
 
 const store = useMemberStore();
-const { name, email, memberId } = storeToRefs(store);
+const { name, email, memberId, googleCode } = storeToRefs(store);
 const url = store.url;
 const router = useRouter();
 
@@ -141,10 +159,6 @@ const validation = () => {
         @click="buttonClick"
       >
         로그인
-      </button>
-      <button type="button" class="btn w-100 fw-bold" style="border-color: lightgray">
-        <img src="/src/assets/google_s.png" class="me-2" />
-        Google로 로그인
       </button>
     </form>
     <div class="d-flex justify-content-center mt-3">

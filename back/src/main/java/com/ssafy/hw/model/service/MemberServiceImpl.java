@@ -19,6 +19,11 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    public int insertSocialMember(String email, String name) {
+        return dao.insertSocialMember(email, name);
+    }
+
+    @Override
     public Member selectMember(String email) {
         return dao.selectMember(email);
     }

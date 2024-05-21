@@ -6,7 +6,7 @@ import { ref, watchEffect } from "vue";
 import { useMemberStore } from "@/stores/member";
 import { useHouseStore } from "@/stores/house";
 import { getGrade } from "@/util/airConditionUtil";
-import { getDong, getPopulation, getNews, dong } from "@/util/houseDetail";
+import { getDong, getNews, dong, getMalePopulation, getFemalePopulation } from "@/util/houseDetail";
 import axios from "axios";
 
 const store = useMemberStore();
@@ -23,7 +23,8 @@ watchEffect(async () => {
   getBusStations();
   getGrade(houseInfo.value.lng, houseInfo.value.lat);
   getDong(houseInfo.value.bjdCode);
-  getPopulation(houseInfo.value.bjdCode);
+  getMalePopulation(houseInfo.value.bjdCode);
+  getFemalePopulation(houseInfo.value.bjdCode);
   getNews(houseInfo.value.aptName, dong.value);
 });
 
@@ -69,7 +70,7 @@ const getBusStations = async () => {
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-body" id="modal">
-        <div class="mb-2"><img src="/src/assets/houseInfo.png" /></div>
+        <div class="mb-2"><img src="/src/assets/house.png" /></div>
         <div class="ms-2">
           <h5 style="font-weight: bolder">{{ houseInfo.aptName }}</h5>
           <p style="color: dimgray">

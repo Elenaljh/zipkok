@@ -24,6 +24,10 @@ public interface AptDetailService {
 
     //인구
     public PopulationDto getPopulation(String bjdCode);
+    //여성인구, 남성인구, 성별 인구
+    public Integer[] getFemalePopulation(String bjdCode);
+    public Integer[] getMalePopulation(String bjdCode);
+    public Double[] getPopRatio(String bjdCode);
 
     //동이름
     public String getDongbyCode(String bjdCode);

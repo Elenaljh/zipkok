@@ -2,6 +2,8 @@
 import { dateFormat } from "@/util/util";
 
 defineProps({ board: Object });
+
+
 </script>
 
 <template>
@@ -11,6 +13,7 @@ defineProps({ board: Object });
       <router-link
         :to="{ name: 'board-view', params: { boardId: board.boardId } }"
         class="board-title link-dark"
+        @click="console.log('click')"
       >
         {{ board.title }}
       </router-link>
