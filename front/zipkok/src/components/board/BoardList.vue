@@ -15,11 +15,10 @@ const selectOption = ref([
   { text: "제목, 내용", value: "title and content" },
   { text: "작성자", value: "writer" },
 ]);
-
+const tn = ref(route.query.tn ? route.query.tn : 0);
 const boards = ref([]);
 const currentPage = ref(1);
 const totalPage = ref(0);
-const tn = ref(route.query.tn ? route.query.tn : 0);
 const { VITE_ARTICLE_LIST_SIZE } = import.meta.env;
 const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
 const param = ref({
@@ -108,7 +107,7 @@ const moveWrite = () => {
               <a
                 class="nav-link boardNav"
                 aria-current="page"
-                :class="{ active: tn == VITE_BOARD_NOTICE }"
+                :class="{ active: param.type == VITE_BOARD_NOTICE }"
                 @click="changeTab(VITE_BOARD_NOTICE)"
                 href="#"
                 >공지사항</a
@@ -117,7 +116,7 @@ const moveWrite = () => {
             <li class="nav-item">
               <a
                 class="nav-link boardNav"
-                :class="{ active: tn == VITE_BOARD_FREE }"
+                :class="{ active: param.type == VITE_BOARD_FREE }"
                 @click="changeTab(VITE_BOARD_FREE)"
                 href="#"
                 >부동산 정보</a
@@ -126,7 +125,7 @@ const moveWrite = () => {
             <li class="nav-item">
               <a
                 class="nav-link boardNav"
-                :class="{ active: tn == VITE_BOARD_QNA }"
+                :class="{ active: param.type == VITE_BOARD_QNA }"
                 @click="changeTab(VITE_BOARD_QNA)"
                 href="#"
                 >Q&A</a
@@ -138,7 +137,7 @@ const moveWrite = () => {
           <div class="row mb-3">
             <div class="col-md-7">
               <form class="d-flex align-items-start">
-                <VSelect :selectOption="selectOption" @onKeySelect="changeKey" />
+                <VSelect class="ms-0" :selectOption="selectOption" @onKeySelect="changeKey" />
                 <div class="input-group input-group-sm">
                   <input
                     type="text"
@@ -146,7 +145,12 @@ const moveWrite = () => {
                     v-model="param.keyword"
                     placeholder="검색어 입력"
                   />
-                  <button class="btn reverseButton" type="button" @click="getBoardList">
+                  <button
+                    class="btn reverseButton ms-2"
+                    type="button"
+                    @click="getBoardList"
+                    style="border-radius: 10px !important"
+                  >
                     검색
                   </button>
                 </div>
