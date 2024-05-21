@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.hw.model.dao.AptListDao;
+import com.ssafy.hw.model.dto.AptAvgDto;
 import com.ssafy.hw.model.dto.AptItemDto;
 
 @Service
@@ -32,7 +33,10 @@ public class AptListServiceImpl implements AptListService {
 	public List<AptItemDto> getAptsByLatLngs(Map<String, Double> map) {
 		return aptListDao.getAptsByLatLngs(map);
 	}
-	
+	@Override
+	public List<AptAvgDto> getAvgDong(Map<String, Double> map) {
+		return aptListDao.getAvgDong(map);
+	}
 
 	@Override
 	public List<AptItemDto> getRecAptsLogin(int memberId, double lng, double lat) {

@@ -13,5 +13,5 @@ public interface AptListDao {
 	List<AptItemDto> getRecAptsByPfp(Map<String, Object> map);
 	List<AptItemDto> getRecAptsByLoc(Map<String, Object> map);
 	List<String> getPfps(int memberId);
-	AptAvgDto getAvgDong(String dongcode);
+	List<AptAvgDto> getAvgDong(Map<String, Double> map);
 }

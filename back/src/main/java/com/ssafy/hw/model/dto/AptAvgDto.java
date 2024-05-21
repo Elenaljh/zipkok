@@ -4,7 +4,14 @@ import lombok.Data;
 
 @Data
 public class AptAvgDto {
-	int amount;
-	int deposit;
-	int rent;
+	String dongCode;
+	int avgAmount;
+	int avgDeposit;
+	int avgRent;
+	String sidoName;
+	String gugunName;
+	String dongName;
+	String fullName;
+	double lat;
+	double lng;
 }
