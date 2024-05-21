@@ -27,11 +27,13 @@
 	<!--위도경도 범위로 아파트 검색-->
 	<select id="getAptsByLatLngs" parameterType="hashmap" resultType="AptItemDto">
 		select * from apt_info
+		<where>
 		<if test="slat != null and slng != null and elat != null and elng != null">
-			where lat between #{slat} and #{elat}
+			lat between #{slat} and #{elat}
 			and lng between #{slng} and #{elng}
 		</if>
 		<include refid="andExclude"/>
+		</where>
 	</select>
 	<!--추천 매물 검색-->
 	<select id="getRecAptsByPfp" parameterType="hashmap" resultType="AptItemDto">

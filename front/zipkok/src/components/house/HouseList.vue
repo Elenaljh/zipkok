@@ -28,7 +28,6 @@ const priceType = ref(0);
 
 const houseList = ref([]);
 
-
 // --------------- 동 검색 탭 설정
 const callChildFunction = () => {
   if (searchType.value == 0) {
@@ -107,14 +106,29 @@ const getList = () => {
 };
 // 검색 결과 받아오기 (범위)
 const getRangeList = () => {
-  getAptsByLatLngs();
+  console.log(searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기");
+  if (searchType.value == 0) {
+    getAptsByLatLngs(
+      {
+        dong: searchValue.value,
+      },
+      ({ data }) => {
+        console.log("받았다!!", data);
+        houseList.value = data;
+        settingHouseList(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
 };
 // 추천 매물 받아오기
 function getRecommend() {
   //현재 로그인 상태 확인
   console.log("로그인 확인");
   const { isAuthorized } = storeToRefs(memberStore);
-  const flag = isAuthorized.value? true:false;
+  const flag = isAuthorized.value ? true : false;
   if (!("geolocation" in navigator)) {
     return;
   }
@@ -123,7 +137,7 @@ function getRecommend() {
   navigator.geolocation.getCurrentPosition((pos) => {
     getRecApts(
       {
-        type: flag? "login":"logout",
+        type: flag ? "login" : "logout",
         lng: pos.coords.longitude,
         lat: pos.coords.latitude,
       },
@@ -158,18 +172,27 @@ const changeTab = (val) => {
 </script>
 
 <template>
-
-  <div id="searchSidebar" class="container me-0 mb-0 ms-3 mt-0 pb-0"
-    style="height: 85vh; overflow-y: scroll; overflow-x: scroll">
+  <div
+    id="searchSidebar"
+    class="container me-0 mb-0 ms-3 mt-0 pb-0"
+    style="height: 85vh; overflow-y: scroll; overflow-x: scroll"
+  >
     <!-- 검색창 시작 -->
     <div class="mb-4 ms-1 mb-0 pb-0">
       <ul class="nav nav-underline">
         <li class="nav-item">
-          <a class="nav-link boardNav" :class="{ active: searchType == 0 }" aria-current="page"
-            @click="changeTab(0)">지역</a>
+          <a
+            class="nav-link boardNav"
+            :class="{ active: searchType == 0 }"
+            aria-current="page"
+            @click="changeTab(0)"
+            >지역</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link boardNav" :class="{ active: searchType == 1 }" @click="changeTab(1)">건물명</a>
+          <a class="nav-link boardNav" :class="{ active: searchType == 1 }" @click="changeTab(1)"
+            >건물명</a
+          >
         </li>
       </ul>
 
@@ -177,18 +200,31 @@ const changeTab = (val) => {
         <!-- 지역 검색 -->
         <div v-if="searchType == 0">
           <div class="d-flex align-items-center">
-            <AddressSelectBox ref="childCompRef" @requestDataFromChild="receiveDataFromChild"
-              :initAddress="searchDongValue" :doRefresh="false" />
+            <AddressSelectBox
+              ref="childCompRef"
+              @requestDataFromChild="receiveDataFromChild"
+              :initAddress="searchDongValue"
+              :doRefresh="false"
+            />
           </div>
         </div>
         <!-- 건물명 검색 -->
 
         <div class="d-flex align-items-center" v-if="searchType == 1" style="width: 70%">
-
-          <input class="w-100 p-1 ps-2" style="height: inherit" type="text" name="buildingName" id="buildingName"
-            v-model="searchBuildingValue" />
+          <input
+            class="w-100 p-1 ps-2"
+            style="height: inherit"
+            type="text"
+            name="buildingName"
+            id="buildingName"
+            v-model="searchBuildingValue"
+          />
         </div>
-        <RouterButton buttonIcon="/src/assets/buttonSearch.png" :buttonFunc="callChildFunction" class="ms-2" />
+        <RouterButton
+          buttonIcon="/src/assets/buttonSearch.png"
+          :buttonFunc="callChildFunction"
+          class="ms-2"
+        />
       </div>
     </div>
     <!-- 검색창 끝 -->
@@ -196,16 +232,31 @@ const changeTab = (val) => {
     <!-- 추천 매물 시작  -->
     <div class="ms-1">
       <p class="small-title" v-if="type == 'main'">추천 매물</p>
-      <div v-if="type == 'main'" class="w-100 mt-2 d-flex flex-wrap justify-content-start column-gap-1">
-        <HouseSidebarCardItem data-bs-toggle="modal" data-bs-target="#exampleModal" v-for="house in houseList"
-          :key="house" :houseInfo="house" @click="setHouseId(house.aptCode)" />
+      <div
+        v-if="type == 'main'"
+        class="w-100 mt-2 d-flex flex-wrap justify-content-start column-gap-1"
+      >
+        <HouseSidebarCardItem
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          v-for="house in houseList"
+          :key="house"
+          :houseInfo="house"
+          @click="setHouseId(house.aptCode)"
+        />
       </div>
       <!-- 추천 매물 끝 -->
       <!-- 검색 결과 시작 -->
       <p class="small-title" v-if="type == 'house'">검색 결과</p>
       <div v-if="type == 'house'" class="w-100 mt-2">
-        <HouseSidebarListItem data-bs-toggle="modal" data-bs-target="#exampleModal" v-for="house in houseList"
-          :key="house" :houseInfo="house" @click="setHouseId(house.aptCode)" />
+        <HouseSidebarListItem
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          v-for="house in houseList"
+          :key="house"
+          :houseInfo="house"
+          @click="setHouseId(house.aptCode)"
+        />
       </div>
       <!-- 검색 결과 끝 -->
     </div>
@@ -220,7 +271,13 @@ const changeTab = (val) => {
       Launch demo modal
     </button> -->
     <!-- 세부 정보 모달 -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
       <HouseDetail />
     </div>
   </div>
