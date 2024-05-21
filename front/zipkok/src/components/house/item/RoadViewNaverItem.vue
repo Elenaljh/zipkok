@@ -43,8 +43,8 @@ const initPanorama = () => {
 
         naver.maps.Event.addListener(pano, "pano_changed", function () {
             // console.log("PanoramaLocation", pano.getLocation()); // panoId, title, address, coord, photodate
-            console.log("pano lat=",pano.getLocation().coord.y," lng",pano.getLocation().coord.x);
-            console.log("place lat=",props.lat," lng",props.lng);
+            // console.log("pano lat=",pano.getLocation().coord.y," lng",pano.getLocation().coord.x);
+            // console.log("place lat=",props.lat," lng",props.lng);
         
         });
     }

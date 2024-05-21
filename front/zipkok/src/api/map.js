@@ -19,10 +19,15 @@ function getRecApts(param, success, fail) {
   local.get(`${pf}/rec`, { params: param }).then(success).catch(fail);
 }
 
+function getAptsAvgByDong(param, success, fail) {
+  local.get(`${pf}/average`, { params: param }).then(success).catch(fail);
+}
+
 
 export {
   getAptsByDong,
   getAptsByName,
   getAptsByLatLngs,
-  getRecApts
+  getRecApts,
+  getAptsAvgByDong
 };

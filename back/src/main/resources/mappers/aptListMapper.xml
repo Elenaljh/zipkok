@@ -28,12 +28,26 @@
 	<select id="getAptsByLatLngs" parameterType="hashmap" resultType="AptItemDto">
 		select * from apt_info
 		<where>
-		<if test="slat != null and slng != null and elat != null and elng != null">
-			lat between #{slat} and #{elat}
-			and lng between #{slng} and #{elng}
-		</if>
-		<include refid="andExclude"/>
+			<if test="slat != null and slng != null and elat != null and elng != null">
+				lat between #{slat} and #{elat}
+				and lng between #{slng} and #{elng}
+			</if>
+			<include refid="andExclude"/>
 		</where>
+	</select>
+	
+	<!--위도경도 범위로 동 별로 검색-->
+	<select id="getAvgDong" parameterType="hashmap" resultType="AptAvgDto">
+		select * from bjd_info
+		where dongcode in (select distinct bjd_code 
+							from apt_info 
+		                    <where>
+			<if test="slat != null and slng != null and elat != null and elng != null">
+				lat between #{slat} and #{elat}
+				and lng between #{slng} and #{elng}
+			</if>
+			<include refid="andExclude"/>
+		</where>)
 	</select>
 	<!--추천 매물 검색-->
 	<select id="getRecAptsByPfp" parameterType="hashmap" resultType="AptItemDto">

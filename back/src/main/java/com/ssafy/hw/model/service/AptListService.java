@@ -3,6 +3,7 @@ package com.ssafy.hw.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.hw.model.dto.AptAvgDto;
 import com.ssafy.hw.model.dto.AptItemDto;
 
 public interface AptListService {
@@ -11,4 +12,5 @@ public interface AptListService {
 	List<AptItemDto> getAptsByLatLngs(Map<String, Double> map);
 	List<AptItemDto> getRecAptsLogin(int memberId, double lng, double lat);
 	List<AptItemDto> getRecAptsDefault(double lng, double lat);
+	List<AptAvgDto> getAvgDong(Map<String, Double> map);
 }

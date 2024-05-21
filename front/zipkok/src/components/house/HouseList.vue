@@ -277,9 +277,7 @@ const changeTab = (val) => {
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-    >
-      <HouseDetail />
-    </div>
+    ></div>
   </div>
 </template>
 

@@ -1,7 +1,6 @@
 package com.ssafy.hw.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.ssafy.hw.model.dto.AptAvgDto;
 import com.ssafy.hw.model.dto.AptItemDto;
 import com.ssafy.hw.model.service.AptListService;
 
@@ -71,6 +71,16 @@ public class AptListController {
 			}
 			
 			return new ResponseEntity<List<AptItemDto>>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
+	@GetMapping("/average")
+	public ResponseEntity<?> getAptsAverage(@RequestParam Map<String, Double> map) {
+		try { 
+			List<AptAvgDto> list = aptListService.getAvgDong(map);
+			return new ResponseEntity<List<AptAvgDto>>(list, HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
