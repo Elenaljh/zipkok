@@ -8,7 +8,10 @@ import HouseSidebarCardItem from "./item/HouseSidebarCardItem.vue";
 import HouseSidebarListItem from "./item/HouseSidebarListItem.vue";
 import { useHouseStore } from "@/stores/house";
 import { getAptsByDong, getAptsByLatLngs, getRecApts, getAptsByName } from "@/api/map";
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
 
+const memberStore = useMemberStore();
 const store = useHouseStore();
 const { type } = defineProps({ type: String });
 const route = useRoute();
@@ -24,7 +27,6 @@ const houseId = ref("APT0");
 const priceType = ref(0);
 
 const houseList = ref([]);
-
 
 // --------------- 동 검색 탭 설정
 const callChildFunction = () => {
@@ -104,38 +106,51 @@ const getList = () => {
 };
 // 검색 결과 받아오기 (범위)
 const getRangeList = () => {
-  getAptsByLatLngs();
+  console.log(searchType.value + ", " + searchValue.value + "로 새로 데이터 받아오기");
+  if (searchType.value == 0) {
+    getAptsByLatLngs(
+      {
+        dong: searchValue.value,
+      },
+      ({ data }) => {
+        console.log("받았다!!", data);
+        houseList.value = data;
+        settingHouseList(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
 };
 // 추천 매물 받아오기
 function getRecommend() {
   //현재 로그인 상태 확인
   console.log("로그인 확인");
-  const flag = "logout";
-  if (flag != "login") {
-    //로그아웃 상태면
-    if (!("geolocation" in navigator)) {
-      return;
-    }
-
-    // get position
-    navigator.geolocation.getCurrentPosition((pos) => {
-      getRecApts(
-        {
-          type: "logout",
-          lng: pos.coords.longitude,
-          lat: pos.coords.latitude,
-        },
-        ({ data }) => {
-          console.log("받았다!!", data);
-          houseList.value = data;
-          settingHouseList(data);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    });
+  const { isAuthorized } = storeToRefs(memberStore);
+  const flag = isAuthorized.value ? true : false;
+  if (!("geolocation" in navigator)) {
+    return;
   }
+
+  // get position
+  navigator.geolocation.getCurrentPosition((pos) => {
+    getRecApts(
+      {
+        type: flag ? "login" : "logout",
+        lng: pos.coords.longitude,
+        lat: pos.coords.latitude,
+      },
+      ({ data }) => {
+        console.log("받았다!!", data);
+        houseList.value = data;
+        settingHouseList(data);
+      },
+      (error) => {
+        console.log("getRecommend", error);
+      }
+    );
+  });
 }
 
 // 집 세팅
@@ -157,7 +172,6 @@ const changeTab = (val) => {
 </script>
 
 <template>
-
   <div
     id="searchSidebar"
     class="container me-0 mb-0 ms-3 mt-0 pb-0"
@@ -197,7 +211,6 @@ const changeTab = (val) => {
         <!-- 건물명 검색 -->
 
         <div class="d-flex align-items-center" v-if="searchType == 1" style="width: 70%">
-
           <input
             class="w-100 p-1 ps-2"
             style="height: inherit"
@@ -274,6 +287,7 @@ const changeTab = (val) => {
 #searchSidebar::-webkit-scrollbar {
   width: 10px;
 }
+
 #searchSidebar::-webkit-scrollbar-thumb {
   background: #ade8f4;
   border-radius: 10px;

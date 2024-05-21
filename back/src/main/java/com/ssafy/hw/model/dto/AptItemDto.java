@@ -21,4 +21,5 @@ public class AptItemDto {
 	int avgAmount;
 	int avgDeposit;
 	int avgMonthlyRent;
+	int pan;
 }

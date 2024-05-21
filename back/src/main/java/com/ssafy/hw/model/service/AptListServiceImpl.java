@@ -35,17 +35,19 @@ public class AptListServiceImpl implements AptListService {
 	
 
 	@Override
-	public List<AptItemDto> getRecAptsLogin(String[] pfps) {
+	public List<AptItemDto> getRecAptsLogin(int memberId, double lng, double lat) {
+		List<String> pfps = aptListDao.getPfps(memberId);
 		Map<String, Object> paramMap = new HashMap<>();
-		if(pfps.length >= 1) {
-			paramMap.put("pfp1", (String) pfps[0]);
+		if(pfps.size() == 0) return getRecAptsDefault(lng, lat);
+		if(pfps.size() >= 1) {
+			paramMap.put("pfp1", pfps.get(0));
 			paramMap.put("pfp1_cnt", 6);
-			if(pfps.length >= 2) {
-				paramMap.put("pfp2",  (String)pfps[1]);
+			if(pfps.size() >= 2) {
+				paramMap.put("pfp2",  pfps.get(1));
 				paramMap.put("pfp1_cnt", 3);
 				paramMap.put("pfp2_cnt", 3);
-				if(pfps.length >= 3) {
-					paramMap.put("pfp3",(String) pfps[2]);
+				if(pfps.size() >= 3) {
+					paramMap.put("pfp3", pfps.get(1));
 					paramMap.put("pfp1_cnt", 2);
 					paramMap.put("pfp2_cnt", 2);
 					paramMap.put("pfp3_cnt", 2);
