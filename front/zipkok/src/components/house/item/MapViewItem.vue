@@ -123,43 +123,43 @@ const drawCurrent = () => {
 // };
 
 // 키워드로 장소를 검색합니다
-const keyword = ref("공원");
-const searchPlace = () => {
-  // 장소 검색 객체를 생성합니다
-  console.log("검색 시작");
-  const ps = new kakao.maps.services.Places();
-  // 키워드로 장소를 검색합니다
-  console.log(lat.value, lng.value);
-  ps.keywordSearch(keyword.value, placesSearchCB, {
-    location: new kakao.maps.LatLng(lat.value, lng.value),
-  });
-};
-// 키워드 검색 완료 시 호출되는 콜백함수 입니다
-const placesSearchCB = (data, status) => {
-  console.log("검색 완료");
-  if (status === kakao.maps.services.Status.OK) {
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-    // LatLngBounds 객체에 좌표를 추가합니다
-    // const bounds = new kakao.maps.LatLngBounds();
+// const keyword = ref("공원");
+// const searchPlace = () => {
+//   // 장소 검색 객체를 생성합니다
+//   console.log("검색 시작");
+//   const ps = new kakao.maps.services.Places();
+//   // 키워드로 장소를 검색합니다
+//   console.log(lat.value, lng.value);
+//   ps.keywordSearch(keyword.value, placesSearchCB, {
+//     location: new kakao.maps.LatLng(lat.value, lng.value),
+//   });
+// };
+// // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+// const placesSearchCB = (data, status) => {
+//   console.log("검색 완료");
+//   if (status === kakao.maps.services.Status.OK) {
+//     // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+//     // LatLngBounds 객체에 좌표를 추가합니다
+//     // const bounds = new kakao.maps.LatLngBounds();
 
-    for (let marker of data) {
-      const markerItem = {
-        lat: marker.y,
-        lng: marker.x,
-        infoWindow: {
-          content: marker.place_name,
-          visible: false,
-        },
-      };
-      // console.log(marker);
-      searchMarkerList.value.push(markerItem);
-      // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
-    }
+//     for (let marker of data) {
+//       const markerItem = {
+//         lat: marker.y,
+//         lng: marker.x,
+//         infoWindow: {
+//           content: marker.place_name,
+//           visible: false,
+//         },
+//       };
+//       // console.log(marker);
+//       searchMarkerList.value.push(markerItem);
+//       // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
+//     }
 
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-    // map.value?.setBounds(bounds);
-  }
-};
+//     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+//     // map.value?.setBounds(bounds);
+//   }
+// };
 
 // 마커 인포윈도우
 function onLoadKakaoMapMarker(event) {
