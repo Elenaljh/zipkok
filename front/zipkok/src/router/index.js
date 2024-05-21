@@ -84,11 +84,6 @@ const router = createRouter({
       ],
     },
     {
-      path: "/oauth2/callback",
-      name: "oauth",
-      component: () => import("@/components/user/GoogleLogin.vue"),
-    },
-    {
       path: "/board",
       name: "board",
       component: () => import("../views/BoardView.vue"),

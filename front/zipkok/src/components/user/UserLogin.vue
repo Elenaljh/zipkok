@@ -1,13 +1,31 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { useWindowFocus } from "@vueuse/core";
+
+const focused = useWindowFocus();
+watch(
+  () => focused.value,
+  (val) => {
+    console.log("windowFocused", val);
+    if (googleCode.value) {
+      try {
+        console.log(googleCode.value);
+        store.goGoogleLoginPost();
+        googleCode.value = "";
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+);
 
 const store = useMemberStore();
-const { name, email, memberId, isAuthorized } = storeToRefs(store);
+const { name, email, memberId, googleCode } = storeToRefs(store);
 const url = store.url;
 const router = useRouter();
 
@@ -91,35 +109,13 @@ const validation = () => {
   }
   return false;
 };
-
-//구글로그인
-const { VITE_CLIENT_ID, VITE_REDIRECT_URI } = import.meta.env;
-const GoogleLoginUrl = ref(
-  "https://accounts.google.com/o/oauth2/v2/auth?client_id=" +
-    VITE_CLIENT_ID +
-    "&redirect_uri=" +
-    VITE_REDIRECT_URI +
-    "&response_type=code" +
-    "&scope=email profile"
-);
-const goGoogleLogin = () => {
-  window.open(GoogleLoginUrl.value, "_blank", "width=480,height=720");
-};
-
-const redirectToNewPage = () => {
-  if (isAuthorized.value) {
-    router.push({ name: "home" });
-  }
-};
 </script>
 
 <template>
   <div class="m-5 w-25">
     <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">로그인</h3>
-    <p class="text-center" style="color: #707070">
-      Zipkok에 오신 것을 환영합니다!
-    </p>
+    <p class="text-center" style="color: #707070">Zipkok에 오신 것을 환영합니다!</p>
     <form>
       <div class="mb-3">
         <label class="form-label">이메일</label>
@@ -148,9 +144,7 @@ const redirectToNewPage = () => {
             id="flexCheckDefault"
             v-model="rememberMe"
           />
-          <label class="form-check-label" for="flexCheckDefault">
-            이메일 기억하기
-          </label>
+          <label class="form-check-label" for="flexCheckDefault"> 이메일 기억하기 </label>
         </div>
         <router-link
           style="color: #00b4d8; font-weight: bold; text-decoration-line: none"
@@ -165,15 +159,6 @@ const redirectToNewPage = () => {
         @click="buttonClick"
       >
         로그인
-      </button>
-      <button
-        type="button"
-        class="btn w-100 fw-bold"
-        style="border-color: lightgray"
-        @click="goGoogleLogin"
-      >
-        <img src="/src/assets/google_s.png" class="me-2" />
-        Google로 로그인
       </button>
     </form>
     <div class="d-flex justify-content-center mt-3">

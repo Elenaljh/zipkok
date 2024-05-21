@@ -5,17 +5,69 @@ import { useMemberStore } from "@/stores/member";
 import { adjustedMoneyFormat } from "@/util/util";
 import { useHouseStore } from "@/stores/house";
 import { grade } from "@/util/airConditionUtil";
+import { Line } from "vue-chartjs";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+//차트 js
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+const chartOptions = ref({
+  responsive: true,
+  // maintainAspectRatio: false,
+});
+//차트 js 설정 끝
 
 const store = useMemberStore();
 const houseStore = useHouseStore();
 const type = ref("매매");
-const info = ref([]);
+const info = ref([{ amount: 3, deposit: 2, monthlyRent: 2, year: 2024, month: 2, day: 3 }]); //거래가 데이터 저장됨
+const amountData = computed(() => info.value.map((item) => item.amount).reverse()); //매매가 데이터
+const depositData = computed(() => info.value.map((item) => item.deposit)); //보증금 데이터
+const dayData = computed(() =>
+  info.value.map((item) => item.year + "." + item.month + "." + item.day).reverse()
+);
 const priceAverage = ref({});
 const { houseInfo, busStation } = defineProps({
   houseInfo: String,
   busStation: Object,
 });
-
+const chartData = computed(() => {
+  return {
+    labels: dayData.value,
+    datasets: [
+      {
+        label: "거래가",
+        data: amountData.value,
+        fill: false,
+        borderColor: "#00b4d8",
+        tension: 0.1,
+      },
+    ],
+  };
+});
+const chartRentData = computed(() => {
+  return {
+    labels: dayData.value,
+    datasets: [
+      {
+        label: "거래가",
+        data: depositData.value,
+        fill: false,
+        borderColor: "#00b4d8",
+        tension: 0.1,
+      },
+    ],
+  };
+});
 /*
 amount: 0
 aptCode: "APT4719033080250018000001"
@@ -107,6 +159,23 @@ const close = () => {
       }}</span
     >
   </p>
+  <!--그래프-->
+  <div class="d-flex justify-content-center">
+    <Line
+      id="my-char-id"
+      :options="chartOptions"
+      :data="chartData"
+      class="mb-5 w-75 h-75"
+      v-if="type === '매매'"
+    />
+    <Line
+      id="my-char-id"
+      :options="chartOptions"
+      :data="chartRentData"
+      class="mb-5 w-75 h-75"
+      v-if="type === '전월세'"
+    />
+  </div>
   <!--테이블-->
   <div class="d-flex justify-content-center">
     <div class="table-responsive card" style="width: 70%">
@@ -194,7 +263,9 @@ const close = () => {
           <img src="/src/assets/detailIcon/cctv.png" width="70px" class="me-4" />
           <div style="width: 100%; height: 100%">
             <div style="font-weight: bold; text-align: center">CCTV 설치</div>
-            <div style="text-align: center">{{ houseInfo.cctvNum }}대</div>
+            <div style="text-align: center">
+              {{ houseInfo.cctvNum ? houseInfo.cctvNum : "-" }}대
+            </div>
           </div>
         </div>
         <div class="me-3 d-flex">

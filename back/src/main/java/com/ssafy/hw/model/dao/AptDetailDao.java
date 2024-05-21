@@ -24,6 +24,10 @@ public interface AptDetailDao {
     public List<SchoolDto> getSchool(Map<String, Double> param);
     //인구 구조
     public PopulationDto getPopulation(String bjdCode);
+    //여성인구, 남성인구, 성별 인구
+    public PopulationBySexDto getFemalePopulation(String bjdCode);
+    public PopulationBySexDto getMalePopulation(String bjdCode);
+    public PopulationSexRatioDto getPopRatio(String bjdCode);
 
     //동 이름
     public String getDongbyCode(String bjdCode);

@@ -1,9 +1,46 @@
 <script setup>
 import { ref } from "vue";
-import { dong, population, news } from "@/util/houseDetail";
+import { dong, news, malePopulation, femalePopulation } from "@/util/houseDetail";
 import { numberFormat } from "@/util/util";
 const { houseInfo } = defineProps({
   houseInfo: Object,
+});
+import { Bar } from "vue-chartjs";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+
+const chartOptions = ref({
+  responsive: true,
+  // maintainAspectRatio: false,
+});
+
+const chartData = ref({
+  labels: ["0~9세", "10~19세", "20~29세", "30~39세", "40~49세", "50~59세", "60세~"],
+  datasets: [
+    {
+      label: "남성",
+      data: malePopulation.value,
+      // fill: false,
+      backgroundColor: "#00b4d8",
+      // tension: 0.1,
+    },
+    {
+      label: "여성",
+      data: femalePopulation.value,
+      // fill: false,
+      backgroundColor: "#D8004E",
+      // tension: 0.1,
+    },
+  ],
 });
 
 const noImage = ref("/src/assets/noImage.jpg");
@@ -17,7 +54,12 @@ const noImage = ref("/src/assets/noImage.jpg");
         <span style="color: #00b3d6">{{ dong }}</span
         ><span>의 인구구조</span>
       </p>
-      <div class="table-responsive card" style="max-height: 380px; overflow-y: auto">
+      <!--그래프-->
+      <div class="mb-5">
+        <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+      </div>
+      <!--테이블-->
+      <!-- <div class="table-responsive card" style="max-height: 380px; overflow-y: auto">
         <table class="table mb-0">
           <thead class="table-light">
             <tr>
@@ -62,10 +104,11 @@ const noImage = ref("/src/assets/noImage.jpg");
             </tr>
           </tfoot>
         </table>
-      </div>
+      </div> -->
+      <!--테이블 끝-->
     </div>
     <!--인구정보 끝-->
-    <hr style="background: #00b3d6; border: 0; height: 1.5px" />
+    <!-- <hr style="background: #00b3d6; border: 0; height: 1.5px" /> -->
     <!--뉴스 시작-->
     <div class="me-2">
       <p style="font-size: large; font-weight: bold">
