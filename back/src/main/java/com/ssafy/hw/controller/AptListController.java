@@ -76,6 +76,16 @@ public class AptListController {
 		}
 	}
 	
+	@GetMapping("/average")
+	public ResponseEntity<?> getAptsAverage(@RequestParam Map<String, Double> map) {
+		try { 
+			List<AptItemDto> list = aptListService.getAptsByLatLngs(map);
+			return new ResponseEntity<List<AptItemDto>>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
 	private ResponseEntity<String> exceptionHandling(Exception e) {
 		e.printStackTrace();
 		return new ResponseEntity<String>("Sorry: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

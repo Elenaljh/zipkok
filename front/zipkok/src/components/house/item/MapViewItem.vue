@@ -6,7 +6,6 @@ import { Modal } from "bootstrap";
 import { ref, computed, watch, onMounted } from "vue";
 import { KakaoMap, KakaoMapMarker, KakaoMapCustomOverlay } from "vue3-kakao-maps";
 import HouseDetail from "../detail/HouseDetail.vue";
-
 const props = defineProps({ hlw: Number, houseMarkerList: Array });
 const mvw = ref(props.hlw ? 100 - props.hlw : 60);
 const houseMarkerList = ref(
@@ -51,12 +50,22 @@ const onLoadKakaoMap = (mapRef) => {
       북동쪽 좌표는 ${bounds.getNorthEast()} 입니다`);
     getRangeList(bounds.getSouthWest(), bounds.getNorthEast());
   });
+
+  // 줌 변화 이벤트
+  kakao.maps.event.addListener(map.value, "zoom_changed", function (event) {
+    // 클릭한 위도, 경도 정보를 가져옵니다
+    if (map.value.getLevel() > 4) {
+      // this.AllMarkerClear();
+    }
+    console.log(`현재 줌 레벨은 ${map.value.getLevel()}입니다`);
+  });
 };
 
 // 전달받은 houseMarkerList로 마커 찍기
-const filteredMarkerList = computed(() =>
-  [...houseMarkerList.value, ...houseRangeMarkerList.value].slice(0, 20)
-);
+const filteredMarkerList = computed(() => [
+  ...houseMarkerList.value,
+  ...houseRangeMarkerList.value,
+]);
 const filteredSearchMarkerList = computed(() => searchMarkerList.value);
 const markersList = computed(() => filteredMarkerList.value);
 
@@ -154,9 +163,8 @@ const placesSearchCB = (data, status) => {
 
 // 마커 인포윈도우
 function onLoadKakaoMapMarker(event) {
-  // console.log("마커 ", event);
+  console.log("마커 ", event);
   houseMarkerObjectList.value.push(event);
-  console.log(markersList.value);
 }
 
 const visibleRef = ref({});
@@ -209,7 +217,7 @@ const markerClick = (id) => {
 // 마커 틀
 
 // 마커 커스텀 오버레이 틀
-const content = (marker) => {
+const myContent = (marker) => {
   return `<div
       class="customOverlayPrice"
       style="
@@ -244,25 +252,42 @@ const content = (marker) => {
 // 커스텀 오버레이 리스트
 const customOverlayList = computed(() => {
   const temp = [];
-  for (let index in filteredMarkerList) {
+
+  for (let index in filteredMarkerList.value) {
     const marker = filteredMarkerList.value[index];
     temp.push({
       lat: marker.lat,
       lng: marker.lng,
-      content: content(marker),
+      content: myContent(marker),
       yAnchor: 1.4,
       visible: visibleRef[index] ? visibleRef[index] : false,
     });
   }
-  console.log("temp", temp);
+  console.log("temp", temp, filteredMarkerList.value.length);
   return temp;
 });
 
 // -------------- 마커 클러스터링
+const markerList = computed(() => {
+  const temp = [];
+  console.log("temp", temp, filteredMarkerList.value.length);
+  for (let index in filteredMarkerList.value) {
+    const marker = filteredMarkerList.value[index];
+    const llm = {
+      lat: marker.lat,
+      lng: marker.lng,
+      // image: {
+      //   imageSrc: "/src/assets/marker/house.png",
+      //   imageWidth: 40,
+      //   imageHeight: 40 * 1.3,
+      // },
+      // title: "hihi",
+    };
+    temp.push(llm);
+  }
 
-const onLoadKakaoMapMarkerCluster = () => {
-  console.log("onLoadKakaoMapMarkerCluster");
-};
+  return temp;
+});
 </script>
 
 <template>
@@ -275,27 +300,39 @@ const onLoadKakaoMapMarkerCluster = () => {
       :lng="lng"
       @onLoadKakaoMap="onLoadKakaoMap"
       @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
-      :markerCluster="{ customOverlayProps: customOverlayList }"
     >
       <!-- 검색한 집 결과 -->
-      <!-- <KakaoMapMarker
-        v-for="(marker, index) in filteredMarkerList"
-        :key="marker.aptCode"
-        :lat="marker.lat"
-        :lng="marker.lng"
-        :image="{
-          imageSrc: '/src/assets/marker/house.png',
-          imageWidth: 40,
-          imageHeight: 40 * 1.3,
-          imageOption: {},
-        }"
-        :clickable="true"
-        @onClickKakaoMapMarker="markerClick(marker.aptCode)"
-        @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
-        @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
-        @onLoadKakaoMapMarker="onLoadKakaoMapMarker($event, marker.lat, marker.lng)"
-      /> -->
+      <!-- 작은 마커 -->
+      <div>
+        <div v-for="(marker, index) in filteredMarkerList" :key="marker.aptCode">
+          <KakaoMapMarker
+            :lat="marker.lat"
+            :lng="marker.lng"
+            :image="{
+              imageSrc: '/src/assets/marker/house.png',
+              imageWidth: 40,
+              imageHeight: 40 * 1.3,
+              imageOption: {},
+            }"
+            :clickable="true"
+            @click="markerClick(marker.aptCode)"
+            @onLoadKakaoMapMaker="onLoadKakaoMapMarker"
+            @onClickKakaoMapMarker="markerClick(marker.aptCode)"
+            @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+            @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+          />
 
+          <KakaoMapCustomOverlay
+            :lat="marker.lat"
+            :lng="marker.lng"
+            :yAnchor="1.4"
+            :visible="visibleRef[index] ? visibleRef[index] : false"
+            :content="myContent(marker)"
+          />
+        </div>
+      </div>
+      <!-- 동 마커 -->
+      <div></div>
       <!-- 키워드 검색 결과 -->
       <KakaoMapMarker
         v-for="marker in filteredSearchMarkerList"
