@@ -65,16 +65,17 @@ const getNews = async (aptName, dong) => {
 
 // 키워드로 장소를 검색합니다
 const searchPlaceByKeyword = (keyword, lat, lng) => {
+  console.log("장소 검색 시작");
   dataList.value = [];
   searchMarkerList.value = [];
   // 장소 검색 객체를 생성합니다
-  console.log("검색 시작");
   const ps = new kakao.maps.services.Places();
   // 키워드로 장소를 검색합니다
+  console.log("콜백 함수 호출 직전");
   ps.keywordSearch(keyword, placesSearchCB, {
     location: new kakao.maps.LatLng(lat, lng),
   });
-  console.log(filteredSearchMarkerList.value);
+  console.log("검색  완료", filteredSearchMarkerList.value);
 };
 // 키워드 검색 완료 시 호출되는 콜백함수 입니다
 const placesSearchCB = (data, status) => {
