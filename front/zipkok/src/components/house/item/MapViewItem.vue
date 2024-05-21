@@ -19,7 +19,6 @@ const lng = ref(128.41277958423132);
 const map = ref();
 const houseMarkerObjectList = ref([]);
 const houseStore = useHouseStore();
-
 const modalRef = ref(null);
 
 onMounted(() => {
@@ -55,13 +54,13 @@ const onLoadKakaoMap = (mapRef) => {
 };
 
 // 전달받은 houseMarkerList로 마커 찍기
-const filteredMarkerList = computed(() => [
-  ...houseMarkerList.value,
-  ...houseRangeMarkerList.value,
-]);
+const filteredMarkerList = computed(() =>
+  [...houseMarkerList.value, ...houseRangeMarkerList.value].slice(0, 20)
+);
 const filteredSearchMarkerList = computed(() => searchMarkerList.value);
+const markersList = computed(() => filteredMarkerList.value);
 
-// marker에 맞게 지도 이동
+// marker에 맞게 지도 `이동
 watch(
   () => props.houseMarkerList,
   () => {
@@ -155,11 +154,12 @@ const placesSearchCB = (data, status) => {
 
 // 마커 인포윈도우
 function onLoadKakaoMapMarker(event) {
-  console.log("마커 ", event);
+  // console.log("마커 ", event);
   houseMarkerObjectList.value.push(event);
+  console.log(markersList.value);
 }
 
-const visibleRef = ref([]);
+const visibleRef = ref({});
 
 const mouseOverKakaoMapMarker = (ind) => {
   visibleRef.value[ind] = true;
@@ -168,10 +168,6 @@ const mouseOverKakaoMapMarker = (ind) => {
 const mouseOutKakaoMapMarker = (ind) => {
   visibleRef.value[ind] = false;
 };
-
-function onLoadKakaoMapMarkertt() {
-  console.log("테스트 ");
-}
 
 // 검색 결과 받아오기 (범위)
 const getRangeList = (swLatLng, neLatLng) => {
@@ -203,11 +199,69 @@ function showPrice(info) {
   return "-";
 }
 
-// 클릭 설정
+// 마커 클릭 설정
 const markerClick = (id) => {
   console.log("setHouseId=" + id);
-  houseStore.changeId(id);
-  new Modal(modalRef.value).show();
+  // houseStore.changeId(id);
+  // new Modal(modalRef.value).show();
+};
+
+// 마커 틀
+
+// 마커 커스텀 오버레이 틀
+const content = (marker) => {
+  return `<div
+      class="customOverlayPrice"
+      style="
+        padding: 10px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      "
+    >
+      <div style="font-weight: bold; margin-bottom: 5px; color: #00b4d8">
+        ${marker.aptName}
+      </div>
+      <div style="display: flex">
+        <div style="display: flex; flex-direction: column; align-items: flex-start">
+          <div
+            class="small-content"
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap"
+          >
+            ${marker.bjdAddress ? marker.bjdAddress : marker.drmAddress}
+          </div>
+          <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+            ${moneyFormat(showPrice(marker) * 10000)}
+          </div>
+        </div>
+      </div>
+    </div>`;
+};
+
+// 커스텀 오버레이 리스트
+const customOverlayList = computed(() => {
+  const temp = [];
+  for (let index in filteredMarkerList) {
+    const marker = filteredMarkerList.value[index];
+    temp.push({
+      lat: marker.lat,
+      lng: marker.lng,
+      content: content(marker),
+      yAnchor: 1.4,
+      visible: visibleRef[index] ? visibleRef[index] : false,
+    });
+  }
+  console.log("temp", temp);
+  return temp;
+});
+
+// -------------- 마커 클러스터링
+
+const onLoadKakaoMapMarkerCluster = () => {
+  console.log("onLoadKakaoMapMarkerCluster");
 };
 </script>
 
@@ -220,9 +274,11 @@ const markerClick = (id) => {
       :lat="lat"
       :lng="lng"
       @onLoadKakaoMap="onLoadKakaoMap"
+      @onLoadKakaoMapMarkerCluster="onLoadKakaoMapMarkerCluster"
+      :markerCluster="{ customOverlayProps: customOverlayList }"
     >
       <!-- 검색한 집 결과 -->
-      <KakaoMapMarker
+      <!-- <KakaoMapMarker
         v-for="(marker, index) in filteredMarkerList"
         :key="marker.aptCode"
         :lat="marker.lat"
@@ -234,79 +290,11 @@ const markerClick = (id) => {
           imageOption: {},
         }"
         :clickable="true"
-        @click="markerClick(marker.aptCode)"
         @onClickKakaoMapMarker="markerClick(marker.aptCode)"
         @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
         @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
-      />
-      <KakaoMapCustomOverlay
-        v-for="(marker, index) in filteredMarkerList"
-        :key="marker.aptCode"
-        :lat="marker.lat"
-        :lng="marker.lng"
-        :yAnchor="1.4"
-        :visible="visibleRef[index] ? visibleRef[index] : false"
-      >
-        <div
-          class="customOverlayPrice"
-          style="
-            padding: 10px;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-          "
-        >
-          <div style="font-weight: bold; margin-bottom: 5px; color: #00b4d8">
-            {{ marker.aptName }}
-          </div>
-          <div style="display: flex">
-            <div style="display: flex; flex-direction: column; align-items: flex-start">
-              <div
-                class="small-content"
-                style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap"
-              >
-                {{ marker.bjdAddress ? marker.bjdAddress : marker.drmAddress }}
-              </div>
-              <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
-                {{ moneyFormat(showPrice(marker) * 10000) }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </KakaoMapCustomOverlay>
-
-      <!-- <KakaoMapInfoWindow
-        v-for="(marker, index) in filteredMarkerList"
-        :key="index"
-        :lat="marker.lat"
-        :lng="marker.lng"
-        :marker="houseMarkerObjectList[index]"
-        :visible="true"
-      >
-        <div>하이염</div>
-      </KakaoMapInfoWindow> -->
-      <!-- <KakaoMapMarker
-        :lat="36.13994808315728"
-        :lng="128.31381567"
-        :image="{
-          imageSrc: '/src/assets/marker/house.png',
-          imageWidth: 40,
-          imageHeight: 40 * 1.3,
-          imageOption: {},
-        }"
-        @onLoadKakaoMapMarker="onLoadKakaoMapMarkert"
-      />
-      <KakaoMapInfoWindow
-        :lat="36.13994808315728"
-        :lng="128.31381567"
-        :marker="tempMarker"
-        :visible="true"
-      >
-        <div>gdgd</div>
-      </KakaoMapInfoWindow> -->
+        @onLoadKakaoMapMarker="onLoadKakaoMapMarker($event, marker.lat, marker.lng)"
+      /> -->
 
       <!-- 키워드 검색 결과 -->
       <KakaoMapMarker
@@ -331,9 +319,7 @@ const markerClick = (id) => {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
       ref="modalRef"
-    >
-      <HouseDetail />
-    </div>
+    ></div>
   </div>
 </template>
 
