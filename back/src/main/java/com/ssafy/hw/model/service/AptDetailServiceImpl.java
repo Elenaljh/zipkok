@@ -57,6 +57,24 @@ public class AptDetailServiceImpl implements AptDetailService {
     }
 
     @Override
+    public Integer[] getFemalePopulation(String bjdCode) {
+        PopulationBySexDto p = dao.getFemalePopulation(bjdCode);
+        return new Integer[]{p.getZero(), p.getTen(), p.getTwenty(), p.getThirty(), p.getForty(), p.getFifty(), p.getOld()};
+    }
+
+    @Override
+    public Integer[] getMalePopulation(String bjdCode) {
+        PopulationBySexDto p = dao.getMalePopulation(bjdCode);
+        return new Integer[]{p.getZero(), p.getTen(), p.getTwenty(), p.getThirty(), p.getForty(), p.getFifty(), p.getOld()};
+    }
+
+    @Override
+    public Double[] getPopRatio(String bjdCode) {
+        PopulationSexRatioDto p = dao.getPopRatio(bjdCode);
+        return new Double[]{p.getMale(), p.getFemale()};
+    }
+
+    @Override
     public String getDongbyCode(String bjdCode) {
         return dao.getDongbyCode(bjdCode);
     }

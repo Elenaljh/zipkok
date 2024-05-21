@@ -8,7 +8,6 @@ import Swal from "sweetalert2";
 import { checkAuth } from "@/api/board";
 import { callSwal } from "@/util/util";
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -109,22 +108,21 @@ const router = createRouter({
             const { isAuthorized } = storeToRefs(store);
             if (!isAuthorized.value) {
               Swal.fire({
-                icon: 'info',
-                title: '로그인 후 이용 가능합니다.',
-                text: '로그인 하시겠습니까?',
+                icon: "info",
+                title: "로그인 후 이용 가능합니다.",
+                text: "로그인 하시겠습니까?",
                 showCancelButton: true,
-                confirmButtonText: '예', 
-                cancelButtonText: '아니오',
-                confirmButtonColor: '#00b4d8',
-                cancelButtonColor: 'lightgray',
-              }).then(result => {
+                confirmButtonText: "예",
+                cancelButtonText: "아니오",
+                confirmButtonColor: "#00b4d8",
+                cancelButtonColor: "lightgray",
+              }).then((result) => {
                 if (result.isConfirmed) {
-                  router.push({name: "login"});
+                  router.push({ name: "login" });
                 } else if (result.isDismissed) {
                   next(false);
                 }
-            })
-              
+              });
             } else {
               next();
             }
@@ -141,7 +139,7 @@ const router = createRouter({
               router.push(from);
             } else {
               console.log(to.params.boardId);
-              if(!checkUserBoard(to.params.boardId)){
+              if (!checkUserBoard(to.params.boardId)) {
                 router.push(from);
               }
             }
@@ -169,7 +167,7 @@ router.beforeEach(() => {
   // console.log("로컬스토리지 값: " + store.isAuthorized());
 });
 
-function checkUserBoard(boardId)  {
+function checkUserBoard(boardId) {
   checkAuth(
     boardId,
     (response) => {

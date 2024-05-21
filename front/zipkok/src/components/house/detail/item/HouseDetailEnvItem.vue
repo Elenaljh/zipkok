@@ -7,6 +7,17 @@ const { houseInfo } = defineProps({
 import { searchPlaceByKeyword, dataList, filteredSearchMarkerList } from "@/util/houseDetail";
 
 const current = ref("");
+
+const visibleRef = ref([]);
+const mouseOverKakaoMapMarker = (ind) => {
+  console.log(ind + " in");
+  visibleRef.value[ind] = true;
+};
+
+const mouseOutKakaoMapMarker = (ind) => {
+  console.log(ind + " out");
+  visibleRef.value[ind] = false;
+};
 </script>
 
 <template>
@@ -35,7 +46,7 @@ const current = ref("");
       />
       <div v-if="current === '학교'">
         <KakaoMapMarker
-          v-for="marker in filteredSearchMarkerList"
+          v-for="(marker, index) in filteredSearchMarkerList"
           :key="marker.key"
           :lat="marker.lat"
           :lng="marker.lng"
@@ -44,11 +55,17 @@ const current = ref("");
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px;'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
         />
       </div>
       <div v-if="current === '행정'">
         <KakaoMapMarker
-          v-for="marker in filteredSearchMarkerList"
+          v-for="(marker, index) in filteredSearchMarkerList"
           :key="marker.key"
           :lat="marker.lat"
           :lng="marker.lng"
@@ -57,11 +74,17 @@ const current = ref("");
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
         />
       </div>
       <div v-if="current === '공원'">
         <KakaoMapMarker
-          v-for="marker in filteredSearchMarkerList"
+          v-for="(marker, index) in filteredSearchMarkerList"
           :key="marker.key"
           :lat="marker.lat"
           :lng="marker.lng"
@@ -70,11 +93,17 @@ const current = ref("");
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
         />
       </div>
       <div v-if="current === '맛집'">
         <KakaoMapMarker
-          v-for="marker in filteredSearchMarkerList"
+          v-for="(marker, index) in filteredSearchMarkerList"
           :key="marker.key"
           :lat="marker.lat"
           :lng="marker.lng"
@@ -83,6 +112,12 @@ const current = ref("");
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"
+          :infoWindow="{
+            content: `<p style='font-size: 15px'>${marker.infoWindow.content}</p>`,
+            visible: visibleRef[index] ? visibleRef[index] : false,
+          }"
+          @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
+          @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
         />
       </div>
     </KakaoMap>

@@ -3,7 +3,9 @@ import axios from "axios";
 import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
 
 const dong = ref("");
-const population = ref({});
+const malePopulation = ref([]);
+const femalePopulation = ref([]);
+const sexRatio = ref([]);
 const news = ref([]);
 const searchMarkerList = ref([]);
 const filteredSearchMarkerList = computed(() => searchMarkerList.value);
@@ -21,13 +23,34 @@ const getDong = async (bjdCode) => {
   // console.log("동: " + dong.value);
 };
 
-const getPopulation = async (bjdCode) => {
+const getMalePopulation = async (bjdCode) => {
   const result = await axios.get("http://localhost:8080/apt/population", {
     params: {
       bjdCode: bjdCode,
+      type: "male",
     },
   });
-  population.value = result.data;
+  malePopulation.value = result.data;
+};
+
+const getFemalePopulation = async (bjdCode) => {
+  const result = await axios.get("http://localhost:8080/apt/population", {
+    params: {
+      bjdCode: bjdCode,
+      type: "female",
+    },
+  });
+  femalePopulation.value = result.data;
+};
+
+const getSexRatio = async (bjdCode) => {
+  const result = await axios.get("http://localhost:8080/apt/population", {
+    params: {
+      bjdCode: bjdCode,
+      type: "both",
+    },
+  });
+  sexRatio.value = result.data;
 };
 
 const getNews = async (aptName, dong) => {
@@ -89,12 +112,16 @@ const placesSearchCB = (data, status) => {
 
 export {
   getDong,
-  getPopulation,
   dong,
-  population,
   getNews,
   news,
   searchPlaceByKeyword,
   filteredSearchMarkerList,
   dataList,
+  getMalePopulation,
+  getFemalePopulation,
+  getSexRatio,
+  malePopulation,
+  femalePopulation,
+  sexRatio,
 };

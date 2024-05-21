@@ -46,4 +46,18 @@
 	<select id="getDongbyCode" parameterType="string" resultType="string">
 		select dongName from dongcode where dongCode=#{bjdCode}
 	</select>
+
+	<select id="getFemalePopulation" parameterType="string" resultType="PopulationBySexDto">
+		select zero_female zero, ten_female ten, twenty_female twenty, thirty_female thirty, forty_female forty, fifty_female fifty, old_female old from population where bjd_code=#{bjdCode}
+	</select>
+
+	<select id="getMalePopulation" parameterType="string" resultType="PopulationBySexDto">
+		select zero_male zero, ten_male ten, twenty_male twenty, thirty_male thirty, forty_male forty, fifty_male fifty, old_male old from population where bjd_code=#{bjdCode}
+	</select>
+
+	<select id="getPopRatio" parameterType="string" resultType="PopulationSexRatioDto">
+		select male/total*100 as male, female/total*100 as female from population where bjd_code=#{bjdCode}
+	</select>
+
+
 </mapper>

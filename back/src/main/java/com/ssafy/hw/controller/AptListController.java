@@ -20,7 +20,7 @@ import com.ssafy.hw.model.service.AptListService;
 
 @RestController
 @RequestMapping("/apt/list")
-@CrossOrigin(originPatterns = {"*"} ,allowCredentials = "true")
+@CrossOrigin(originPatterns = {"*"}, allowCredentials="true")
 public class AptListController {
 	private final AptListService aptListService;
 	public AptListController(AptListService aptListService) {
