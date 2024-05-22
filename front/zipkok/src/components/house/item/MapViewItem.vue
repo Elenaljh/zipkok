@@ -320,13 +320,13 @@ const myDongContent = (marker) => {
   box-shadow: 0px 0px 20px 7px #CAF0F8;"
   >
   <div class="d-flex justify-content-center text-center fw-bold py-1 w-100 px-2" 
-      style="background-color: #00b4d8; color:white; border-radius: 10px 10px 0 0; font-size: 18px;">
+      style="background-color: #00b4d8; color:white; border-radius: 10px 10px 0 0; font-size: 15px;">
     <span>${marker.dongName ? marker.dongName : marker.gugunName}</span>
   </div>
   <div class="d-flex bg-white p-2 w-100 justify-content-center"
     style=" border-radius:  0 0 10px 10px">
     <div class="bg-white text-center w-100" 
-    style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+    style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px;">
       <span class="small-content">${showType(marker)}</span> ${moneyFormat(
     showPrice(marker) * 10000
   )}
