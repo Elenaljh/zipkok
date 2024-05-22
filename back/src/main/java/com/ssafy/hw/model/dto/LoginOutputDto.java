@@ -4,14 +4,24 @@ public class LoginOutputDto {
     private String name;
     private String email;
     private int memberId;
+    private String preference;
 
     public LoginOutputDto() {
     }
 
-    public LoginOutputDto(String name, String email, int memberId) {
+    public LoginOutputDto(String name, String email, int memberId, String preference) {
         this.name = name;
         this.email = email;
         this.memberId = memberId;
+        this.preference = preference;
+    }
+
+    public String getPreference() {
+        return preference;
+    }
+
+    public void setPreference(String preference) {
+        this.preference = preference;
     }
 
     public String getName() {

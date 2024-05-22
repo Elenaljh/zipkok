@@ -11,5 +11,5 @@ public interface MemberDao {
     public Member loginMember(@Param("email") String email, @Param("password") String password); //회원가입
     public int updateMember(Member member); //회원정보 수정
     public int deleteMember(String email); //회원탈퇴
-
+    public int updatePassword(@Param("password") String password, @Param("email") String email); //비번 업데이트
 }

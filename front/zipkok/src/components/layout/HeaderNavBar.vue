@@ -2,6 +2,7 @@
 import { Suspense, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/member";
+import { sweetAlert } from "@/util/util";
 import axios from "axios";
 
 const router = useRouter();
@@ -21,16 +22,17 @@ const logoutUser = async () => {
     console.log(memberStore.isAuthorized);
     router.push({ name: "main" });
   } catch (error) {
-    alert("로그아웃 실패");
+    sweetAlert("로그아웃 실패", "", "error");
   }
 };
 </script>
 
 <template>
-  <nav class="navbar bg-body-tertiary">
+  <nav class="navbar bg-body-tertiary p-0">
     <div class="container-fluid">
       <a class="navbar-brand">
-        <router-link :to="{ name: 'main' }">
+        <!--style="color: #00b4d8"-->
+        <router-link :to="{ name: 'main' }" class="logoText">
           <img src="@/assets/logo.png" alt="Bootstrap" width="80" height="80" />
           ZIPKOK</router-link
         ></a
@@ -68,5 +70,12 @@ const logoutUser = async () => {
 a {
   text-decoration: none;
   color: black;
+}
+.logoText {
+  font-family: "Black Ops One", system-ui !important;
+  font-weight: 400;
+  font-size: 30px;
+  font-style: normal;
+  color: #00b4d8;
 }
 </style>

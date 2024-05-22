@@ -4,7 +4,11 @@ import AddressSelectBox from "../common/AddressSelectBox.vue";
 import { useMemberStore } from "@/stores/member";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { sweetAlert } from "@/util/util";
+import { storeToRefs } from "pinia";
 
+const memberStore = useMemberStore();
+const { preference } = storeToRefs(memberStore);
 const url = useMemberStore().url;
 const router = useRouter();
 onMounted(async () => {
@@ -16,7 +20,7 @@ onMounted(async () => {
     await pushList(user.value);
     console.log(user.value);
   } catch (error) {
-    alert("조회 실패");
+    sweetAlert("회원정보 조회 실패", "관리자에게 문의하세요", "error");
   }
 });
 const user = ref({});
@@ -44,13 +48,14 @@ const buttonClick = async () => {
       await axios.put(url + "/member", userPayload, {
         withCredentials: true,
       });
-      alert("회원정보 수정 완료");
+      sweetAlert("회원정보 수정 완료", "", "success");
+      preference.value = userPayload.preferedType;
       router.push({ name: "userDetail" });
     } catch (error) {
-      alert("회원정보 수정 실패");
+      sweetAlert("회원정보 수정 실패", "관리자에게 문의하세요", "error");
     }
   } else {
-    alert("회원정보 수정 폼을 다시 확인하세요");
+    sweetAlert("Warning", "회원정보 수정 폼을 다시 확인하세요", "warning");
   }
 };
 
@@ -82,7 +87,7 @@ const validation = () => {
     // alert("good");
     return true;
   } else {
-    alert("수정 폼을 확인해주세요");
+    sweetAlert("Warning", "회원정보 수정 폼을 다시 확인하세요", "warning");
     return false;
   }
 };
@@ -118,7 +123,7 @@ const receiveDataFromChild = (data) => {
   console.log("데이터 수신 완료");
   if (data.address) {
     if (preferedPlaceArr.value.includes(data.address)) {
-      alert("중복된 값입니다!");
+      sweetAlert("중복된 값입니다", "", "warning");
       return;
     }
     preferedPlaceArr.value.push(data.address);
