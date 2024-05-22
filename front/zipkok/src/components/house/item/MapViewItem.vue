@@ -5,7 +5,7 @@ import { moneyFormat } from "@/util/util";
 import { ref, computed, watch, onMounted } from "vue";
 import { KakaoMap, KakaoMapMarker, KakaoMapCustomOverlay } from "vue3-kakao-maps";
 
-const props = defineProps({ hlw: Number, houseMarkerList: Array });
+const props = defineProps({ hlw: Number, houseMarkerList: Array, latlng: Object });
 const emit = defineEmits(["updateHouseList", "openModal"]);
 const mvw = ref(100);
 const houseMarkerList = ref(
@@ -21,20 +21,40 @@ const houseMarkerObjectList = ref([]);
 const houseStore = useHouseStore();
 const showSeperateMarker = ref(true);
 const showSmallerCustomOverlay = ref(false);
-const dongOverlays = ref([]);
 
-// watch(
-//   () => houseStore.houseId,
-//   () => {
-//     const index = houseMarkerList.value.findIndex((val) => val.aptCode == houseStore.houseId);
-//     console.log("changeHouseId=" + houseStore.houseId, " index", index);
-//     lat.value = houseMarkerList.value[index].lat;
-//     lng.value = houseMarkerList.value[index].lng;
-//     moveMap();
-//   }
-// );
+watch(
+  () => houseStore.houseId,
+  () => {
+    const mindex = houseMarkerList.value.findIndex((val) => val.aptCode == houseStore.houseId);
+    console.log("changeHouseId=" + houseStore.houseId, " index", mindex);
+    if(mindex != -1){
+      lat.value = houseMarkerList.value[mindex].lat;
+      lng.value = houseMarkerList.value[mindex].lng;
+    } else {
+      const rindex = houseRangeMarkerList.value.findIndex((val) => val.aptCode == houseStore.houseId);
+      lat.value = houseRangeMarkerList.value[rindex].lat;
+      lng.value = houseRangeMarkerList.value[rindex].lng;
+    
+    }
+    
+    moveMap();
+  }
+);
+
+watch(
+  () => houseStore.lat,
+  () => {
+    console.log("changelat=" + houseStore.lat, houseStore.lng);
+    
+    map.value.setCenter(new kakao.maps.LatLng(houseStore.lat, houseStore.lng));
+    map.value.setLevel(4);
+    map.value.setLevel(3, { animate: true });
+    // getRangeList(map.value.getBounds().getSouthWest(), map.value.getBounds().getNorthEast());
+  }
+);
 
 onMounted(() => {
+  console.log("remount")
   drawCurrent();
 });
 
@@ -46,7 +66,7 @@ const onLoadKakaoMap = (mapRef) => {
   }
 
   // searchPlace();
-  kakao.maps.event.addListener(map.value, "dragend", function (event) {
+  kakao.maps.event.addListener(map.value, "idle", function (event) {
     // 클릭한 위도, 경도 정보를 가져옵니다
     const bounds = map.value.getBounds();
 
@@ -56,11 +76,11 @@ const onLoadKakaoMap = (mapRef) => {
   });
 
   // 줌 변화 이벤트
-  kakao.maps.event.addListener(map.value, "zoom_changed", function (event) {
-    const bounds = map.value.getBounds();
-    console.log(`현재 줌 레벨은 ${map.value.getLevel()}입니다`);
-    getRangeList(bounds.getSouthWest(), bounds.getNorthEast());
-  });
+  // kakao.maps.event.addListener(map.value, "zoom_changed", function (event) {
+  //   const bounds = map.value.getBounds();
+  //   console.log(`현재 줌 레벨은 ${map.value.getLevel()}입니다`);
+  //   getRangeList(bounds.getSouthWest(), bounds.getNorthEast());
+  // });
 };
 
 // 전달받은 houseMarkerList로 마커 찍기
@@ -431,8 +451,6 @@ const mySmallContent = (marker) => {
             :yAnchor="1.2"
             v-if="showSmallerCustomOverlay"
             :content="mySmallContent(marker)"
-            clickable="true"
-            @click="customOverLayClick"
           />
         </div>
       </div>
@@ -457,8 +475,6 @@ const mySmallContent = (marker) => {
             :lng="marker.lng"
             :yAnchor="1.4"
             :content="myDongContent(marker)"
-            clickable="true"
-            @click="customOverLayClick"
           />
         
         </div>

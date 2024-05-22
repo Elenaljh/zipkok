@@ -10,7 +10,7 @@ import { useHouseStore } from "@/stores/house";
 import { getAptsByDong, getAptsByLatLngs, getRecApts, getAptsByName } from "@/api/map";
 import { useMemberStore } from "@/stores/member";
 import { storeToRefs } from "pinia";
-
+import GoogleAddressComplete from '@/components/common/GoogleAddressComplete.vue';
 const memberStore = useMemberStore();
 const store = useHouseStore();
 const { type } = defineProps({ type: String });
@@ -18,7 +18,7 @@ const route = useRoute();
 const router = useRouter();
 const childCompRef = ref(null);
 const emit = defineEmits(["updateHouseList", "openModal"]);
-const searchType = ref(route.query.searchType ? route.query.searchType : 0);
+const searchType = ref(route.query.searchType ? route.query.searchType : 2);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
 
 const searchDongValue = ref(route.query.searchType == 0 ? route.query.searchValue : null);
@@ -34,6 +34,8 @@ const callChildFunction = () => {
     childCompRef.value.sendDataToParent();
   } else if (searchType.value == 1) {
     searchValue.value = searchBuildingValue.value;
+  } else if (searchType.value == 2){
+    //autocomplete
   }
   console.log("검색 값은 이거입니다: ", searchType.value, " ", searchValue.value);
   search();
@@ -182,10 +184,15 @@ const changeTab = (val) => {
     <div class="mb-4 ms-1 mb-0 pb-0">
       <ul class="nav nav-underline">
         <li class="nav-item">
+          <a class="nav-link boardNav" :class="{ active: searchType == 2 }" aria-current="page" @click="changeTab(2)"
+            >검색</a
+          >
+        </li>
+        <li class="nav-item">
           <a
             class="nav-link boardNav"
             :class="{ active: searchType == 0 }"
-            aria-current="page"
+            
             @click="changeTab(0)"
             >지역</a
           >
@@ -197,7 +204,13 @@ const changeTab = (val) => {
         </li>
       </ul>
 
-      <div class="mt-3 d-flex justify-content-flex-start align-items-center">
+      <div class="mt-3 d-flex justify-content-flex-start align-items-center" >
+        <!-- 구글 autocomplete 검색 -->
+        <div v-if="searchType == 2" style="width: 70%">
+          <div class="d-flex align-items-center">
+            <GoogleAddressComplete />
+          </div>
+        </div>
         <!-- 지역 검색 -->
         <div v-if="searchType == 0">
           <div class="d-flex align-items-center">
@@ -213,8 +226,8 @@ const changeTab = (val) => {
 
         <div class="d-flex align-items-center" v-if="searchType == 1" style="width: 70%">
           <input
-            class="w-100 p-1 ps-2"
-            style="height: inherit"
+            class="w-100 ps-2"
+            style="padding-top: 6px; padding-bottom: 6px"
             type="text"
             name="buildingName"
             id="buildingName"

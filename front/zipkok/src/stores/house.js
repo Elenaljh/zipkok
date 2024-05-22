@@ -14,7 +14,17 @@ export const useHouseStore = defineStore(
       houseDetail.value = newDetail;
     };
 
-    return { houseId, changeId, houseDetail, changeDetail };
+    const lat = ref();
+    const changeLat = (v) => {
+      lat.value = v;
+    }
+
+    const lng = ref();
+    const changeLng = (v) => {
+      lng.value = v;
+    }
+
+    return { houseId, changeId, houseDetail, changeDetail, lat, lng, changeLat, changeLng };
   },
   {
     persist: true,
