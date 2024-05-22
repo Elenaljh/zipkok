@@ -7,7 +7,7 @@ import { KakaoMap, KakaoMapMarker, KakaoMapCustomOverlay } from "vue3-kakao-maps
 
 const props = defineProps({ hlw: Number, houseMarkerList: Array });
 const emit = defineEmits(["updateHouseList", "openModal"]);
-const mvw = ref(props.hlw ? 100 - props.hlw : 60);
+const mvw = ref(100);
 const houseMarkerList = ref(
   props.houseMarkerList && props.houseMarkerList.length > 0 ? props.houseMarkerList : []
 );
@@ -320,7 +320,7 @@ const myDongContent = (marker) => {
   box-shadow: 0px 0px 20px 7px #CAF0F8;"
   >
   <div class="d-flex justify-content-center text-center fw-bold py-1 w-100 px-2" 
-      style="background-color: #00b4d8; color:white; border-radius: 10px 10px 0 0">
+      style="background-color: #00b4d8; color:white; border-radius: 10px 10px 0 0; font-size: 18px;">
     <span>${marker.dongName ? marker.dongName : marker.gugunName}</span>
   </div>
   <div class="d-flex bg-white p-2 w-100 justify-content-center"
@@ -475,10 +475,6 @@ function eraseOverlay() {
 </template>
 
 <style scoped>
-#map {
-  z-index: 0;
-}
-
 KakaoMapMarker:hover {
   cursor: pointer;
 }
