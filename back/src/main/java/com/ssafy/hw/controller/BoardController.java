@@ -1,6 +1,5 @@
 package com.ssafy.hw.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.ssafy.hw.model.dto.Board;
 import com.ssafy.hw.model.dto.BoardInsertDto;
+import com.ssafy.hw.model.dto.BoardListDto;
 import com.ssafy.hw.model.dto.BoardUpdateDto;
 import com.ssafy.hw.model.service.BoardService;
 
@@ -50,15 +50,10 @@ public class BoardController {
 
 	//param으로 title, keyword, writer / type이 들어갈 예정
 	@GetMapping("/list")
-	public ResponseEntity<?> search(@RequestParam("key") String key, @RequestParam("keyword") String keyword, @RequestParam("type") int type) {
+	public ResponseEntity<?> search(@RequestParam Map<String, String> map) {
 		try {
-			Map<String, String> params = new HashMap<>();
-			params.put("key", key);
-			params.put("keyword", keyword);
-			params.put("type", String.valueOf(type));
-			System.out.println(params);
-			List<Board> list = boardService.search(params);
-			return new ResponseEntity<List<Board>>(list, HttpStatus.OK);
+			BoardListDto list = boardService.search(map);
+			return new ResponseEntity<BoardListDto>(list, HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}

@@ -15,29 +15,39 @@
 		where board_id=#{boardId} 
 	</select>
 
+	<sql id = "searchQuery">
+		<if test="key != null and key != '' and keyword != null and keyword != ''">
+			<if test="key == 'title'">
+				and title like concat('%',#{keyword},'%')
+			</if>
+			<if test="key =='title and content'">
+				and (title like concat('%',#{keyword},'%') or content like concat('%',#{keyword},'%'))
+			</if>
+			<if test="key == 'writer'">
+				and writer = #{keyword}
+			</if>
+		</if>
+		<if test="type != null and type != ''">
+			and type = #{type}
+		</if>
+	</sql>
 	<!-- param으로 title, keyword, writer, type이 들어갈 예정 -->
 	<select id="search" parameterType="map" resultType="Board">
 		select board_id, title, content, created_at, member_id, type, writer, hit, boom
 		from board
 		<where>
-			<if test="key != null and key != '' and keyword != null and keyword != ''">
-				<if test="key == 'title'">
-					and title like concat('%',#{keyword},'%')
-				</if>
-				<if test="key =='title and content'">
-					and (title like concat('%',#{keyword},'%') or content like concat('%',#{keyword},'%'))
-				</if>
-				<if test="key == 'writer'">
-					and writer = #{keyword}
-				</if>
-			</if>
-			<if test="type != null and type != ''">
-				and type = #{type}
-			</if>
+			<include refid="searchQuery"></include>
 		</where>
 		order by created_at desc 
+		limit #{start}, #{listsize}  
 	</select>
-	
+	<select id="getTotalArticleCount" parameterType="map" resultType="int">
+		select count(board_id)
+		from board
+		<where>
+			<include refid="searchQuery"></include>
+		</where>
+	</select>
 	<select id="getListByType" parameterType="int" resultType="Board">
 		select *
 		from board where type = #{type}

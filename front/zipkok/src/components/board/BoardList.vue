@@ -55,10 +55,10 @@ const getBoardList = () => {
     param.value,
     ({ data }) => {
       console.log("받았다!!", data);
-      boards.value = data;
-      // boards.value = data.boards;
-      // currentPage.value = data.currentPage;
-      // totalPage.value = data.totalPageCount;
+      // boards.value = data;
+      boards.value = data.boards;
+      currentPage.value = data.currentPage;
+      totalPage.value = data.totalPageCount;
     },
     (error) => {
       console.log(error);
@@ -75,6 +75,7 @@ const onPageChange = (val) => {
 
 const changeTab = (val) => {
   tn.value = val;
+  currentPage.value = 0;
   getBoardList();
 };
 
