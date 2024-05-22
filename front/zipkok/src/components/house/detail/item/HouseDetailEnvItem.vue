@@ -127,7 +127,7 @@ const customOverlay = (info) => {
           :lat="marker.lat"
           :lng="marker.lng"
           :image="{
-            imageSrc: '/src/assets/marker/place.png',
+            imageSrc: '/src/assets/marker/food.png',
             imageWidth: 29,
             imageHeight: 29 * 1.3,
           }"

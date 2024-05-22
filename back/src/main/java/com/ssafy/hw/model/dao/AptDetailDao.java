@@ -19,13 +19,15 @@ public interface AptDetailDao {
     public PriceAvgDto getAverage(@Param("aptCode") String aptCode, @Param("type") String type);
 
     //관공서
-    public int getOffice(Map<String, Double> param);
+    public Integer getOffice(@Param("lng") Double lng, @Param("lat") Double lat);
     //학교
-    public int getSchool(Map<String, Double> param);
+    public Integer getSchool(@Param("lng") Double lng, @Param("lat") Double lat);
     //cctv
-    public int getCCTV(String aptCode);
+    public Integer getCCTV(String aptCode);
     //모범음식점
-    public int getRestaurant(String dongCode);
+    public Integer getRestaurant(String dongCode);
+    //도시공원
+    public Integer getPark(@Param("lng") Double lng, @Param("lat") Double lat);
 
     //인구 구조
     public PopulationDto getPopulation(String bjdCode);

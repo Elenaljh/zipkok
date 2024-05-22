@@ -5,7 +5,10 @@ import { useMemberStore } from "@/stores/member";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { sweetAlert } from "@/util/util";
+import { storeToRefs } from "pinia";
 
+const memberStore = useMemberStore();
+const { preference } = storeToRefs(memberStore);
 const url = useMemberStore().url;
 const router = useRouter();
 onMounted(async () => {
@@ -46,6 +49,7 @@ const buttonClick = async () => {
         withCredentials: true,
       });
       sweetAlert("회원정보 수정 완료", "", "success");
+      preference.value = userPayload.preferedType;
       router.push({ name: "userDetail" });
     } catch (error) {
       sweetAlert("회원정보 수정 실패", "관리자에게 문의하세요", "error");

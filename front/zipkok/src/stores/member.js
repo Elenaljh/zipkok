@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 import { useRouter } from "vue-router";
@@ -11,7 +11,7 @@ export const useMemberStore = defineStore(
     const name = ref("");
     const email = ref("");
     const memberId = ref(0);
-    const preference = ref("");
+    const preference = ref(""); //user의 prefered type이 저장됨
 
     const url = ref("http://localhost:8080");
 
@@ -38,64 +38,16 @@ export const useMemberStore = defineStore(
 
     const logout = () => {
       isAuthorized.value = false;
+      name.value = "";
+      email.value = "";
+      memberId.value = "";
+      preference.value = "";
     };
 
     const parsedVal = () => {
       const data = localStorage.getItem("member");
       const parsedData = JSON.parse(data);
       return parsedData.isAuthorized;
-    };
-
-    const getCCTVNum = async (aptCode) => {
-      const result = await axios.get("http://localhost:8080/apt/cctv", {
-        params: {
-          aptCode: aptCode,
-        },
-      });
-      return result.data;
-    };
-
-    const getOfficeNum = async (lat, lng) => {
-      const result = await axios.get("http://localhost:8080/apt/office", {
-        params: {
-          lat: lat,
-          lng: lng,
-        },
-      });
-      return result.data;
-    };
-
-    const getSchoolNum = async (lat, lng) => {
-      const result = await axios.get("http://localhost:8080/apt/school", {
-        params: {
-          lat: lat,
-          lng: lng,
-        },
-      });
-      return result.data;
-    };
-
-    const getRestaurantNum = async (dongCode) => {
-      const result = await axios.get("http://localhost:8080/apt/restaurant", {
-        params: {
-          dongCode: dongCode,
-        },
-      });
-      return result.data;
-    };
-
-    const getPreferenceInfo = async ({ lat, lng, dongCode, aptCode } = {}) => {
-      if (preference.value === "행정시설") {
-        return await getOfficeNum(lat, lng);
-      } else if (preference.value === "학군") {
-        return await getSchoolNum(lat, lng);
-      } else if (preference.value === "근방 맛집") {
-        return await getRestaurantNum(dongCode);
-      } else if (preference.value === "CCTV 대수") {
-        return await getCCTVNum(aptCode);
-      } else {
-        return null;
-      }
     };
 
     return {
@@ -110,11 +62,6 @@ export const useMemberStore = defineStore(
       email,
       memberId,
       preference,
-      getPreferenceInfo,
-      getOfficeNum,
-      getCCTVNum,
-      getSchoolNum,
-      getRestaurantNum,
     };
   },
   {

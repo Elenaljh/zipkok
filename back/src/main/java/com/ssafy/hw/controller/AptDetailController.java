@@ -56,7 +56,7 @@ public class AptDetailController {
     @GetMapping("/office")
     public ResponseEntity<?> getOffice(@RequestParam double lat, @RequestParam double lng) {
         try {
-            int office = service.getOffice(lat, lng);
+            Integer office = service.getOffice(lat, lng);
             return new ResponseEntity<Integer>(office, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
@@ -66,8 +66,18 @@ public class AptDetailController {
     @GetMapping("/school")
     public ResponseEntity<?> getSchool(@RequestParam double lat, @RequestParam double lng) {
         try {
-            int school = service.getSchool(lat, lng);
+            Integer school = service.getSchool(lat, lng);
             return new ResponseEntity<Integer>(school, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/park")
+    public ResponseEntity<?> getPark(@RequestParam double lat, @RequestParam double lng) {
+        try {
+            Integer park = service.getPark(lat, lng);
+            return new ResponseEntity<Integer>(park, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
         }
@@ -76,7 +86,7 @@ public class AptDetailController {
     @GetMapping("/cctv")
     public ResponseEntity<?> getCCTV(@RequestParam String aptCode) {
         try {
-            int cctv = service.getCCTV(aptCode);
+            Integer cctv = service.getCCTV(aptCode);
             return new ResponseEntity<Integer>(cctv, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
@@ -86,7 +96,7 @@ public class AptDetailController {
     @GetMapping("/restaurant")
     public ResponseEntity<?> getRestaurant(@RequestParam String dongCode) {
         try {
-            int restaurant = service.getRestaurant(dongCode);
+            Integer restaurant = service.getRestaurant(dongCode);
             return new ResponseEntity<Integer>(restaurant, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
