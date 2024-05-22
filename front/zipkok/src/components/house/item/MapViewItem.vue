@@ -384,7 +384,7 @@ const mySmallContent = (marker) => {
 </script>
 
 <template>
-  <div class="p-0 m-0" style="width: fit-content; height: fit-content">
+  <div class="p-0 m-0" style="width: fit-content; height: fit-content;">
     <KakaoMap
       id="map"
       :width="mvw + 'vw'"
@@ -477,6 +477,12 @@ const mySmallContent = (marker) => {
         }"
       />
     </KakaoMap>
+
+    <!-- <div class="filterDiv position-absolute top-0 end-0 z-2 opacity-75 p-1" style="background-color: #ADE8F4">
+      <div>가격대 선택</div>
+      <input class="w-25" type="number" v-model="sP">만원 ~
+      <input class="w-25" type="number" v-model="eP">만원
+    </div> -->
   </div>
 </template>
 

@@ -43,29 +43,34 @@ const buttonClick = () => {
   <div class="d-flex">
     <HouseList
       v-show="showHouseList"
-      :style="{ 'min-width': '450px', 'max-width': '550px', width: hlw + '%' }"
+      class="position-relative"
+      :style="{ 'min-width': '450px', 'max-width': '550px', width: hlw + '%', 'z-index': 5, 'background-color': 'white' }"
       :type="'main'"
       :houseMarkerList="houseMarkerList"
       @updateHouseList="editHouseList"
       @openModal="openModal"
     />
-    <Button @click="buttonClick" id="sidebarButton">
-      <img
-        v-if="!showHouseList"
-        src="/src/assets/sidebarOpen.png"
-        width="15px"
-        height="15px"
-        style="margin: auto"
-        class="mx-0 p-0" />
-      <img
-        v-if="showHouseList"
-        src="/src/assets/sidebarClose.png"
-        width="15px"
-        height="15px"
-        style="margin: auto"
-        class="mx-0 p-0"
-    /></Button>
-    <MapViewItem :houseMarkerList="houseMarkerList" :hlw="hlw" @openModal="openModal" />
+    <div class="position-relative" style="margin-top: 40vh; margin-bottom: auto; z-index: 5;  " >
+      <Button class="d-flex align-items-center" style="height: 40px; background-color: white" @click="buttonClick" id="sidebarButton">
+        <img
+          v-if="!showHouseList"
+          src="/src/assets/sidebarOpen.png"
+          width="18px"
+          height="18px"
+          style="margin: auto"
+          class="mx-0 p-0" />
+        <img
+          v-if="showHouseList"
+          src="/src/assets/sidebarClose.png"
+          width="18px"
+          height="18px"
+          style="margin: auto"
+          class="mx-0 p-0"
+        />
+      </Button>
+  </div>
+    
+    <MapViewItem class="position-absolute start-0" style="top: 10vh; z-index: 1" :houseMarkerList="houseMarkerList" :hlw="hlw" @openModal="openModal" />
     <div
       class="modal fade"
       id="exampleModal"
@@ -82,14 +87,8 @@ const buttonClick = () => {
 <style scoped>
 #sidebarButton {
   width: fit-content;
-  border: 0;
-  background-color: transparent;
   padding: 0;
-}
-MapViewItem {
-  z-index: 0;
-}
-HouseList {
-  z-index: 2;
+  border: 1px solid #90E0EF; border-left: none;
+  border-radius: 0 5px 5px 0;
 }
 </style>

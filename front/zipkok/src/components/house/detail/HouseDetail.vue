@@ -2,6 +2,7 @@
 import HouseDetailBasicItem from "@/components/house/detail/item/HouseDetailBasicItem.vue";
 import HouseDetailEnvItemVue from "@/components/house/detail/item/HouseDetailEnvItem.vue";
 import HouseDetailFacItemVue from "@/components/house/detail/item/HouseDetailFacItem.vue";
+import HouseDetailRoadViewItem from "@/components/house/detail/item/HouseDetailRoadViewItem.vue";
 import { ref, watchEffect } from "vue";
 import { useMemberStore } from "@/stores/member";
 import { useHouseStore } from "@/stores/house";
@@ -19,6 +20,7 @@ watchEffect(async () => {
       aptCode: houseStore.houseId,
     },
   });
+  num.value = 0; // 탭 초기화 
   houseInfo.value = response.data;
   houseStore.changeDetail(response.data);
   getBusStations();
@@ -99,11 +101,17 @@ const getBusStations = async () => {
               >동네 소식</a
             >
           </li>
+          <li class="nav-item">
+            <a class="nav-link boardNav" :class="{ active: num === 3 }" @click="changeTab(3)"
+              >둘러보기</a
+            >
+          </li>
         </ul>
         <div class="ms-2 mt-3">
           <HouseDetailBasicItem v-if="num == 0" :houseInfo="houseInfo" :busStation="busStation" />
           <HouseDetailEnvItemVue v-if="num == 1" :houseInfo="houseInfo" />
           <HouseDetailFacItemVue v-if="num == 2" :houseInfo="houseInfo" />
+          <HouseDetailRoadViewItem v-if="num == 3" :houseInfo="houseInfo" />
         </div>
       </div>
     </div>

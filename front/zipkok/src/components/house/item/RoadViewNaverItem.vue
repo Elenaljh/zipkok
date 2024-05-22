@@ -1,14 +1,10 @@
-<template>
-    <div ref="panoContainer" style="width: 100%; height: 200px;"></div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 
 // 환경 변수에서 API 키 가져오기
 const NAVER_MAPS_API_KEY = import.meta.env.VITE_NAVER_MAP_CLIENT_KEY;
-const props = defineProps({ lat: Number, lng: Number, pan: Number });
-
+const props = defineProps({ lat: Number, lng: Number, pan: Number, height: String, tilt: Number });
+const ht = ref(props.height);
 // 파노라마 컨테이너 참조 생성
 const panoContainer = ref(null);
 
@@ -34,7 +30,7 @@ const initPanorama = () => {
             position: new naver.maps.LatLng(props.lat, props.lng,),
             pov: {
                 pan: props.pan ? props.pan : 20,
-                tilt: 40,
+                tilt: props.tilt? props.tilt: 40,
                 fov: 100
             },
             flightSpot: false,
@@ -59,6 +55,9 @@ onMounted(() => {
 });
 </script>
 
+<template>
+    <div ref="panoContainer" :style="{width: '100%', height: ht }"></div>
+</template>
+
 <style scoped>
-/* 스타일링을 여기에 추가할 수 있습니다. */
 </style>

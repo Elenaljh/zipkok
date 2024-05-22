@@ -175,7 +175,7 @@ const changeTab = (val) => {
 <template>
   <div
     id="searchSidebar"
-    class="container me-0 mb-0 ms-3 mt-0 pb-0"
+    class="container m-0"
     style="height: 85vh; overflow-y: scroll; overflow-x: scroll"
   >
     <!-- 검색창 시작 -->
