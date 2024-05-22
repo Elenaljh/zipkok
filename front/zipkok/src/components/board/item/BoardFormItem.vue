@@ -1,16 +1,18 @@
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { registBoard, getModifyBoard, modifyBoard } from "@/api/board";
 import { useMemberStore } from "@/stores/member";
 import { callSwal } from "@/util/util";
+import { QuillEditor } from "@vueup/vue-quill";
 
 const router = useRouter();
 const route = useRoute();
 const memberStore = useMemberStore();
 const props = defineProps({ type: String });
 const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
-
+// const deltaContent = ref();
+const htmlContent = ref();
 const isUseId = ref(false);
 
 const board = ref({
@@ -24,6 +26,8 @@ const board = ref({
   created_at: "",
 });
 
+onMounted(() => {});
+
 if (props.type === "modify") {
   let { boardId } = route.params;
   console.log(boardId + "번글 얻어와서 수정할거야");
@@ -32,6 +36,7 @@ if (props.type === "modify") {
     ({ data }) => {
       board.value = data;
       isUseId.value = true;
+      htmlContent.value = data.content;
     },
     (error) => {
       console.log(error);
@@ -55,8 +60,9 @@ watch(
   { immediate: true }
 );
 watch(
-  () => board.value.content,
+  () => htmlContent,
   (value) => {
+    console.log(value);
     let len = value.length;
     if (len == 0) {
       contentErrMsg.value = "내용은 비워둘 수 없습니다.";
@@ -81,6 +87,8 @@ function onSubmit() {
 
 function writeboard() {
   console.log("글 등록", board.value);
+  // board.value.content = JSON.stringify(deltaContent);
+  board.value.content = htmlContent;
   registBoard(
     board.value,
     (response) => {
@@ -110,6 +118,7 @@ function writeboard() {
 }
 
 function updateboard() {
+  board.value.content = htmlContent;
   console.log(board.value.boardId + "번글 수정하자!!", board.value);
   modifyBoard(
     board.value,
@@ -172,7 +181,7 @@ function moveList() {
       <div class="col">{{ board.writer }}</div>
     </div>
     <div class="mb-3">
-      <textarea class="form-control" v-model="board.content" rows="10"></textarea>
+      <QuillEditor theme="snow" v-model:content="htmlContent" contentType="html" />
     </div>
     <div class="col-auto">
       <button type="submit" class="btn lighterButton mb-3 ms-1" v-if="type === 'regist'">
