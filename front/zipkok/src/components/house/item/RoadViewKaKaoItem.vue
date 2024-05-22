@@ -47,7 +47,7 @@ onMounted(() => {
 
 <template>
     <div style="background-color:gray">
-        <div ref="roadviewContainer" style="width: 100%; height: 100px;"></div>
+        <div ref="roadviewContainer" style="width: 100%; height: 500px;"></div>
     </div>
 </template>
 

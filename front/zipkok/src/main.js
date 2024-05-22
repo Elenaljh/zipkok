@@ -10,11 +10,13 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import VueSweetalert2 from "vue-sweetalert2";
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import  VueGoogleMaps from '@fawmi/vue-google-maps'
+
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-const { VITE_KAKAO_MAP_API_KEY } = import.meta.env;
+const { VITE_KAKAO_MAP_API_KEY, VITE_GOOGLE_MAPS_API_KEY } = import.meta.env;
 
 useKakao(VITE_KAKAO_MAP_API_KEY, ['clusterer', 'services', 'drawing']);
 console.log(VITE_KAKAO_MAP_API_KEY);
@@ -23,4 +25,10 @@ app.use(VueSweetalert2);
 app.component('QuillEditor', QuillEditor);
 app.use(pinia);
 app.use(router);
+app.use(VueGoogleMaps, {
+    load: {
+        key: VITE_GOOGLE_MAPS_API_KEY,
+        libraries: "places"
+    },
+});
 app.mount("#app");
