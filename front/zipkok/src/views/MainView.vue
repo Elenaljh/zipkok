@@ -9,6 +9,7 @@ const modalRef = ref(null);
 const hlw = ref(30);
 const houseMarkerList = ref([]);
 let modalInstance = null;
+const showHouseList = ref(true);
 
 function editHouseList(val) {
   console.log("houseView - editHouseList ", val);
@@ -27,17 +28,43 @@ onMounted(() => {
     modalInstance = new Modal(modalRef.value);
   }
 });
+
+const buttonClick = () => {
+  showHouseList.value = !showHouseList.value;
+  if (showHouseList.value) {
+    hlw.value = 30;
+  } else {
+    hlw.value = 100;
+  }
+};
 </script>
 
 <template>
   <div class="d-flex">
     <HouseList
+      v-show="showHouseList"
       :style="{ 'min-width': '450px', 'max-width': '550px', width: hlw + '%' }"
       :type="'main'"
       :houseMarkerList="houseMarkerList"
       @updateHouseList="editHouseList"
       @openModal="openModal"
     />
+    <Button @click="buttonClick" id="sidebarButton">
+      <img
+        v-if="!showHouseList"
+        src="/src/assets/sidebarOpen.png"
+        width="15px"
+        height="15px"
+        style="margin: auto"
+        class="mx-0 p-0" />
+      <img
+        v-if="showHouseList"
+        src="/src/assets/sidebarClose.png"
+        width="15px"
+        height="15px"
+        style="margin: auto"
+        class="mx-0 p-0"
+    /></Button>
     <MapViewItem :houseMarkerList="houseMarkerList" :hlw="hlw" @openModal="openModal" />
     <div
       class="modal fade"
@@ -52,4 +79,17 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#sidebarButton {
+  width: fit-content;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+}
+MapViewItem {
+  z-index: 0;
+}
+HouseList {
+  z-index: 2;
+}
+</style>
