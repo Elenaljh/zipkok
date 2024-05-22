@@ -182,16 +182,16 @@ function updateBoardBoom() {
     <div class="row">
       <div class="divider mt-3 mb-3"></div>
       <div
-        style="white-space: pre-wrap"
-        class="col board-content text-secondary p-2 m-2"
+        style="white-space: pre-wrap; border: none"
+        class="col board-content"
         :innerHTML="board.content"
       ></div>
       <div class="divider mt-3 mb-3"></div>
     </div>
     <div class="row" v-if="board.type == VITE_BOARD_QNA">
       <div class="col">
-        <hr class="hr-dashed mb-5" />
-        <p class="small-title">답변</p>
+        <hr class="hr-dashed mb-2" />
+        <!-- <p class="small-title">답변</p> -->
         <BoardQnAAnswer
           v-for="comment in comments"
           :key="comment.comment_id"
@@ -211,10 +211,20 @@ function updateBoardBoom() {
     <div class="row">
       <div class="d-flex justify-content-between">
         <div class="d-flex justify-content-start">
-          <button type="button" class="btn lighterButton mb-3 ms-1" @click="moveModify">
+          <button
+            type="button"
+            class="btn lighterButton mb-3 ms-1"
+            @click="moveModify"
+            style="margin: auto; height: fit-content"
+          >
             수정
           </button>
-          <button type="button" class="btn reverseButton mb-3 ms-1" @click="onDeleteBoard">
+          <button
+            type="button"
+            class="btn reverseButton mb-3 ms-1"
+            @click="onDeleteBoard"
+            style="margin: auto; height: fit-content"
+          >
             삭제
           </button>
         </div>
@@ -231,6 +241,7 @@ function updateBoardBoom() {
           :style="{ visibility: board.type == VITE_BOARD_QNA ? 'visible' : 'hidden' }"
           @click="changeComRegist"
           :disabled="commType == 'regist'"
+          style="height: fit-content; text-align: center"
         >
           답변 작성
         </button>
