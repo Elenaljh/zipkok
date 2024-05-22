@@ -36,19 +36,29 @@ public class AptDetailServiceImpl implements AptDetailService {
     }
 
     @Override
-    public List<OfficeDto> getOffice(double lat, double lng) {
-        Map<String, Double> param = new HashMap<>();
-        param.put("lat", lat);
-        param.put("lng", lng);
-        return dao.getOffice(param);
+    public Integer getOffice(double lat, double lng) {
+        return dao.getOffice(lng, lat);
     }
 
     @Override
-    public List<SchoolDto> getSchool(double lat, double lng) {
-        Map<String, Double> param = new HashMap<>();
-        param.put("lat", lat);
-        param.put("lng", lng);
-        return dao.getSchool(param);
+    public Integer getSchool(double lat, double lng) {
+//        System.out.println("lat: "+lat+", lng: "+lng);
+        return dao.getSchool(lng, lat);
+    }
+
+    @Override
+    public Integer getCCTV(String aptCode) {
+        return dao.getCCTV(aptCode);
+    }
+
+    @Override
+    public Integer getRestaurant(String dongCode) {
+        return dao.getRestaurant(dongCode);
+    }
+
+    @Override
+    public Integer getPark(Double lng, Double lat) {
+        return dao.getPark(lng, lat);
     }
 
     @Override

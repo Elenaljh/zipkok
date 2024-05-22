@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useWindowFocus } from "@vueuse/core";
+import Swal from "sweetalert2";
 
 const focused = useWindowFocus();
 watch(
@@ -25,7 +26,7 @@ watch(
 );
 
 const store = useMemberStore();
-const { name, email, memberId, googleCode } = storeToRefs(store);
+const { name, email, memberId, googleCode, preference } = storeToRefs(store);
 const url = store.url;
 const router = useRouter();
 
@@ -35,11 +36,15 @@ const loginInfo = ref({
 });
 const rememberMe = ref(false);
 const { cookies } = useCookies();
+const bc = () => {
+  console.log("button click");
+};
 const buttonClick = async () => {
   // 유효성 검사
   const valid = validation();
-
+  console.log("valid0: ", valid);
   if (valid) {
+    console.log("valid: ", valid);
     // alert("유효성 검사 통과");
     // alert(rememberMe.value);
 
@@ -48,6 +53,8 @@ const buttonClick = async () => {
       const response = await axios.post(url + "/login", loginInfo.value, {
         withCredentials: true,
       });
+      console.log("dkdkdkdkdkdkkd");
+      console.log("로그인 로그: ", response);
       //로그인 성공시 then에서 쿠키 설정
       setCookie();
       store.login();
@@ -56,13 +63,15 @@ const buttonClick = async () => {
       name.value = response.data.name;
       email.value = response.data.email;
       memberId.value = response.data.memberId;
+      preference.value = response.data.preference;
       try {
-        router.go(-1);
+        router.push({ name: "main" });
       } catch (error) {
-        router.push({ name: "home" });
+        router.push({ name: "main" });
       }
     } catch (error) {
-      alert("로그인 실패");
+      console.log(error);
+      // sweetAlert("로그인 실패", "없는 회원입니다.", "error");
     }
   }
 };
@@ -99,15 +108,26 @@ onMounted(() => {
 const validation = () => {
   let info = loginInfo.value;
   if (!info.email && !info.password) {
-    alert("정보를 입력하세요");
+    sweetAlert("이메일과 비밀번호를 입력하세요", "", "warning");
   } else if (!info.email) {
-    alert("이메일을 입력하세요");
+    sweetAlert("이메일을 입력하세요", "", "warning");
   } else if (!info.password) {
-    alert("비밀번호를 입력하세요");
+    sweetAlert("비밀번호를 입력하세요", "", "warning");
   } else {
     return true;
   }
   return false;
+};
+
+//sweetAlert
+const sweetAlert = (title, text, icon) => {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonText: "확인",
+    confirmButtonColor: "#00b4d8",
+  });
 };
 </script>
 
