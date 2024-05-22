@@ -2,13 +2,11 @@
 import { getAptsAvgByDong, getAptsByLatLngs } from "@/api/map";
 import { useHouseStore } from "@/stores/house";
 import { moneyFormat } from "@/util/util";
-import { Modal } from "bootstrap";
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import { KakaoMap, KakaoMapMarker, KakaoMapCustomOverlay } from "vue3-kakao-maps";
-import HouseDetail from "../detail/HouseDetail.vue";
-
 
 const props = defineProps({ hlw: Number, houseMarkerList: Array });
+const emit = defineEmits(["updateHouseList", "openModal"]);
 const mvw = ref(props.hlw ? 100 - props.hlw : 60);
 const houseMarkerList = ref(
   props.houseMarkerList && props.houseMarkerList.length > 0 ? props.houseMarkerList : []
@@ -21,26 +19,19 @@ const lng = ref(128.41277958423132);
 const map = ref(null);
 const houseMarkerObjectList = ref([]);
 const houseStore = useHouseStore();
-const modalRef = ref(null);
 const showSeperateMarker = ref(true);
 const dongOverlays = ref([]);
 
-
-onMounted(() => {
-  if (modalRef.value) {
-    new Modal(modalRef.value);
-  }
-});
-
-watch(
-  () => houseStore.houseId,
-  () => {
-    const index = houseMarkerList.value.findIndex((val) => val.aptCode == houseStore.houseId);
-    lat.value = houseMarkerList.value[index].lat;
-    lng.value = houseMarkerList.value[index].lng;
-    moveMap();
-  }
-);
+// watch(
+//   () => houseStore.houseId,
+//   () => {
+//     const index = houseMarkerList.value.findIndex((val) => val.aptCode == houseStore.houseId);
+//     console.log("changeHouseId=" + houseStore.houseId, " index", index);
+//     lat.value = houseMarkerList.value[index].lat;
+//     lng.value = houseMarkerList.value[index].lng;
+//     moveMap();
+//   }
+// );
 
 const onLoadKakaoMap = (mapRef) => {
   map.value = mapRef;
@@ -72,20 +63,8 @@ const filteredMarkerList = computed(() => [
 ]);
 const filteredSearchMarkerList = computed(() => searchMarkerList.value);
 const filteredDongMarkerList = computed(() => {
-  console.log("filteredDongMarkerList reload")
-  // return [{
-  //   avgAmount: 7304,
-  //   avgDeposit: 4882,
-  //   avgRent: 0,
-  //   dongCode: "4719012300",
-  //   dongName: "진평동",
-  //   fullName: "경상북도 구미시 진평동",
-  //   gugunName: "구미시",
-  //   sidoName: "경상북도",
-  //   lng: 128.423531404144,
-  //   lat: 36.0935204220628,
-  // },]
-  return houseDongMarkerList.value
+  console.log("filteredDongMarkerList reload");
+  return houseDongMarkerList.value;
 });
 // marker에 맞게 지도 `이동
 watch(
@@ -199,14 +178,13 @@ const getRangeList = (swLatLng, neLatLng) => {
   // 줌 레벨에 따라 다르게 받아온다
   if (map.value.getLevel() <= 4) {
     eraseOverlay();
-    getRangeSeperateList(swLatLng, neLatLng)
+    getRangeSeperateList(swLatLng, neLatLng);
     showSeperateMarker.value = true;
   } else {
-    getRangeDongList(swLatLng, neLatLng)
+    getRangeDongList(swLatLng, neLatLng);
     showSeperateMarker.value = false;
-
   }
-}
+};
 // 검색 결과 받아오기 (범위, 개별)
 const getRangeSeperateList = (swLatLng, neLatLng) => {
   getAptsByLatLngs(
@@ -264,7 +242,6 @@ const getRangeDongList = (swLatLng, neLatLng) => {
 
 // 주소 받아오기
 
-
 //--------------- 마커 설정
 // 금액 표시
 function showPrice(info) {
@@ -289,12 +266,14 @@ function showType(info) {
 // 마커 클릭 설정
 const markerClick = (id) => {
   console.log("setHouseId=" + id);
-  // houseStore.changeId(id);
+  houseStore.changeId(id);
+  emit("openModal", id);
+  // modalRef.value.show();
   // new Modal(modalRef.value).show();
 };
-// 동 마커 클릭 
+// 동 마커 클릭
 function markerDongClick(dongcode, la, ln) {
-  console.log(dongcode, la, ln)
+  console.log(dongcode, la, ln);
   map.value.panTo(new kakao.maps.LatLng(la, ln));
   map.value.setLevel(4, { animate: true });
 }
@@ -334,7 +313,6 @@ const myContent = (marker) => {
     </div>`;
 };
 
-
 const myDongContent = (marker) => {
   return `<div class="customOverlayPrice myDongContent d-flex flex-column align-items-start"
   style="border-color: #CAF0F8;
@@ -349,7 +327,9 @@ const myDongContent = (marker) => {
     style=" border-radius:  0 0 10px 10px">
     <div class="bg-white text-center w-100" 
     style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-      <span class="small-content">${showType(marker)}</span> ${moneyFormat(showPrice(marker) * 10000)}
+      <span class="small-content">${showType(marker)}</span> ${moneyFormat(
+    showPrice(marker) * 10000
+  )}
     </div>
   </div>
 </div>`;
@@ -389,23 +369,22 @@ const markerList = computed(() => {
   return temp;
 });
 
-
 // -------------- 진짜 마지막 클러스터링
 const drawDongMarker = () => {
-
   console.log("start====================");
-  for(let h of filteredDongMarkerList.value){
+  for (let h of filteredDongMarkerList.value) {
     const marker = new kakao.maps.Marker({
-        map:map.value,
-        position: new kakao.maps.LatLng(h.lat, h.lng),
-        image: new kakao.maps.MarkerImage("/src/assets/empty.png", new kakao.maps.Size(56, 78), {})
+      map: map.value,
+      position: new kakao.maps.LatLng(h.lat, h.lng),
+      image: new kakao.maps.MarkerImage("/src/assets/empty.png", new kakao.maps.Size(56, 78), {}),
     });
     const overlay = new kakao.maps.CustomOverlay({
-        position: new kakao.maps.LatLng(h.lat, h.lng),
-        yAnchor: 1.4,
+      position: new kakao.maps.LatLng(h.lat, h.lng),
+      yAnchor: 1.4,
     });
+
     overlay.setContent(myDongContent(h));
-    kakao.maps.event.addListener(marker, 'click', function() {
+    kakao.maps.event.addListener(marker, "click", function () {
       markerDongClick(h.dongcode, h.lat, h.lng);
     });
     overlay.setMap(map.value);
@@ -414,15 +393,13 @@ const drawDongMarker = () => {
 
     dongOverlays.value.push({
       ov: overlay,
-      mk: marker
-    })
+      mk: marker,
+    });
   }
-  
-
 };
 // 커스텀 오버레이 리스트를 모두 지웁니다
 function eraseOverlay() {
-  for(let obj of dongOverlays.value){
+  for (let obj of dongOverlays.value) {
     obj.ov.setMap(null);
     obj.mk.setMap(null);
   }
@@ -431,51 +408,69 @@ function eraseOverlay() {
 
 <template>
   <div class="p-0 m-0" style="width: fit-content; height: fit-content">
-    <KakaoMap id="map" :width="mvw + 'vw'" height="85vh" :lat="lat" :lng="lng"
-    :disableClickZoom="true"
-    @onLoadKakaoMap="onLoadKakaoMap">
+    <KakaoMap
+      id="map"
+      :width="mvw + 'vw'"
+      height="85vh"
+      :lat="lat"
+      :lng="lng"
+      :disableClickZoom="true"
+      @onLoadKakaoMap="onLoadKakaoMap"
+    >
       <!-- 검색한 집 결과 -->
       <!-- 작은 마커 -->
       <div v-if="showSeperateMarker">
         <div v-for="(marker, index) in filteredMarkerList" :key="marker.aptCode">
-          <KakaoMapMarker :lat="marker.lat" :lng="marker.lng" :image="{
-            imageSrc: '/src/assets/marker/house.png',
-            imageWidth: 40,
-            imageHeight: 40 * 1.3,
-            imageOption: {},
-          }" :clickable="true" @click="markerClick(marker.aptCode)" @onLoadKakaoMapMaker="onLoadKakaoMapMarker"
+          <KakaoMapMarker
+            :lat="marker.lat"
+            :lng="marker.lng"
+            :image="{
+              imageSrc: '/src/assets/marker/house.png',
+              imageWidth: 40,
+              imageHeight: 40 * 1.3,
+              imageOption: {},
+            }"
+            :clickable="true"
+            @click="markerClick(marker.aptCode)"
+            @onLoadKakaoMapMaker="onLoadKakaoMapMarker"
             @onClickKakaoMapMarker="markerClick(marker.aptCode)"
             @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(index)"
-            @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)" />
+            @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
+          />
 
-          <KakaoMapCustomOverlay :lat="marker.lat" :lng="marker.lng" :yAnchor="1.4"
-            v-if="visibleRef[index] ? visibleRef[index] : false" :content="myContent(marker)" />
+          <KakaoMapCustomOverlay
+            :lat="marker.lat"
+            :lng="marker.lng"
+            :yAnchor="1.4"
+            v-if="visibleRef[index] ? visibleRef[index] : false"
+            :content="myContent(marker)"
+          />
         </div>
       </div>
       <!-- 동 마커 -->
-      
+
       <div v-show="!showSeperateMarker">
-       
-       <!--<div v-for="(marker) in filteredDongMarkerList" :key="marker.dongCode">
+        <!--<div v-for="(marker) in filteredDongMarkerList" :key="marker.dongCode">
           <KakaoMapCustomOverlay :lat="marker.lat" :lng="marker.lng" 
           @onLoadKakaoMapCustomOverlay="onLoadKakaoMapCustomOverlay"
           :clickable="true"
           :content="myDongContent(marker)" />
-        </div>--> 
+        </div>-->
       </div>
       <!-- 키워드 검색 결과 -->
-      <KakaoMapMarker v-for="marker in filteredSearchMarkerList" :key="marker.key" :lat="marker.lat" :lng="marker.lng"
+      <KakaoMapMarker
+        v-for="marker in filteredSearchMarkerList"
+        :key="marker.key"
+        :lat="marker.lat"
+        :lng="marker.lng"
         :image="{
           imageSrc: '/src/assets/marker/place.png',
           imageWidth: 40,
           imageHeight: 54,
           imageOption: {},
-        }" />
+        }"
+      />
     </KakaoMap>
-
-    <!-- 세부 정보 모달 -->
-    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
-      ref="modalRef"></div>
   </div>
 </template>
 
@@ -493,8 +488,8 @@ KakaoMapMarker:hover {
 }
 
 .myDongContent {
-  border-color: #CAF0F8;
-  -webkit-box-shadow: 0px 0px 13px 7px #CAF0F8 !important; 
-  box-shadow: 0px 0px 13px 7px #CAF0F8;
+  border-color: #caf0f8;
+  -webkit-box-shadow: 0px 0px 13px 7px #caf0f8 !important;
+  box-shadow: 0px 0px 13px 7px #caf0f8;
 }
 </style>
