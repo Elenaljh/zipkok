@@ -237,7 +237,7 @@ const close = () => {
     "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
     "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
     "facility": "", "aptAnotherCode": null }-->
-      <ul style="list-style-type: none; text-align: center">
+      <ul style="text-align: center">
         <li>
           <span style="color: #00b4d8">{{ houseInfo.buildYear }}</span>
           <span>년 준공</span>
