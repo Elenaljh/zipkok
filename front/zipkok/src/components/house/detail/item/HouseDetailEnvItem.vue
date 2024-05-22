@@ -1,14 +1,31 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
 const { houseInfo } = defineProps({
   houseInfo: Object,
 });
-import { searchPlaceByKeyword, dataList, filteredSearchMarkerList } from "@/util/houseDetail";
-
+import {
+  searchPlaceByKeyword,
+  dataList,
+  filteredSearchMarkerList,
+  innerBound,
+} from "@/util/houseDetail";
+const map = ref(null);
 const current = ref("");
 
 const visibleRef = ref([]);
+
+watch(
+  () => innerBound.value,
+  () => {
+    console.log("innerBound.value", innerBound.value);
+    map.value.setBounds(innerBound.value);
+  }
+);
+const onLoadKakaoMap = (mapRef) => {
+  map.value = mapRef;
+};
+
 const mouseOverKakaoMapMarker = (ind) => {
   console.log(ind + " in");
   visibleRef.value[ind] = true;
@@ -18,22 +35,30 @@ const mouseOutKakaoMapMarker = (ind) => {
   console.log(ind + " out");
   visibleRef.value[ind] = false;
 };
+
+const searchPlace = () => {
+  searchPlaceByKeyword(current.value, houseInfo.lat, houseInfo.lng);
+  map.value.setBounds(innerBound.value);
+};
 </script>
 
 <template>
   <div class="me-2">
-    <select
-      class="form-select w-25 mb-2"
-      v-model="current"
-      @change="searchPlaceByKeyword(current, houseInfo.lat, houseInfo.lng)"
-    >
+    <select class="form-select w-25 mb-2" v-model="current" @change="searchPlace()">
       <option value="" selected disabled>선택하세요</option>
       <option value="공원">공원</option>
       <option value="행정">관공서</option>
       <option value="학교">학교</option>
       <option value="맛집">맛집</option>
     </select>
-    <KakaoMap :lat="houseInfo.lat" :lng="houseInfo.lng" width="65rem" class="mb-4">
+    <KakaoMap
+      :lat="houseInfo.lat"
+      :lng="houseInfo.lng"
+      width="65rem"
+      height="30rem"
+      class="mb-4"
+      @onLoadKakaoMap="onLoadKakaoMap"
+    >
       <!--아파트 위치 마커 (고정)-->
       <KakaoMapMarker
         :lat="houseInfo.lat"

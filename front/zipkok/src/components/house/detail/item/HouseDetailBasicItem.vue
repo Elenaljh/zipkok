@@ -237,7 +237,7 @@ const close = () => {
     "4719012300", "houseNum": 126, "buildYear": 2014, "dongNum": 0, "carNum": 0,
     "cctvNum": 0, "lng": 128.4179714, "lat": 36.10666837, "aptType": "",
     "facility": "", "aptAnotherCode": null }-->
-      <ul>
+      <ul style="list-style-type: none; text-align: center">
         <li>
           <span style="color: #00b4d8">{{ houseInfo.buildYear }}</span>
           <span>년 준공</span>
@@ -259,8 +259,8 @@ const close = () => {
         아파트 상세정보
       </h5>
       <div>
-        <div class="me-3 d-flex">
-          <img src="/src/assets/detailIcon/cctv.png" width="70px" class="me-4" />
+        <div class="d-flex mb-3">
+          <img src="/src/assets/detailIcon/cctv.png" width="70px" height="70px" class="me-4" />
           <div style="width: 100%; height: 100%">
             <div style="font-weight: bold; text-align: center">CCTV 설치</div>
             <div style="text-align: center">
@@ -268,8 +268,8 @@ const close = () => {
             </div>
           </div>
         </div>
-        <div class="me-3 d-flex">
-          <img src="/src/assets/detailIcon/amenity.png" width="70px" height="80px" class="me-4" />
+        <div class="d-flex mb-3">
+          <img src="/src/assets/detailIcon/amenity.png" width="70px" height="70px" class="me-4" />
           <div style="width: 100%; height: 100%">
             <div style="font-weight: bold; text-align: center">아파트 부대 시설</div>
             <pre
@@ -280,8 +280,8 @@ const close = () => {
             >
           </div>
         </div>
-        <div class="d-flex me-3">
-          <img src="/src/assets/detailIcon/bus.png" width="70px" class="me-4" />
+        <div class="d-flex">
+          <img src="/src/assets/detailIcon/bus.png" width="70px" height="70px" class="me-4" />
           <div style="width: 100%; height: 100%">
             <div style="font-weight: bold; text-align: center">가까운 버스 정류장</div>
             <div v-for="item in busStation" :key="item" style="text-align: center">
@@ -296,8 +296,8 @@ const close = () => {
       <h5 style="text-align: center; font-weight: bolder; color: dimgray" class="mb-4">
         대기 정보
       </h5>
-      <div class="mb-5">
-        <div class="me-3">
+      <div>
+        <div class="mb-3">
           <div v-if="grade.pm10Grade == 1" class="d-flex">
             <img src="/src/assets/detailIcon/mise_good.png" width="80px" class="me-4" />
             <div style="width: 100%; height: 100%">
@@ -327,7 +327,7 @@ const close = () => {
             </div>
           </div>
         </div>
-        <div class="me-3">
+        <div class="mb-3">
           <div v-if="grade.pm25Grade == 1" class="d-flex">
             <img src="/src/assets/detailIcon/spmise_good.png" width="80px" class="me-4" />
             <div style="width: 100%; height: 100%">
@@ -360,7 +360,7 @@ const close = () => {
         <div>
           <div v-if="grade.khaiGrade == 1" class="d-flex">
             <img src="/src/assets/detailIcon/weather_good.png" width="80px" class="me-4" />
-            <div style="width: 100%; height: 100%">
+            <div style="width: 100%; height: 100%; text-align: center">
               <div style="text-align: center; font-weight: bold">대기 지수</div>
               <div style="color: blue; text-align: center">매우 좋음</div>
             </div>

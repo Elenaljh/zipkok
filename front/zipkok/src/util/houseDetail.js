@@ -12,6 +12,8 @@ const filteredSearchMarkerList = computed(() => searchMarkerList.value);
 const dataList = ref([]); //이름, 종류, 주소
 const lat = ref(36.10767834691484);
 const lng = ref(128.41277958423132);
+const searchLoc = ref();
+const innerBound = ref();
 
 const getDong = async (bjdCode) => {
   const result = await axios.get("http://localhost:8080/apt/dong", {
@@ -68,6 +70,7 @@ const searchPlaceByKeyword = (keyword, lat, lng) => {
   console.log("장소 검색 시작");
   dataList.value = [];
   searchMarkerList.value = [];
+  searchLoc.value = new kakao.maps.LatLng(lat, lng);
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
   // 키워드로 장소를 검색합니다
@@ -83,9 +86,12 @@ const placesSearchCB = (data, status) => {
   if (status === kakao.maps.services.Status.OK) {
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
     // LatLngBounds 객체에 좌표를 추가합니다
-    // const bounds = new kakao.maps.LatLngBounds();
-
-    for (let marker of data) {
+    const bounds = new kakao.maps.LatLngBounds();
+    bounds.extend(searchLoc.value);
+    for (let ind in data) {
+      let marker = data[ind];
+      if(ind == 0) bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
+      if(ind == 0) console.log("0 ", marker)
       const markerItem = {
         lat: marker.y,
         lng: marker.x,
@@ -101,11 +107,13 @@ const placesSearchCB = (data, status) => {
         name: marker.place_name,
         type: category2,
         address: marker.address_name,
+        lat: marker.y,
+        lng: marker.x
       });
-      searchMarkerList.value.push(markerItem);
-      // bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
+      searchMarkerList.value.push(markerItem);     
     }
-    // console.log(dataList.value);
+    console.log(dataList.value, bounds);
+    innerBound.value = bounds;
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     // map.value?.setBounds(bounds);
   }
@@ -125,4 +133,5 @@ export {
   malePopulation,
   femalePopulation,
   sexRatio,
+  innerBound
 };
