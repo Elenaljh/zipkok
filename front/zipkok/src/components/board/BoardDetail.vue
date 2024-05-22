@@ -181,9 +181,11 @@ function updateBoardBoom() {
     </div>
     <div class="row">
       <div class="divider mt-3 mb-3"></div>
-      <div style="white-space: pre-wrap" class="col board-content text-secondary p-2 m-2">
-        {{ board.content }}
-      </div>
+      <div
+        style="white-space: pre-wrap"
+        class="col board-content text-secondary p-2 m-2"
+        :innerHTML="board.content"
+      ></div>
       <div class="divider mt-3 mb-3"></div>
     </div>
     <div class="row" v-if="board.type == VITE_BOARD_QNA">
@@ -216,8 +218,12 @@ function updateBoardBoom() {
             삭제
           </button>
         </div>
-        <button type="button" class="btn lighterButton mb-3 ms-1 d-flex align-items-center" @click="updateBoardBoom">
-          <img src="@/assets/buttonThumb.png" class="me-1" height="25" width="25"/>추천하기
+        <button
+          type="button"
+          class="btn lighterButton mb-3 ms-1 d-flex align-items-center"
+          @click="updateBoardBoom"
+        >
+          <img src="@/assets/buttonThumb.png" class="me-1" height="25" width="25" />추천하기
         </button>
         <button
           type="button"
