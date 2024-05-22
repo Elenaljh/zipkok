@@ -17,7 +17,7 @@ const { type } = defineProps({ type: String });
 const route = useRoute();
 const router = useRouter();
 const childCompRef = ref(null);
-const emit = defineEmits(["updateHouseList"]);
+const emit = defineEmits(["updateHouseList", "openModal"]);
 const searchType = ref(route.query.searchType ? route.query.searchType : 0);
 const searchValue = ref(route.query.searchValue ? route.query.searchValue : "");
 
@@ -163,7 +163,8 @@ const settingHouseList = (val) => {
 const setHouseId = (id) => {
   console.log("setHouseId=" + id);
   store.changeId(id);
-  houseId.value = id;
+  // houseId.value = id;
+  emit("openModal", id);
 };
 // 탭 바꾸기
 const changeTab = (val) => {
@@ -237,8 +238,6 @@ const changeTab = (val) => {
         class="w-100 mt-2 d-flex flex-wrap justify-content-start column-gap-1"
       >
         <HouseSidebarCardItem
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
           v-for="house in houseList"
           :key="house"
           :houseInfo="house"
@@ -250,8 +249,6 @@ const changeTab = (val) => {
       <p class="small-title" v-if="type == 'house'">검색 결과</p>
       <div v-if="type == 'house'" class="w-100 mt-2">
         <HouseSidebarListItem
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
           v-for="house in houseList"
           :key="house"
           :houseInfo="house"
@@ -270,16 +267,6 @@ const changeTab = (val) => {
     >
       Launch demo modal
     </button> -->
-    <!-- 세부 정보 모달 -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <HouseDetail />
-    </div>
   </div>
 </template>
 

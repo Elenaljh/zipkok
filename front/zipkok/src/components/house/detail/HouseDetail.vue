@@ -18,6 +18,7 @@ const userPreference = ref("");
 const houseInfo = ref({});
 
 watchEffect(async () => {
+  console.log("find change ", houseStore.houseId);
   const response = await axios.get(store.url + "/apt/details", {
     params: {
       aptCode: houseStore.houseId,
