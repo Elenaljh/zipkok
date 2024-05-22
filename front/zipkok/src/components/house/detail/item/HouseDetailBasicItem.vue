@@ -18,7 +18,15 @@ import {
 } from "chart.js";
 
 //차트 js
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const chartOptions = ref({
   responsive: true,
@@ -29,27 +37,29 @@ const chartOptions = ref({
 const store = useMemberStore();
 const houseStore = useHouseStore();
 const type = ref("매매");
-const info = ref([{ amount: 3, deposit: 2, monthlyRent: 2, year: 2024, month: 2, day: 3 }]); //거래가 데이터 저장됨
-const amountData = computed(() => info.value.map((item) => item.amount).reverse()); //매매가 데이터
+const info = ref([
+  { amount: 3, deposit: 2, monthlyRent: 2, year: 2024, month: 2, day: 3 },
+]); //거래가 데이터 저장됨
+const amountData = computed(() =>
+  info.value.map((item) => item.amount).reverse()
+); //매매가 데이터
 const depositData = computed(() => info.value.map((item) => item.deposit)); //보증금 데이터
 const dayData = computed(() =>
-  info.value.map((item) => item.year + "." + item.month + "." + item.day).reverse()
+  info.value
+    .map((item) => item.year + "." + item.month + "." + item.day)
+    .reverse()
 );
 
 const transactionArray = ref([]); //실제 보여질 데이터가 담기는 곳
 const dayDesc = ref(true);
 const areaDesc = ref(false);
 const moneyDesc = ref(false);
-const sortedByDayAsc = computed(() => info.value.slice().reverse());
-const sortedByAreaDesc = computed(() => {
-  return info.value.toSorted((a, b) => b.area - a.area);
-});
-const sortedByAreaAsc = computed(() => {
-  return info.value.toSorted((a, b) => a.area - b.area);
-});
 
 const sortByDay = () => {
+  //info를 기준으로 할 것!!
   dayDesc.value = !dayDesc.value;
+  areaDesc.value = true;
+  moneyDesc.value = true;
   if (dayDesc.value) {
     transactionArray.value = info.value;
   } else {
@@ -57,9 +67,49 @@ const sortByDay = () => {
   }
 };
 
+const sortByArea = () => {
+  areaDesc.value = !areaDesc.value;
+  dayDesc.value = true;
+  moneyDesc.value = true;
+  if (areaDesc.value) {
+    transactionArray.value = info.value.toSorted((a, b) => b.area - a.area);
+  } else {
+    transactionArray.value = info.value.toSorted((a, b) => a.area - b.area);
+  }
+};
+
+const sortByMoney = () => {
+  moneyDesc.value = !moneyDesc.value;
+  dayDesc.value = true;
+  areaDesc.value = true;
+  if (type.value === "매매") {
+    if (moneyDesc.value) {
+      transactionArray.value = info.value.toSorted(
+        (a, b) => b.amount - a.amount
+      );
+    } else {
+      transactionArray.value = info.value.toSorted(
+        (a, b) => a.amount - b.amount
+      );
+    }
+  } else {
+    if (moneyDesc.value) {
+      transactionArray.value = info.value.toSorted(
+        (a, b) => b.deposit - a.deposit
+      );
+    } else {
+      transactionArray.value = info.value.toSorted(
+        (a, b) => a.deposit - b.deposit
+      );
+    }
+  }
+};
+
 const showArrays = () => {
-  console.log("날짜 역순: ", sortedByDayAsc.value);
-  console.log("면적 내림차순: ", sortedByAreaDesc.value);
+  // console.log("날짜 역순: ", sortedByDayAsc.value);
+  // console.log("면적 내림차순: ", sortedByAreaDesc.value);
+  console.log(transactionArray.value);
+  console.log("info: ", info.value);
 };
 
 const priceAverage = ref({});
@@ -141,6 +191,7 @@ watchEffect(async () => {
     },
   });
   info.value = response.data;
+  transactionArray.value = response.data;
   const avg = await axios.get(store.url + "/apt/average", {
     params: {
       aptCode: houseStore.houseId,
@@ -172,13 +223,20 @@ const close = () => {
   <div>
     <button @click="showArrays">클릭!</button>
     <!--셀렉트박스-->
-    <select class="form-select" style="width: 150px" v-model="type" @change="getTransactionInfo">
+    <select
+      class="form-select"
+      style="width: 150px"
+      v-model="type"
+      @change="getTransactionInfo"
+    >
       <option value="매매" selected>매매</option>
       <option value="전월세">전/월세</option>
     </select>
   </div>
   <p style="text-align: center; font-weight: bold">
-    <span style="color: dimgray; font-size: 120%" class="me-2">평균 거래가</span>
+    <span style="color: dimgray; font-size: 120%" class="me-2"
+      >평균 거래가</span
+    >
     <span style="color: #00b4d8; font-size: 150%" v-show="type === '매매'">{{
       adjustedMoneyFormat(priceAverage.amount)
     }}</span>
@@ -212,28 +270,39 @@ const close = () => {
         <thead class="table-light">
           <tr>
             <th scope="col" style="padding-left: 20px">
-              <span>계약일 </span><span v-if="dayDesc" @click="sortByDay">↓</span
-              ><span v-if="!dayDesc" @click="sortByDay">↑</span>
+              <span>계약일 </span
+              ><span class="arrow" v-if="dayDesc" @click="sortByDay">↓</span
+              ><span class="arrow" v-if="!dayDesc" @click="sortByDay">↑</span>
             </th>
             <th scope="col">
-              <span>전용 면적 </span><span v-if="areaDesc">↓</span><span v-if="!areaDesc">↑</span>
+              <span>전용 면적 </span
+              ><span class="arrow" v-if="areaDesc" @click="sortByArea">↓</span
+              ><span class="arrow" v-if="!areaDesc" @click="sortByArea">↑</span>
             </th>
             <th scope="col">
-              <span>거래가 </span><span v-if="moneyDesc">↓</span><span v-if="!moneyDesc">↑</span>
+              <span>거래가 </span
+              ><span class="arrow" v-if="moneyDesc" @click="sortByMoney">↓</span
+              ><span class="arrow" v-if="!moneyDesc" @click="sortByMoney"
+                >↑</span
+              >
             </th>
             <th scope="col">층</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in visibleInfo" :key="item.day">
-            <td style="padding-left: 20px">{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
+            <td style="padding-left: 20px">
+              {{ item.year }}.{{ item.month }}.{{ item.day }}
+            </td>
             <td>{{ Math.round(item.area) }}㎡</td>
             <td v-if="type === '매매'">
               {{ adjustedMoneyFormat(item.amount) }}
             </td>
             <td v-if="type === '전월세'">
               {{ adjustedMoneyFormat(item.deposit) }}/{{
-                !item.monthlyRent ? "전세" : adjustedMoneyFormat(item.monthlyRent)
+                !item.monthlyRent
+                  ? "전세"
+                  : adjustedMoneyFormat(item.monthlyRent)
               }}
             </td>
             <td>{{ item.floor }}층</td>
@@ -264,7 +333,10 @@ const close = () => {
   <div class="d-flex justify-content-around p-3 mt-5">
     <!--아파트 기본정보-->
     <div style="font-weight: 500; font-size: large">
-      <h5 style="font-weight: bolder; text-align: center; color: dimgray" class="mb-4">
+      <h5
+        style="font-weight: bolder; text-align: center; color: dimgray"
+        class="mb-4"
+      >
         아파트 기본정보
       </h5>
       <!--
@@ -280,7 +352,9 @@ const close = () => {
         </li>
         <li>
           <span>전체 </span
-          ><span style="color: #00b4d8">{{ !houseInfo.dongNum ? 1 : houseInfo.dongNum }}</span
+          ><span style="color: #00b4d8">{{
+            !houseInfo.dongNum ? 1 : houseInfo.dongNum
+          }}</span
           ><span>개 동</span>
         </li>
         <li>
@@ -291,12 +365,20 @@ const close = () => {
     </div>
     <!--아파트 상세정보-->
     <div class="mb-5">
-      <h5 style="text-align: center; font-weight: bolder; color: dimgray" class="mb-4">
+      <h5
+        style="text-align: center; font-weight: bolder; color: dimgray"
+        class="mb-4"
+      >
         아파트 상세정보
       </h5>
       <div>
         <div class="d-flex mb-3">
-          <img src="/src/assets/detailIcon/cctv.png" width="70px" height="70px" class="me-4" />
+          <img
+            src="/src/assets/detailIcon/cctv.png"
+            width="70px"
+            height="70px"
+            class="me-4"
+          />
           <div style="width: 100%; height: 100%">
             <div style="font-weight: bold; text-align: center">CCTV 설치</div>
             <div style="text-align: center">
@@ -305,22 +387,46 @@ const close = () => {
           </div>
         </div>
         <div class="me-3 d-flex align-items-center">
-          <img src="/src/assets/detailIcon/amenity.png" width="70px" height="80px" class="me-4" />
+          <img
+            src="/src/assets/detailIcon/amenity.png"
+            width="70px"
+            height="80px"
+            class="me-4"
+          />
           <div style="width: 100%; height: 100%">
-            <div style="font-weight: bold; text-align: center">아파트 부대 시설</div>
+            <div style="font-weight: bold; text-align: center">
+              아파트 부대 시설
+            </div>
             <pre
-              style="text-align: center; font-family: Noto Sans KR, sans-serif; font-size: medium"
+              style="
+                text-align: center;
+                font-family: Noto Sans KR, sans-serif;
+                font-size: medium;
+              "
               >{{
-                houseInfo.facility ? houseInfo.facility.trim().replace(/,\s*/g, "\n") : "없음"
+                houseInfo.facility
+                  ? houseInfo.facility.trim().replace(/,\s*/g, "\n")
+                  : "없음"
               }}</pre
             >
           </div>
         </div>
         <div class="d-flex">
-          <img src="/src/assets/detailIcon/bus.png" width="70px" height="70px" class="me-4" />
+          <img
+            src="/src/assets/detailIcon/bus.png"
+            width="70px"
+            height="70px"
+            class="me-4"
+          />
           <div style="width: 100%; height: 100%">
-            <div style="font-weight: bold; text-align: center">가까운 버스 정류장</div>
-            <div v-for="item in busStation" :key="item" style="text-align: center">
+            <div style="font-weight: bold; text-align: center">
+              가까운 버스 정류장
+            </div>
+            <div
+              v-for="item in busStation"
+              :key="item"
+              style="text-align: center"
+            >
               {{ item }}
             </div>
           </div>
@@ -329,34 +435,53 @@ const close = () => {
     </div>
     <!--대기정보-->
     <div>
-      <h5 style="text-align: center; font-weight: bolder; color: dimgray" class="mb-4">
+      <h5
+        style="text-align: center; font-weight: bolder; color: dimgray"
+        class="mb-4"
+      >
         대기 정보
       </h5>
       <div>
         <div class="mb-3">
           <div v-if="grade.pm10Grade == 1" class="d-flex">
-            <img src="/src/assets/detailIcon/mise_good.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/mise_good.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">미세먼지</div>
               <div style="color: blue; text-align: center">매우 좋음</div>
             </div>
           </div>
           <div v-if="grade.pm10Grade == 2" class="d-flex">
-            <img src="/src/assets/detailIcon/mise_soso.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/mise_soso.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">미세먼지</div>
               <div style="color: green; text-align: center">좋음</div>
             </div>
           </div>
           <div v-if="grade.pm10Grade == 3" class="d-flex">
-            <img src="/src/assets/detailIcon/mise_sick.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/mise_sick.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">미세먼지</div>
               <div style="color: yellow; text-align: center">나쁨</div>
             </div>
           </div>
           <div v-if="grade.pm10Grade == 4" class="d-flex">
-            <img src="/src/assets/detailIcon/mise_verybad.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/mise_verybad.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">미세먼지</div>
               <div style="color: red; text-align: center">매우 나쁨</div>
@@ -365,58 +490,98 @@ const close = () => {
         </div>
         <div class="mb-3">
           <div v-if="grade.pm25Grade == 1" class="d-flex">
-            <img src="/src/assets/detailIcon/spmise_good.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/spmise_good.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
-              <div style="text-align: center; font-weight: bold">초미세먼지</div>
+              <div style="text-align: center; font-weight: bold">
+                초미세먼지
+              </div>
               <div style="color: blue; text-align: center">매우 좋음</div>
             </div>
           </div>
           <div v-if="grade.pm25Grade == 2" class="d-flex">
-            <img src="/src/assets/detailIcon/spmise_soso.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/spmise_soso.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
-              <div style="text-align: center; font-weight: bold">초미세먼지</div>
+              <div style="text-align: center; font-weight: bold">
+                초미세먼지
+              </div>
               <div style="color: green; text-align: center">좋음</div>
             </div>
           </div>
           <div v-if="grade.pm25Grade == 3" class="d-flex">
-            <img src="/src/assets/detailIcon/spmise_sick.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/spmise_sick.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
-              <div style="text-align: center; font-weight: bold">초미세먼지</div>
+              <div style="text-align: center; font-weight: bold">
+                초미세먼지
+              </div>
               <div style="color: yellow; text-align: center">나쁨</div>
             </div>
           </div>
           <div v-if="grade.pm25Grade == 4" class="d-flex">
-            <img src="/src/assets/detailIcon/supermise_verybad.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/supermise_verybad.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
-              <div style="text-align: center; font-weight: bold">초미세먼지</div>
+              <div style="text-align: center; font-weight: bold">
+                초미세먼지
+              </div>
               <div style="color: red; text-align: center">매우 나쁨</div>
             </div>
           </div>
         </div>
         <div>
           <div v-if="grade.khaiGrade == 1" class="d-flex">
-            <img src="/src/assets/detailIcon/weather_good.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/weather_good.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%; text-align: center">
               <div style="text-align: center; font-weight: bold">대기 지수</div>
               <div style="color: blue; text-align: center">매우 좋음</div>
             </div>
           </div>
           <div v-if="grade.khaiGrade == 2" class="d-flex">
-            <img src="/src/assets/detailIcon/weather_soso.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/weather_soso.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">대기 지수</div>
               <div style="color: green; text-align: center">좋음</div>
             </div>
           </div>
           <div v-if="grade.khaiGrade == 3" class="d-flex">
-            <img src="/src/assets/detailIcon/weather_sick.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/weather_sick.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">대기 지수</div>
               <div style="color: yellow; text-align: center">나쁨</div>
             </div>
           </div>
           <div v-if="grade.khaiGrade == 4" class="d-flex">
-            <img src="/src/assets/detailIcon/weather_verybad.png" width="80px" class="me-4" />
+            <img
+              src="/src/assets/detailIcon/weather_verybad.png"
+              width="80px"
+              class="me-4"
+            />
             <div style="width: 100%; height: 100%">
               <div style="text-align: center; font-weight: bold">대기 지수</div>
               <div style="color: red; text-align: center">매우 나쁨</div>
@@ -428,4 +593,8 @@ const close = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.arrow:hover {
+  cursor: pointer;
+}
+</style>
