@@ -91,7 +91,6 @@ const placesSearchCB = (data, status) => {
     for (let ind in data) {
       let marker = data[ind];
       if(ind == 0) bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
-      if(ind == 0) console.log("0 ", marker)
       const markerItem = {
         lat: marker.y,
         lng: marker.x,

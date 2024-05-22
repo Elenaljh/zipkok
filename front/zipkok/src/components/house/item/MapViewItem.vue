@@ -2,7 +2,7 @@
 import { getAptsAvgByDong, getAptsByLatLngs } from "@/api/map";
 import { useHouseStore } from "@/stores/house";
 import { moneyFormat } from "@/util/util";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { KakaoMap, KakaoMapMarker, KakaoMapCustomOverlay } from "vue3-kakao-maps";
 
 const props = defineProps({ hlw: Number, houseMarkerList: Array });
@@ -33,10 +33,16 @@ const dongOverlays = ref([]);
 //   }
 // );
 
-const onLoadKakaoMap = (mapRef) => {
-  map.value = mapRef;
+onMounted(() => {
   drawCurrent();
-  // clickMap();
+});
+
+const onLoadKakaoMap = (mapRef) => {
+  if (map.value == null) {
+    map.value = mapRef;
+    // drawCurrent();
+    clickMap();
+  }
 
   // searchPlace();
   kakao.maps.event.addListener(map.value, "dragend", function (event) {
@@ -274,8 +280,12 @@ const markerClick = (id) => {
 // 동 마커 클릭
 function markerDongClick(dongcode, la, ln) {
   console.log(dongcode, la, ln);
-  map.value.panTo(new kakao.maps.LatLng(la, ln));
-  map.value.setLevel(4, { animate: true });
+  map.value.setLevel(4);
+  map.value.setCenter(new kakao.maps.LatLng(la, ln));
+  // map.value.setCenter(new kakao.maps.LatLng(36.1250178, 128.3795879));
+  // map.value.panTo(new kakao.maps.LatLng(la, ln));
+  const bounds = map.value.getBounds();
+  getRangeList(bounds.getSouthWest(), bounds.getNorthEast());
 }
 
 // 마커 틀
@@ -382,14 +392,12 @@ const drawDongMarker = () => {
       position: new kakao.maps.LatLng(h.lat, h.lng),
       yAnchor: 1.4,
     });
-
     overlay.setContent(myDongContent(h));
     kakao.maps.event.addListener(marker, "click", function () {
-      markerDongClick(h.dongcode, h.lat, h.lng);
+      markerDongClick(h.dongCode, h.lat, h.lng);
     });
     overlay.setMap(map.value);
-
-    console.log("overlay, ", overlay.getContent(), h);
+    // console.log("overlay, ", overlay.getContent(), h);
 
     dongOverlays.value.push({
       ov: overlay,
