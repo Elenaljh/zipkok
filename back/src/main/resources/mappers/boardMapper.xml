@@ -35,15 +35,18 @@
 				and type = #{type}
 			</if>
 		</where>
+		order by created_at desc 
 	</select>
 	
 	<select id="getListByType" parameterType="int" resultType="Board">
 		select *
 		from board where type = #{type}
+		order by created_at desc 
 	</select>
 	
 	<select id="selectAll" resultType="Board">
 		SELECT * FROM board
+		order by created_at desc 
 	</select>
 	
 	<update id="updateBoard" parameterType="BoardUpdateDto">

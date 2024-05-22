@@ -11,7 +11,7 @@ const route = useRoute();
 const memberStore = useMemberStore();
 const props = defineProps({ type: String });
 const { VITE_BOARD_NOTICE, VITE_BOARD_FREE, VITE_BOARD_QNA } = import.meta.env;
-const deltaContent = ref();
+// const deltaContent = ref();
 const htmlContent = ref();
 const isUseId = ref(false);
 
@@ -36,6 +36,7 @@ if (props.type === "modify") {
     ({ data }) => {
       board.value = data;
       isUseId.value = true;
+      htmlContent.value = data.content;
     },
     (error) => {
       console.log(error);
@@ -117,6 +118,7 @@ function writeboard() {
 }
 
 function updateboard() {
+  board.value.content = htmlContent;
   console.log(board.value.boardId + "번글 수정하자!!", board.value);
   modifyBoard(
     board.value,

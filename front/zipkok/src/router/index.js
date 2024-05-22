@@ -134,17 +134,19 @@ const router = createRouter({
           path: "modify/:boardId",
           name: "board-modify",
           component: () => import("@/components/board/BoardUpdate.vue"),
-          beforeEnter: async (to, from, next) => {
+          beforeEnter: (to, from, next) => {
             const store = useMemberStore();
             const { isAuthorized } = storeToRefs(store);
             if (!isAuthorized.value) {
-              next(from);
+              console.log("no")
+              //guardLogin(to, from, next);
             } else {
               checkUserBoard(to.params.boardId, (res) => {
                 if (!res) {
                   console.log("사용자 다름");
                   next(false);  
                 } else {
+                  console.log("ok go");
                   next();
                 }
               });
@@ -173,21 +175,42 @@ router.beforeEach(() => {
   // console.log("로컬스토리지 값: " + store.isAuthorized());
 });
 
+function guardLogin(to, from, next){
+  Swal.fire({
+    icon: 'info',
+    title: '로그인 후 이용 가능합니다.',
+    text: '로그인 하시겠습니까?',
+    showCancelButton: true,
+    confirmButtonText: '예', 
+    cancelButtonText: '아니오',
+    confirmButtonColor: '#00b4d8',
+    cancelButtonColor: 'lightgray',
+  }).then(result => {
+    if (result.isConfirmed) {
+      router.push({name: "login"});
+    } else if (result.isDismissed) {
+      next(false);
+    }
+})
+}
+
 function checkUserBoard(boardId, callback) {
   checkAuth(
     boardId,
     (response) => {
       if (response.status == 200){
         console.log("true")
-        return true;
-      } 
-      console.log("여기", response)
-      callSwal({
-        icon: "error",
-        title: "권한 없음",
-        text: response.data,
-      });
-      return false;
+        callback(true);
+      } else {
+        console.log("여기", response)
+        callSwal({
+          icon: "error",
+          title: "권한 없음",
+          text: response.data,
+        });
+        callback(false);
+      }
+      
     },
     (error) => {
       console.log("여기", error);
