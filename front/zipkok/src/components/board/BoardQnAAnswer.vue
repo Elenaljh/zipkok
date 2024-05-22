@@ -26,13 +26,20 @@ function resize(target) {
       {{ comment.writer }}
     </div>
     <textarea
+      v-if="type != 'read'"
       type="text"
       class="col board-content text-secondary p-2 m-2"
       id="comTextArea"
       @input="resize($event.currentTarget)"
       v-model="com_content"
-      :disabled="type == 'read'"
     ></textarea>
+    <div
+      v-if="type == 'read'"
+      class="col board-content text-secondary p-2 m-2"
+      style="height: fit-content"
+      id="comTextArea"
+      :innerHTML="com_content"
+    ></div>
     <div class="d-flex justify-content-end" v-if="type == 'regist'">
       <button type="button" class="btn reverseButton mb-3 ms-1" @click="emit('cancelEvent')">
         취소

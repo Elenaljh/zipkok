@@ -18,9 +18,15 @@ public interface AptDetailService {
     public PriceAvgDto getAverage(String aptCode, String type);
 
     //관공서
-    public List<OfficeDto> getOffice(double lat, double lng);
+    public Integer getOffice(double lat, double lng);
     //학교
-    public List<SchoolDto> getSchool(double lat, double lng);
+    public Integer getSchool(double lat, double lng);
+    //cctv
+    public Integer getCCTV(String aptCode);
+    //모범음식점
+    public Integer getRestaurant(String dongCode);
+    //도시공원
+    public Integer getPark(Double lng, Double lat);
 
     //인구
     public PopulationDto getPopulation(String bjdCode);

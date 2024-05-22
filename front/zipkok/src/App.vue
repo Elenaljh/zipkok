@@ -6,7 +6,7 @@ import FooterNavBar from "./components/layout/FooterNavBar.vue";
 <template>
   <body class="d-flex flex-column min-vh-100">
     <HeaderNavBar style="height: 10vh" />
-    <RouterView  />
+    <RouterView style="min-height: 85vh" />
     <FooterNavBar style="height: 5vh; position: sticky" />
   </body>
 </template>

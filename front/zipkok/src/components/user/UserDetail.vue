@@ -3,6 +3,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/member";
+import Swal from "sweetalert2";
 onMounted(async () => {
   try {
     const response = await axios.get(useMemberStore().url + "/member", {
@@ -12,7 +13,7 @@ onMounted(async () => {
     await pushList(user.value);
     console.log(user.value);
   } catch (error) {
-    alert("조회 실패");
+    sweetAlert("조회 실패", "회원정보를 조회할 수 없습니다.", "error");
   }
 });
 const user = ref({});
@@ -30,21 +31,43 @@ const pushList = async (member) => {
 };
 
 const Withdrawal = async () => {
-  if (confirm("정말 탈퇴하시겠습니까?")) {
-    try {
-      await axios.delete(useMemberStore().url + "/member", {
-        withCredentials: true,
-      });
-      alert("회원탈퇴 성공");
-    } catch {
-      alert("회원탈퇴 실패");
+  Swal.fire({
+    title: "정말 회원탈퇴하시겠습니까?",
+    text: "회원정보는 영구히 지워집니다",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "예",
+    cancelButtonText: "아니오",
+    confirmButtonColor: "#00b4d8",
+    cancelButtonColor: "lightgray",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(useMemberStore().url + "/member", {
+          withCredentials: true,
+        });
+        sweetAlert("회원탈퇴 성공", "안녕히 가십시오", "success");
+      } catch {
+        sweetAlert("회원탈퇴 실패", "회원탈퇴를 할 수 없습니다", "error");
+      }
     }
-  }
+  });
 };
 
 const router = useRouter();
 const goModify = () => {
   router.push({ path: "/user/modify" });
+};
+
+//sweetAlert
+const sweetAlert = (title, text, icon) => {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonText: "확인",
+    confirmButtonColor: "#00b4d8",
+  });
 };
 </script>
 <template>

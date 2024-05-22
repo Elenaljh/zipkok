@@ -9,9 +9,14 @@ import { useHouseStore } from "@/stores/house";
 import { getGrade } from "@/util/airConditionUtil";
 import { getDong, getNews, dong, getMalePopulation, getFemalePopulation } from "@/util/houseDetail";
 import axios from "axios";
+import { storeToRefs } from "pinia";
 
 const store = useMemberStore();
 const houseStore = useHouseStore();
+const { isAuthorized, preference } = storeToRefs(store);
+const { houseId } = storeToRefs(houseStore);
+const userPreference = ref("");
+const houseInfo = ref({});
 
 watchEffect(async () => {
   console.log("find change ", houseStore.houseId);
@@ -29,9 +34,11 @@ watchEffect(async () => {
   getMalePopulation(houseInfo.value.bjdCode);
   getFemalePopulation(houseInfo.value.bjdCode);
   getNews(houseInfo.value.aptName, dong.value);
+  if (isAuthorized.value) {
+    getUserPreference();
+  }
+  console.log("preference", preference.value);
 });
-
-const houseInfo = ref({});
 
 const num = ref(0);
 const changeTab = (val) => {
@@ -40,7 +47,6 @@ const changeTab = (val) => {
 
 const busStation = ref([]);
 const getBusStations = async () => {
-  console.log("버스station 진입");
   const { VITE_BUS_API_KEY } = import.meta.env;
   const response = await axios.get(
     "http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList",
@@ -61,6 +67,70 @@ const getBusStations = async () => {
   }
   console.log(busStation.value);
 };
+
+const getUserPreference = async () => {
+  let result = null;
+  if (preference.value === "행정시설") {
+    result = await getOfficeNum(houseInfo.value.lat, houseInfo.value.lng);
+  } else if (preference.value === "학군") {
+    result = await getSchoolNum(houseInfo.value.lat, houseInfo.value.lng);
+  } else if (preference.value === "근방 맛집") {
+    result = await getRestaurantNum(houseInfo.value.bjdCode);
+  } else if (preference.value === "CCTV 대수") {
+    result = await getCCTVNum(houseId.value);
+  } else if (preference.value === "녹지") {
+    result = await getParkNum(houseInfo.value.lat, houseInfo.value.lng);
+  }
+  userPreference.value = result;
+};
+
+const getCCTVNum = async (aptCode) => {
+  const result = await axios.get("http://localhost:8080/apt/cctv", {
+    params: {
+      aptCode: aptCode,
+    },
+  });
+  return result.data;
+};
+
+const getOfficeNum = async (lat, lng) => {
+  const result = await axios.get("http://localhost:8080/apt/office", {
+    params: {
+      lat: lat,
+      lng: lng,
+    },
+  });
+  return result.data;
+};
+
+const getSchoolNum = async (lat, lng) => {
+  const result = await axios.get("http://localhost:8080/apt/school", {
+    params: {
+      lat: lat,
+      lng: lng,
+    },
+  });
+  return result.data;
+};
+
+const getParkNum = async (lat, lng) => {
+  const result = await axios.get("http://localhost:8080/apt/park", {
+    params: {
+      lat: lat,
+      lng: lng,
+    },
+  });
+  return result.data;
+};
+
+const getRestaurantNum = async (dongCode) => {
+  const result = await axios.get("http://localhost:8080/apt/restaurant", {
+    params: {
+      dongCode: dongCode,
+    },
+  });
+  return result.data;
+};
 </script>
 
 <template>
@@ -73,12 +143,37 @@ const getBusStations = async () => {
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-body" id="modal">
-        <div class="mb-2"><img src="/src/assets/house.png" /></div>
+        <div class="mb-2 ms-2"><img src="/src/assets/house.png" /></div>
         <div class="ms-2">
           <h5 style="font-weight: bolder">{{ houseInfo.aptName }}</h5>
           <p style="color: dimgray">
             {{ houseInfo.drmAddress }}
           </p>
+        </div>
+        <!--preference-->
+        <div
+          class="alert alert-info m-0 p-0 ps-2 ms-2"
+          role="alert"
+          style="height: 30px"
+          v-if="preference && preference !== '없음'"
+        >
+          <div v-if="preference === 'CCTV 대수'">
+            이 아파트는 CCTV가 {{ userPreference ? userPreference : 0 }}대 있습니다.
+          </div>
+          <div v-if="preference === '행정시설'">
+            이 아파트의 반경 2km 내에 행정시설이 {{ userPreference ? userPreference : 0 }}개
+            있습니다.
+          </div>
+          <div v-if="preference === '학군'">
+            이 아파트의 반경 2km 내에 학교가 {{ userPreference ? userPreference : 0 }}개 있습니다.
+          </div>
+          <div v-if="preference === '녹지'">
+            이 아파트의 반경 2km 내에 도시공원이 {{ userPreference ? userPreference : 0 }}개
+            있습니다.
+          </div>
+          <div v-if="preference === '근방 맛집'">
+            이 동네에 모범음식점이 {{ userPreference ? userPreference : 0 }}곳 있습니다.
+          </div>
         </div>
         <!--탭 파트-->
         <ul class="nav nav-underline ms-2">

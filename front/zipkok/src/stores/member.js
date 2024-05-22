@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 import { useRouter } from "vue-router";
@@ -11,6 +11,7 @@ export const useMemberStore = defineStore(
     const name = ref("");
     const email = ref("");
     const memberId = ref(0);
+    const preference = ref(""); //user의 prefered type이 저장됨
 
     const url = ref("http://localhost:8080");
 
@@ -37,6 +38,10 @@ export const useMemberStore = defineStore(
 
     const logout = () => {
       isAuthorized.value = false;
+      name.value = "";
+      email.value = "";
+      memberId.value = "";
+      preference.value = "";
     };
 
     const parsedVal = () => {
@@ -56,6 +61,7 @@ export const useMemberStore = defineStore(
       name,
       email,
       memberId,
+      preference,
     };
   },
   {
