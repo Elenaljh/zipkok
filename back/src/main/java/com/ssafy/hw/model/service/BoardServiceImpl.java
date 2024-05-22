@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ssafy.hw.model.dao.BoardDao;
 import com.ssafy.hw.model.dto.Board;
 import com.ssafy.hw.model.dto.BoardInsertDto;
+import com.ssafy.hw.model.dto.BoardListDto;
 import com.ssafy.hw.model.dto.BoardUpdateDto;
 
 @Service
@@ -28,8 +29,30 @@ public class BoardServiceImpl implements BoardService {
 
 	//new search
 	@Override
-	public List<Board> search(Map<String, String> params) {
-		return boardDao.search(params);
+	public BoardListDto search(Map<String, String> map) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		int currentPage = Integer.parseInt(map.get("pgno") == null ? "1" : map.get("pgno"));
+		int sizePerPage = Integer.parseInt(map.get("spp") == null ? "20" : map.get("spp"));
+		int start = currentPage * sizePerPage - sizePerPage;
+		param.put("start", start);
+		param.put("listsize", sizePerPage);
+
+		param.put("key", map.get("key"));
+		param.put("keyword", map.get("keyword"));
+		param.put("type", map.get(String.valueOf("type")));
+		System.out.println(param);
+		System.out.println(map);
+		List<Board> list = boardDao.search(param);
+
+		int totalArticleCount = boardDao.getTotalArticleCount(param);
+		int totalPageCount = (totalArticleCount - 1) / sizePerPage + 1;
+
+		BoardListDto boardListDto = new BoardListDto();
+		boardListDto.setBoards(list);
+		boardListDto.setCurrentPage(currentPage);
+		boardListDto.setTotalPageCount(totalPageCount);
+		
+		return boardListDto;
 	}
 	
 	@Override
