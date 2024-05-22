@@ -20,6 +20,7 @@ const map = ref(null);
 const houseMarkerObjectList = ref([]);
 const houseStore = useHouseStore();
 const showSeperateMarker = ref(true);
+const showSmallerCustomOverlay = ref(false);
 const dongOverlays = ref([]);
 
 // watch(
@@ -183,12 +184,16 @@ const mouseOutKakaoMapMarker = (ind) => {
 const getRangeList = (swLatLng, neLatLng) => {
   // 줌 레벨에 따라 다르게 받아온다
   if (map.value.getLevel() <= 4) {
-    eraseOverlay();
     getRangeSeperateList(swLatLng, neLatLng);
     showSeperateMarker.value = true;
   } else {
     getRangeDongList(swLatLng, neLatLng);
     showSeperateMarker.value = false;
+  }
+  if(map.value.getLevel() <= 3){
+    showSmallerCustomOverlay.value = true;
+  } else {
+    showSmallerCustomOverlay.value = false;
   }
 };
 // 검색 결과 받아오기 (범위, 개별)
@@ -222,7 +227,7 @@ const getRangeDongList = (swLatLng, neLatLng) => {
     ({ data }) => {
       console.log("getAptsAvgByDong!!", data);
       houseDongMarkerList.value = data;
-      drawDongMarker();
+      // drawDongMarker();
       // const dongAvgList = [];
       // for (let element of data) {
       //   geocoder.addressSearch(element.fullName, function (result, status) {
@@ -345,73 +350,37 @@ const myDongContent = (marker) => {
 </div>`;
 };
 
-// 커스텀 오버레이 리스트
-const customOverlayList = computed(() => {
-  const temp = [];
-
-  for (let index in filteredMarkerList.value) {
-    const marker = filteredMarkerList.value[index];
-    temp.push({
-      lat: marker.lat,
-      lng: marker.lng,
-      content: myContent(marker),
-      yAnchor: 1.4,
-      visible: visibleRef[index] ? visibleRef[index] : false,
-    });
-  }
-  console.log("temp", temp, filteredMarkerList.value.length);
-  return temp;
-});
-
-// -------------- 마커 클러스터링
-const markerList = computed(() => {
-  const temp = [];
-  console.log("temp", temp, filteredMarkerList.value.length);
-  for (let index in filteredMarkerList.value) {
-    const marker = filteredMarkerList.value[index];
-    const llm = {
-      lat: marker.lat,
-      lng: marker.lng,
-    };
-    temp.push(llm);
-  }
-
-  return temp;
-});
-
-// -------------- 진짜 마지막 클러스터링
-const drawDongMarker = () => {
-  console.log("start====================");
-  for (let h of filteredDongMarkerList.value) {
-    const marker = new kakao.maps.Marker({
-      map: map.value,
-      position: new kakao.maps.LatLng(h.lat, h.lng),
-      image: new kakao.maps.MarkerImage("/src/assets/empty.png", new kakao.maps.Size(56, 78), {}),
-    });
-    const overlay = new kakao.maps.CustomOverlay({
-      position: new kakao.maps.LatLng(h.lat, h.lng),
-      yAnchor: 1.4,
-    });
-    overlay.setContent(myDongContent(h));
-    kakao.maps.event.addListener(marker, "click", function () {
-      markerDongClick(h.dongCode, h.lat, h.lng);
-    });
-    overlay.setMap(map.value);
-    // console.log("overlay, ", overlay.getContent(), h);
-
-    dongOverlays.value.push({
-      ov: overlay,
-      mk: marker,
-    });
-  }
+// 가장 확대했을 때
+const mySmallContent = (marker) => {
+  return `<div
+      class="customOverlayPrice"
+      style="
+        padding: 5px;
+        background-color: white;
+        border: 3px solid #00b4d8;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      "
+    >
+      <div style="display: flex">
+        <div style="display: flex; flex-direction: column; align-items: flex-start">
+          <div
+            class="small-content"
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px"
+          >
+          ${showType(marker)}
+          </div>
+          <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px">
+            ${moneyFormat(showPrice(marker) * 10000)}
+          </div>
+        </div>
+      </div>
+    </div>`;
 };
-// 커스텀 오버레이 리스트를 모두 지웁니다
-function eraseOverlay() {
-  for (let obj of dongOverlays.value) {
-    obj.ov.setMap(null);
-    obj.mk.setMap(null);
-  }
-}
+
+
 </script>
 
 <template>
@@ -426,6 +395,7 @@ function eraseOverlay() {
       @onLoadKakaoMap="onLoadKakaoMap"
     >
       <!-- 검색한 집 결과 -->
+      <!-- 더 작은 인포윈도우 -->
       <!-- 작은 마커 -->
       <div v-if="showSeperateMarker">
         <div v-for="(marker, index) in filteredMarkerList" :key="marker.aptCode">
@@ -446,24 +416,52 @@ function eraseOverlay() {
             @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(index)"
           />
 
+          
           <KakaoMapCustomOverlay
             :lat="marker.lat"
             :lng="marker.lng"
             :yAnchor="1.4"
-            v-if="visibleRef[index] ? visibleRef[index] : false"
+            v-if="!showSmallerCustomOverlay && (visibleRef[index] ? visibleRef[index] : false)"
             :content="myContent(marker)"
+          />
+
+          <KakaoMapCustomOverlay
+            :lat="marker.lat"
+            :lng="marker.lng"
+            :yAnchor="1.2"
+            v-if="showSmallerCustomOverlay"
+            :content="mySmallContent(marker)"
+            clickable="true"
+            @click="customOverLayClick"
           />
         </div>
       </div>
       <!-- 동 마커 -->
 
-      <div v-show="!showSeperateMarker">
-        <!--<div v-for="(marker) in filteredDongMarkerList" :key="marker.dongCode">
-          <KakaoMapCustomOverlay :lat="marker.lat" :lng="marker.lng" 
-          @onLoadKakaoMapCustomOverlay="onLoadKakaoMapCustomOverlay"
-          :clickable="true"
-          :content="myDongContent(marker)" />
-        </div>-->
+      <div v-if="!showSeperateMarker">
+        <div v-for="(marker, index) in filteredDongMarkerList" :key="marker.dongCode">
+          <KakaoMapMarker
+              :lat="marker.lat"
+              :lng="marker.lng"
+              :image="{
+                imageSrc: '/src/assets/empty.png',
+                imageWidth: 56,
+                imageHeight: 78,
+                imageOption: {},
+              }"
+              :clickable="true"
+              @onClickKakaoMapMarker="markerDongClick(marker.dongCode, marker.lat, marker.lng)"
+            />
+            <KakaoMapCustomOverlay
+            :lat="marker.lat"
+            :lng="marker.lng"
+            :yAnchor="1.4"
+            :content="myDongContent(marker)"
+            clickable="true"
+            @click="customOverLayClick"
+          />
+        
+        </div>
       </div>
       <!-- 키워드 검색 결과 -->
       <KakaoMapMarker
