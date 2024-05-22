@@ -3,6 +3,7 @@ package com.ssafy.hw.controller;
 import com.ssafy.hw.model.dto.LoginDto;
 import com.ssafy.hw.model.dto.LoginOutputDto;
 import com.ssafy.hw.model.dto.Member;
+import com.ssafy.hw.model.dto.mail.PasswordChangeRequestDto;
 import com.ssafy.hw.model.dto.oauth.GoogleAuthResponseDto;
 import com.ssafy.hw.model.dto.oauth.GoogleUserInfoResponseDto;
 import com.ssafy.hw.model.dto.oauth.OauthCodeDto;
@@ -159,6 +160,7 @@ public class MemberController {
 		}
 	}
 
+	@Operation(summary="구글로그인 api", description="code를 보낸다.")
 	@GetMapping("/oauth2/callback")
 	public ResponseEntity<?> googleLogin(@RequestParam OauthCodeDto codeDto, HttpServletRequest request) {
 		try {
@@ -179,6 +181,17 @@ public class MemberController {
 			session.setMaxInactiveInterval(3600); //1시간동안 로그인 유지
 			LoginOutputDto loginOutputDto = new LoginOutputDto(member.getName(), member.getEmail(), member.getMemberId(), member.getPreferedType());
 			return new ResponseEntity<LoginOutputDto>(loginOutputDto, HttpStatus.OK);
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+
+	@Operation(summary="비밀번호 변경", description="비밀번호를 변경한다.")
+	@PostMapping("/password")
+	public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequestDto dto) {
+		try {
+			int i = service.updatePassword(dto.getPassword(), dto.getEmail());
+			return new ResponseEntity<String>("비밀번호 변경 성공", HttpStatus.OK);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}

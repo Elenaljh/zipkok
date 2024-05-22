@@ -36,11 +36,15 @@ const loginInfo = ref({
 });
 const rememberMe = ref(false);
 const { cookies } = useCookies();
+const bc = () => {
+  console.log("button click");
+};
 const buttonClick = async () => {
   // 유효성 검사
   const valid = validation();
-
+  console.log("valid0: ", valid);
   if (valid) {
+    console.log("valid: ", valid);
     // alert("유효성 검사 통과");
     // alert(rememberMe.value);
 
@@ -49,7 +53,8 @@ const buttonClick = async () => {
       const response = await axios.post(url + "/login", loginInfo.value, {
         withCredentials: true,
       });
-      console.log(response);
+      console.log("dkdkdkdkdkdkkd");
+      console.log("로그인 로그: ", response);
       //로그인 성공시 then에서 쿠키 설정
       setCookie();
       store.login();
@@ -60,12 +65,13 @@ const buttonClick = async () => {
       memberId.value = response.data.memberId;
       preference.value = response.data.preference;
       try {
-        router.go(-1);
+        router.push({ name: "main" });
       } catch (error) {
-        router.push({ name: "home" });
+        router.push({ name: "main" });
       }
     } catch (error) {
-      sweetAlert("로그인 실패", "없는 회원입니다.", "error");
+      console.log(error);
+      // sweetAlert("로그인 실패", "없는 회원입니다.", "error");
     }
   }
 };
@@ -129,9 +135,7 @@ const sweetAlert = (title, text, icon) => {
   <div class="m-5 w-25">
     <img src="/src/assets/logo.png" width="70" class="mx-auto d-block mb-3" />
     <h3 class="text-center fw-bold">로그인</h3>
-    <p class="text-center" style="color: #707070">
-      Zipkok에 오신 것을 환영합니다!
-    </p>
+    <p class="text-center" style="color: #707070">Zipkok에 오신 것을 환영합니다!</p>
     <form>
       <div class="mb-3">
         <label class="form-label">이메일</label>
@@ -160,9 +164,7 @@ const sweetAlert = (title, text, icon) => {
             id="flexCheckDefault"
             v-model="rememberMe"
           />
-          <label class="form-check-label" for="flexCheckDefault">
-            이메일 기억하기
-          </label>
+          <label class="form-check-label" for="flexCheckDefault"> 이메일 기억하기 </label>
         </div>
         <router-link
           style="color: #00b4d8; font-weight: bold; text-decoration-line: none"

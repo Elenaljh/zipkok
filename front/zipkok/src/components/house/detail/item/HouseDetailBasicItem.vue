@@ -183,7 +183,7 @@ const close = () => {
         <thead class="table-light">
           <tr>
             <th scope="col" style="padding-left: 20px">계약일 ↓</th>
-            <th scope="col">면적</th>
+            <th scope="col">전용 면적</th>
             <th scope="col">거래가</th>
             <th scope="col">층</th>
           </tr>
@@ -191,7 +191,7 @@ const close = () => {
         <tbody>
           <tr v-for="item in visibleInfo" :key="item.day">
             <td style="padding-left: 20px">{{ item.year }}.{{ item.month }}.{{ item.day }}</td>
-            <td>{{ Math.round(item.area) }}평</td>
+            <td>{{ Math.round(item.area) }}㎡</td>
             <td v-if="type === '매매'">
               {{ adjustedMoneyFormat(item.amount) }}
             </td>

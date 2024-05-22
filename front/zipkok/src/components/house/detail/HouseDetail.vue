@@ -34,6 +34,7 @@ watchEffect(async () => {
   if (isAuthorized.value) {
     getUserPreference();
   }
+  console.log("preference", preference.value);
 });
 
 const num = ref(0);
@@ -151,7 +152,7 @@ const getRestaurantNum = async (dongCode) => {
           class="alert alert-info m-0 p-0 ps-2 ms-2"
           role="alert"
           style="height: 30px"
-          v-if="preference | (preference !== '없음')"
+          v-if="preference && preference !== '없음'"
         >
           <div v-if="preference === 'CCTV 대수'">
             이 아파트는 CCTV가 {{ userPreference ? userPreference : 0 }}대 있습니다.
