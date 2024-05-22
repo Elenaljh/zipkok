@@ -35,6 +35,33 @@ const depositData = computed(() => info.value.map((item) => item.deposit)); //�
 const dayData = computed(() =>
   info.value.map((item) => item.year + "." + item.month + "." + item.day).reverse()
 );
+
+const transactionArray = ref([]); //실제 보여질 데이터가 담기는 곳
+const dayDesc = ref(true);
+const areaDesc = ref(false);
+const moneyDesc = ref(false);
+const sortedByDayAsc = computed(() => info.value.slice().reverse());
+const sortedByAreaDesc = computed(() => {
+  return info.value.toSorted((a, b) => b.area - a.area);
+});
+const sortedByAreaAsc = computed(() => {
+  return info.value.toSorted((a, b) => a.area - b.area);
+});
+
+const sortByDay = () => {
+  dayDesc.value = !dayDesc.value;
+  if (dayDesc.value) {
+    transactionArray.value = info.value;
+  } else {
+    transactionArray.value = info.value.slice().reverse();
+  }
+};
+
+const showArrays = () => {
+  console.log("날짜 역순: ", sortedByDayAsc.value);
+  console.log("면적 내림차순: ", sortedByAreaDesc.value);
+};
+
 const priceAverage = ref({});
 const { houseInfo, busStation } = defineProps({
   houseInfo: String,
@@ -96,6 +123,7 @@ const getTransactionInfo = async () => {
     },
   });
   info.value = response.data;
+  transactionArray.value = response.data;
   const avg = await axios.get(store.url + "/apt/average", {
     params: {
       aptCode: houseStore.houseId,
@@ -124,7 +152,7 @@ watchEffect(async () => {
 
 const visibleCount = ref(5);
 const visibleInfo = computed(() => {
-  return info.value.slice(0, visibleCount.value);
+  return transactionArray.value.slice(0, visibleCount.value);
 });
 const showMore = () => {
   visibleCount.value += 5;
@@ -142,6 +170,7 @@ const close = () => {
     rel="stylesheet"
   />
   <div>
+    <button @click="showArrays">클릭!</button>
     <!--셀렉트박스-->
     <select class="form-select" style="width: 150px" v-model="type" @change="getTransactionInfo">
       <option value="매매" selected>매매</option>
@@ -182,9 +211,16 @@ const close = () => {
       <table class="table mb-0">
         <thead class="table-light">
           <tr>
-            <th scope="col" style="padding-left: 20px">계약일 ↓</th>
-            <th scope="col">전용 면적</th>
-            <th scope="col">거래가</th>
+            <th scope="col" style="padding-left: 20px">
+              <span>계약일 </span><span v-if="dayDesc" @click="sortByDay">↓</span
+              ><span v-if="!dayDesc" @click="sortByDay">↑</span>
+            </th>
+            <th scope="col">
+              <span>전용 면적 </span><span v-if="areaDesc">↓</span><span v-if="!areaDesc">↑</span>
+            </th>
+            <th scope="col">
+              <span>거래가 </span><span v-if="moneyDesc">↓</span><span v-if="!moneyDesc">↑</span>
+            </th>
             <th scope="col">층</th>
           </tr>
         </thead>
