@@ -181,7 +181,12 @@ function moveList() {
       <div class="col">{{ board.writer }}</div>
     </div>
     <div class="mb-3">
-      <QuillEditor theme="snow" v-model:content="htmlContent" contentType="html" />
+      <QuillEditor
+        theme="snow"
+        v-model:content="htmlContent"
+        contentType="html"
+        style="height: 400px"
+      />
     </div>
     <div class="col-auto">
       <button type="submit" class="btn lighterButton mb-3 ms-1" v-if="type === 'regist'">
