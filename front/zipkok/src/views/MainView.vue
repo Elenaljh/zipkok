@@ -44,21 +44,32 @@ const buttonClick = () => {
     <HouseList
       v-show="showHouseList"
       class="position-relative"
-      :style="{ 'min-width': '450px', 'max-width': '550px', width: hlw + '%', 'z-index': 5, 'background-color': 'white' }"
+      :style="{
+        'min-width': '450px',
+        'max-width': '500px',
+        'z-index': 5,
+        'background-color': 'white',
+      }"
       :type="'main'"
       :houseMarkerList="houseMarkerList"
       @updateHouseList="editHouseList"
       @openModal="openModal"
     />
-    <div class="position-relative" style="margin-top: 40vh; margin-bottom: auto; z-index: 5;  " >
-      <Button class="d-flex align-items-center" style="height: 40px; background-color: white" @click="buttonClick" id="sidebarButton">
+    <div class="position-relative" style="margin-top: 40vh; margin-bottom: auto; z-index: 5">
+      <Button
+        class="d-flex align-items-center"
+        style="height: 40px; background-color: white"
+        @click="buttonClick"
+        id="sidebarButton"
+      >
         <img
           v-if="!showHouseList"
           src="/src/assets/sidebarOpen.png"
           width="18px"
           height="18px"
           style="margin: auto"
-          class="mx-0 p-0" />
+          class="mx-0 p-0"
+        />
         <img
           v-if="showHouseList"
           src="/src/assets/sidebarClose.png"
@@ -68,9 +79,15 @@ const buttonClick = () => {
           class="mx-0 p-0"
         />
       </Button>
-  </div>
-    
-    <MapViewItem class="position-absolute start-0" style="top: 10vh; z-index: 1" :houseMarkerList="houseMarkerList" :hlw="hlw" @openModal="openModal" />
+    </div>
+
+    <MapViewItem
+      class="position-absolute start-0"
+      style="top: 10vh; z-index: 1"
+      :houseMarkerList="houseMarkerList"
+      :hlw="hlw"
+      @openModal="openModal"
+    />
     <div
       class="modal fade"
       id="exampleModal"
@@ -88,7 +105,8 @@ const buttonClick = () => {
 #sidebarButton {
   width: fit-content;
   padding: 0;
-  border: 1px solid #90E0EF; border-left: none;
+  border: 1px solid #90e0ef;
+  border-left: none;
   border-radius: 0 5px 5px 0;
 }
 </style>

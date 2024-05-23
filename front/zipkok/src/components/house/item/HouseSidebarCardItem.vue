@@ -1,6 +1,6 @@
 <script setup>
 import { moneyFormat } from "@/util/util.js";
-import RoadViewNaverItem from '@/components/house/item/RoadViewNaverItem.vue';
+import RoadViewNaverItem from "@/components/house/item/RoadViewNaverItem.vue";
 import { computed } from "vue";
 const { houseInfo } = defineProps({ houseInfo: Object });
 
@@ -24,16 +24,22 @@ const showPrice = computed(() => {
 </script>
 
 <template>
-  <div class="p-0 me-4 mb-3 cardModalButton" style="width: 40%">
-    <RoadViewNaverItem :lat="houseInfo.lat" :lng="houseInfo.lng" :pan="houseInfo.pan"
-      :height="'200px'"
-       style="border-radius: 9px 9px 0 0" />
-    <div class="m-2">
-      <p class="mb-1" style="font-weight: bold; font-size: 22px">
-        {{ moneyFormat(showPrice * 10000) }}
-      </p>
-      <p class="small-content">{{ houseInfo.drmAddress }}</p>
-      <p style="font-weight: bold">{{ houseInfo.aptName }}</p>
+  <div class="p-0 pe-3 pb-3" style="width: 49%">
+    <div class="cardModalButton pb-1">
+      <RoadViewNaverItem
+        :lat="houseInfo.lat"
+        :lng="houseInfo.lng"
+        :pan="houseInfo.pan"
+        :height="'200px'"
+        style="border-radius: 9px 9px 0 0"
+      />
+      <div class="m-2">
+        <p class="mb-1" style="font-weight: bold; font-size: 22px">
+          {{ moneyFormat(showPrice * 10000) }}
+        </p>
+        <p class="small-content">{{ houseInfo.drmAddress }}</p>
+        <p style="font-weight: bold">{{ houseInfo.aptName }}</p>
+      </div>
     </div>
   </div>
 </template>
