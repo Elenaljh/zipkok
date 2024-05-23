@@ -59,12 +59,7 @@ const noImage = ref("/src/assets/noImage.jpg");
       </p>
       <!--그래프-->
       <div class="mb-5 d-flex justify-content-center">
-        <Bar
-          id="my-chart-id"
-          :options="chartOptions"
-          :data="chartData"
-          style="width: 75%; height: 75%"
-        />
+        <Bar id="my-chart-id" :options="chartOptions" :data="chartData" class="w-75 h-75" />
       </div>
       <!--테이블-->
       <!-- <div class="table-responsive card" style="max-height: 380px; overflow-y: auto">
