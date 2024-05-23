@@ -34,7 +34,7 @@ const logoutUser = async () => {
         <!--style="color: #00b4d8"-->
         <router-link :to="{ name: 'main' }" class="logoText">
           <img src="@/assets/logo.png" alt="Bootstrap" width="80" height="80" />
-          ZIPKOK</router-link
+          ZIPSA</router-link
         ></a
       >
 

@@ -116,7 +116,7 @@ const noImage = ref("/src/assets/noImage.jpg");
     <div class="me-2">
       <p style="font-size: large; font-weight: bold">
         <span style="color: #00b3d6">{{ houseInfo.aptName }}</span
-        ><span>가 나온 뉴스</span>
+        ><span>이/가 나온 뉴스</span>
       </p>
       <div class="card mb-3 w-100" v-for="item in news" :key="item">
         <div class="row g-0">
