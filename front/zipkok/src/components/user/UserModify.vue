@@ -17,6 +17,7 @@ onMounted(async () => {
       withCredentials: true,
     });
     user.value = await response.data;
+    user.value.password = "";
     await pushList(user.value);
     console.log(user.value);
   } catch (error) {
