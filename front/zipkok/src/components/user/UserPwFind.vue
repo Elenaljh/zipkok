@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { sweetAlert } from "@/util/util";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 const sendNumber = ref(false);
 const authenticate = ref(false);
@@ -9,6 +10,7 @@ const totalSuccess = ref(false);
 const inputEmail = ref("");
 const inputNumber = ref("");
 const newPassword = ref("");
+const router = useRouter();
 
 const sendNumberFunction = async () => {
   //이메일 보내기
@@ -62,6 +64,7 @@ const changePassword = async () => {
     if (result === "비밀번호 변경 성공") {
       sweetAlert("비밀번호 재설정 성공", "새로운 비밀번호로 로그인하세요", "success");
       totalSuccess.value = true;
+      router.push({ name: "main" });
     } else {
       sweetAlert("비밀번호 재설정 실패", "문제가 발생했습니다", "error");
     }
