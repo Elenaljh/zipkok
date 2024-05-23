@@ -21,6 +21,9 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 const chartOptions = ref({
   responsive: true,
   // maintainAspectRatio: false,
+  // barThickness: 20,
+  categoryPercentage: 0.5,
+  barPercentage: 0.7,
 });
 
 const chartData = ref({
@@ -55,8 +58,13 @@ const noImage = ref("/src/assets/noImage.jpg");
         ><span>의 인구구조</span>
       </p>
       <!--그래프-->
-      <div class="mb-5">
-        <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+      <div class="mb-5 d-flex justify-content-center">
+        <Bar
+          id="my-chart-id"
+          :options="chartOptions"
+          :data="chartData"
+          style="width: 75%; height: 75%"
+        />
       </div>
       <!--테이블-->
       <!-- <div class="table-responsive card" style="max-height: 380px; overflow-y: auto">
