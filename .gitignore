@@ -240,3 +240,5 @@ yarn-error.log
 # ### start spring boot setting
 # local setting
 
+# vue.js
+front/zipkok/.env
